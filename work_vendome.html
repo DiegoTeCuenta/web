@@ -292,7 +292,12 @@ const copy={
   en:{ongoing:"Ongoing client",eye:"02 — Commercial Work",sub:"Weekly visual content for LED screens. Shows, special events and artist nights. Every week, on brand.",scroll:"Scroll to explore",d1:"Custom LED visuals for every artist night. Designed to match the performer's aesthetic and amplify the club atmosphere.",d2:"Special event content for major sports moments and themed nights. F1 Miami Grand Prix, NFL, NBA and seasonal campaigns.",p1:"View",p2:"View"},
   es:{ongoing:"Cliente vigente",eye:"02 — Trabajo Comercial",sub:"Contenido visual semanal para pantallas LED. Shows, eventos especiales y noches de artistas. Cada semana, con identidad.",scroll:"Desliza para explorar",d1:"Visuales LED personalizados para cada noche de artista. Diseñados para reflejar la estética del performer y amplificar el ambiente.",d2:"Contenido temático para grandes eventos deportivos y noches especiales. F1 Miami Grand Prix, NFL, NBA y campañas de temporada.",p1:"Ver",p2:"Ver"}
 };
+// LANG PERSISTENCE
+const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
+window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
+
 function setLang(l){
+  sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
   document.getElementById("lbl-ongoing").textContent=t.ongoing;
   document.getElementById("lbl-eye").textContent=t.eye;

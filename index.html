@@ -229,7 +229,12 @@ const copy = {
   }
 };
 
+// LANG PERSISTENCE
+const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
+window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
+
 function setLang(l){
+  sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
   document.getElementById('sub-label').textContent=t.sub;
   document.getElementById('eyebrow-1').textContent=t.ey1;

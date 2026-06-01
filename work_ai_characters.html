@@ -240,7 +240,12 @@ const copy={
     d1:"Un personaje completamente generado con IA, con identidad visual consistente, personalidad y audiencia real. Creado, dirigido y gestionado íntegramente con herramientas de IA.",
     d2:"Contenido de moda y lifestyle generado con IA para marcas y stock. Modelos virtuales con calidad fotorrealista, vestuario infinito, costo de producción cero.",p1:"Ver",p2:"Ver"}
 };
+// LANG PERSISTENCE
+const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
+window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
+
 function setLang(l){
+  sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
   document.getElementById("lbl-eye").textContent=t.eye;
   document.getElementById("lbl-sub").textContent=t.sub;

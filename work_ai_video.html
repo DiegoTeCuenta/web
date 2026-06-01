@@ -228,7 +228,12 @@ const copy={
     d1:"Fan video musical completamente producido con IA para la banda Zaguán del Cielo. Concepto, dirección y producción íntegramente con IA. Lanzado en 2025.",
     d2:"Loops cinemáticos cortos, visuales de producto y contenido estilo UGC. Actualmente en producción con Runway, Veo y Kling.",soon:"Nuevos proyectos",p1:"Ver"}
 };
+// LANG PERSISTENCE
+const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
+window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
+
 function setLang(l){
+  sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
   document.getElementById("lbl-eye").textContent=t.eye;
   document.getElementById("lbl-sub").textContent=t.sub;

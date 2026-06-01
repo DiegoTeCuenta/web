@@ -119,7 +119,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
         <div class="card-num">01</div>
         <div class="card-cat">Projection Mapping · Live Visuals</div>
         <div class="card-title">Mapping &amp;<br><em>Live Visuals</em></div>
-        <p class="card-desc" id="desc1">Architectural projection mapping, immersive environments and live visual production. Epson America, L'Oréal, Caja Arequipa, Chery Tiggo.</p>
+        <p class="card-desc" id="desc1">Architectural projection mapping, immersive environments and live visual production.</p>
       </div>
       <div class="card-right">
         <div class="card-arrow">→</div>
@@ -148,7 +148,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
         <div class="ongoing"><span class="ongoing-dot"></span><span id="lbl-ongoing">Ongoing client</span></div>
         <div class="card-cat">Event Visuals · Weekly Content</div>
         <div class="card-title">Vendôme<br><em>Nightclub</em></div>
-        <p class="card-desc" id="desc2">Weekly visual content for LED screens. Artist shows, special events, F1, NFL, NBA. Miami Beach.</p>
+        <p class="card-desc" id="desc2">Weekly visual content for LED screens. Artist shows and special events.</p>
       </div>
       <div class="card-right">
         <div class="card-arrow">→</div>
@@ -176,7 +176,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
         <div class="card-num">03</div>
         <div class="card-cat">AI Personas · Fashion · Stock</div>
         <div class="card-title">AI <em>Characters</em><br>&amp; Fashion</div>
-        <p class="card-desc" id="desc3">Virtual models, AI-generated personas and fashion content for brands and stock. Paula, Pixel Muse Agency.</p>
+        <p class="card-desc" id="desc3">Virtual models, AI-generated personas and fashion content for brands and stock.</p>
       </div>
       <div class="card-right">
         <div class="card-arrow">→</div>
@@ -254,17 +254,22 @@ document.querySelectorAll(".work-card").forEach((c,i)=>{
 // Lang
 const copy={
   en:{eye:"Commercial Work",sub:"Projection mapping · Club visuals · AI characters · AI video",ongoing:"Ongoing client",
-    d1:"Architectural projection mapping, immersive environments and live visual production. Epson America, L'Oréal, Caja Arequipa, Chery Tiggo.",
-    d2:"Weekly visual content for LED screens. Artist shows, special events, F1, NFL, NBA. Miami Beach.",
-    d3:"Virtual models, AI-generated personas and fashion content for brands and stock. Paula, Pixel Muse Agency.",
+    d1:"Architectural projection mapping, immersive environments and live visual production.",
+    d2:"Weekly visual content for LED screens. Artist shows and special events.",
+    d3:"Virtual models, AI-generated personas and fashion content for brands and stock.",
     d4:"Cinematic AI video production. Fan films, brand visuals and short-form content. No camera needed."},
   es:{eye:"Trabajo Comercial",sub:"Projection mapping · Club visuals · AI characters · AI video",ongoing:"Cliente vigente",
-    d1:"Projection mapping arquitectónico, ambientes inmersivos y producción visual en vivo. Epson America, L'Oréal, Caja Arequipa, Chery Tiggo.",
-    d2:"Contenido visual semanal para pantallas LED. Shows de artistas, eventos especiales, F1, NFL, NBA. Miami Beach.",
-    d3:"Modelos virtuales, personas generadas con IA y contenido de moda para marcas y stock. Paula, Pixel Muse Agency.",
+    d1:"Projection mapping arquitectónico, ambientes inmersivos y producción visual en vivo.",
+    d2:"Contenido visual semanal para pantallas LED. Shows de artistas y eventos especiales.",
+    d3:"Modelos virtuales, personas generadas con IA y contenido de moda para marcas y stock.",
     d4:"Producción de video cinematográfico con IA. Fan films, visuales de marca y contenido short-form. Sin cámara."}
 };
+// LANG PERSISTENCE
+const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
+window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
+
 function setLang(l){
+  sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
   document.getElementById("lbl-eye").textContent=t.eye;
   document.getElementById("lbl-sub").textContent=t.sub;
