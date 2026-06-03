@@ -303,7 +303,16 @@ function closeLB(id){
   const lb=document.getElementById("lb-"+id);
   lb.style.opacity="0";
   setTimeout(()=>{lb.style.display="none";document.body.style.overflow=""},380);
+  // Stop iframes (YouTube)
   lb.querySelectorAll("iframe").forEach(f=>{const s=f.src;f.src="";f.src=s});
+  // Stop and reset any HTML5 video inside
+  lb.querySelectorAll("video").forEach(v=>{v.pause();v.currentTime=0;v.muted=true;});
+  // Reset mute state for UGC player
+  if(id==="ugc"){
+    ugcMuted=true;
+    const btn=document.getElementById("ugc-mute-btn");
+    if(btn) btn.textContent="🔇 Tap for sound";
+  }
 }
 document.querySelectorAll(".lb").forEach(lb=>{
   lb.addEventListener("click",e=>{if(e.target===lb) closeLB(lb.id.replace("lb-",""))});
