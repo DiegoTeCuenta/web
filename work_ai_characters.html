@@ -333,7 +333,8 @@ const lbNames={m:{1:'Paula',2:'Sofía',3:'Maya'},o:{1:'O1',2:'O2',3:'O3'},s:{1:'
 document.querySelectorAll('.sel-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     const g=btn.dataset.g,v=btn.dataset.v;
-    document.querySelectorAll(`[data-g="${g}"]`).forEach(b=>b.classList.remove('active'));
+    // Only remove active from buttons in the same group
+    document.querySelectorAll(`.sel-btn[data-g="${g}"]`).forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     lbState[g]=v;
     updateLB();
@@ -341,13 +342,19 @@ document.querySelectorAll('.sel-btn').forEach(btn=>{
 });
 function updateLB(){
   const code=`m${lbState.m}_o${lbState.o}_s${lbState.s}`;
-  const url=`https://diegotecuenta.com/assets/lookbook/${code}.webp`;
+  const url=`https://diegotecuenta.com/assets/lookbook/${code.toLowerCase()}.webp`;
   document.getElementById('lb-code').textContent=code+'.webp';
   document.getElementById('lb-meta').textContent=`${lbNames.m[lbState.m]} · ${lbNames.o[lbState.o]} · ${lbNames.s[lbState.s]}`;
   const img=document.getElementById('lb-img');
   const ph=document.getElementById('lb-placeholder');
+  img.style.opacity='0';
   const t=new Image();
-  t.onload=()=>{img.src=url;img.style.display='block';ph.style.display='none'};
+  t.onload=()=>{
+    img.src=url;
+    img.style.display='block';
+    ph.style.display='none';
+    setTimeout(()=>img.style.opacity='1',10);
+  };
   t.onerror=()=>{img.style.display='none';ph.style.display='flex'};
   t.src=url;
 }
