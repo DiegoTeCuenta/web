@@ -258,6 +258,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 
 
 <script>
+// CURSOR
 const cur=document.getElementById("cur"),ring=document.getElementById("ring");
 if(cur){
   let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
@@ -268,6 +269,8 @@ if(cur){
     c.addEventListener("mouseleave",()=>{ring.style.width="36px";ring.style.height="36px"});
   });
 }
+
+// PARALLAX
 const heroBg=document.getElementById("hero-parallax");
 const rowBgs=document.querySelectorAll(".proj-row-bg");
 let rafId=null;
@@ -281,10 +284,14 @@ function applyParallax(){
 }
 window.addEventListener("scroll",()=>{if(rafId)return;rafId=requestAnimationFrame(()=>{rafId=null;applyParallax()})},{passive:true});
 applyParallax();
+
+// SCROLL REVEAL
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target)}});
 },{threshold:0.15,rootMargin:"0px 0px -60px 0px"});
 document.querySelectorAll(".proj-card").forEach(c=>observer.observe(c));
+
+// LIGHTBOX
 function openLB(id){
   const lb=document.getElementById("lb-"+id);
   lb.style.display="flex";setTimeout(()=>lb.style.opacity="1",10);
@@ -303,15 +310,17 @@ document.addEventListener("keydown",e=>{
     if(lb.style.opacity==="1") closeLB(lb.id.replace("lb-",""));
   });
 });
+
+// LANG
 const copy={
   en:{eye:"03 — AI Work",sub:"Virtual models, AI personas and fashion content. From concept to consistent identity.",scroll:"Scroll to explore",
     d1:"A fully AI-generated persona with 8K+ followers and 40K monthly views. Consistent identity, real audience, proven viral content.",
     d2:"Select a model, outfit and scenario. 27 AI-generated combinations ready to explore.",p1:"View",p2:"View"},
   es:{eye:"03 — Trabajo AI",sub:"Modelos virtuales, personas AI y contenido de moda. Del concepto a la identidad consistente.",scroll:"Desliza para explorar",
     d1:"Un personaje completamente generado con IA con 8K+ seguidores y 40K views mensuales. Identidad consistente, audiencia real, contenido viral comprobado.",
-    d2:"Contenido de moda y lifestyle generado con IA para marcas y stock. Modelos virtuales con calidad fotorrealista, vestuario infinito, costo de producción cero.",p1:"Ver",p2:"Ver"}
+    d2:"Elige modelo, outfit y escenario. 27 combinaciones generadas con IA listas para explorar.",p1:"Ver",p2:"Ver"}
 };
-// LANG PERSISTENCE
+
 const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
 window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
 
@@ -324,25 +333,26 @@ function setLang(l){
   document.getElementById("desc-paula").textContent=t.d1;
   document.getElementById("desc-pma").textContent=t.d2;
   document.getElementById("play1").textContent=t.p1;
-  document.getElementById("play2").textContent=t.p2;
   document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.textContent===l.toUpperCase()));
+}
 
 // LOOKBOOK
 const lbState={m:'1',o:'1',s:'1'};
 const lbNames={m:{1:'Paula',2:'Sofía',3:'Maya'},o:{1:'O1',2:'O2',3:'O3'},s:{1:'S1',2:'S2',3:'S3'}};
+
 document.querySelectorAll('.sel-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    const g=btn.dataset.g,v=btn.dataset.v;
-    // Only remove active from buttons in the same group
+    const g=btn.dataset.g, v=btn.dataset.v;
     document.querySelectorAll(`.sel-btn[data-g="${g}"]`).forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     lbState[g]=v;
     updateLB();
   });
 });
+
 function updateLB(){
   const code=`m${lbState.m}_o${lbState.o}_s${lbState.s}`;
-  const url=`https://diegotecuenta.com/assets/lookbook/${code.toLowerCase()}.webp`;
+  const url=`https://diegotecuenta.com/assets/lookbook/${code}.webp`;
   document.getElementById('lb-code').textContent=code+'.webp';
   document.getElementById('lb-meta').textContent=`${lbNames.m[lbState.m]} · ${lbNames.o[lbState.o]} · ${lbNames.s[lbState.s]}`;
   const img=document.getElementById('lb-img');
@@ -359,7 +369,6 @@ function updateLB(){
   t.src=url;
 }
 updateLB();
-}
 </script>
 </body>
 </html>
