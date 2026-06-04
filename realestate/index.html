@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inspección de Inmuebles · Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0b0f14; --bg-2:#0f151c; --panel:#141b24; --panel-2:#19222d;
+    --line:#243140; --line-soft:#1b2530;
+    --txt:#e8eef5; --txt-dim:#9fb0c0; --txt-faint:#67788a;
+    --teal:#2fd6c4; --teal-dim:#1c8a80; --amber:#f6b24b;
+    --red:#ff6b6b; --green:#43d782;
+    --radius:16px; --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Manrope',system-ui,sans-serif;
+    background:
+      radial-gradient(1100px 600px at 80% -10%, rgba(47,214,196,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(246,178,75,.07), transparent 55%),
+      var(--bg);
+    color:var(--txt); line-height:1.5; padding-bottom:120px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:22px 18px 60px}
+
+  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+  .logo-mark{font-family:'Sora',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:-.02em;color:var(--txt)}
+  .logo-mark .ac{color:var(--teal)}
+  .topbar .spacer{flex:1}
+  .tb-btn{display:inline-flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);color:var(--txt-dim);font-family:inherit;font-size:.82rem;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;transition:all .15s}
+  .tb-btn:hover{border-color:var(--teal-dim);color:var(--txt)}
+  .tb-btn svg{width:15px;height:15px}
+
+  .brand{display:flex;align-items:center;gap:16px;border:1px solid var(--line);background:linear-gradient(165deg,var(--panel) 0%,var(--bg-2) 100%);border-radius:var(--radius);padding:18px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .brand::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--teal),var(--teal-dim))}
+  .brand img{height:52px;width:auto;max-width:130px;object-fit:contain;border-radius:8px;background:#fff;padding:4px}
+  .brand .b-txt b{font-family:'Sora',sans-serif;font-size:1.05rem;display:block}
+  .brand .b-txt small{color:var(--txt-faint);font-size:.82rem}
+  .brand.unset{cursor:pointer}
+  .brand.unset .b-txt b{color:var(--teal)}
+
+  .card{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:22px;margin-top:16px}
+  .card h2{font-family:'Sora',sans-serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:16px;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:6px;font-weight:600}
+  .field input,.field select{width:100%;background:var(--bg-2);border:1px solid var(--line);color:var(--txt);padding:11px 13px;border-radius:10px;font-family:inherit;font-size:.92rem;transition:border-color .15s,box-shadow .15s}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--teal-dim);box-shadow:0 0 0 3px rgba(47,214,196,.12)}
+
+  .progress-card{margin-top:16px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:sticky;top:12px;z-index:30;backdrop-filter:blur(8px);box-shadow:var(--shadow)}
+  .progress-bar{flex:1;min-width:150px;height:9px;background:var(--bg-2);border-radius:999px;overflow:hidden;border:1px solid var(--line-soft)}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--teal-dim),var(--teal));transition:width .35s ease;border-radius:999px}
+  .progress-stats{display:flex;gap:16px;font-size:.85rem}
+  .pstat{display:flex;flex-direction:column;line-height:1.1}
+  .pstat b{font-family:'Sora',sans-serif;font-size:1.2rem}
+  .pstat small{color:var(--txt-faint);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em}
+  .pstat.ok b{color:var(--green)} .pstat.obs b{color:var(--amber)} .pstat.bad b{color:var(--red)}
+
+  .section{margin-top:14px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);overflow:hidden}
+  .section-head{display:flex;align-items:center;gap:14px;cursor:pointer;padding:16px 20px;user-select:none;transition:background .15s}
+  .section-head:hover{background:var(--panel-2)}
+  .section-icon{font-size:1.25rem;width:34px;height:34px;display:grid;place-items:center;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;flex-shrink:0}
+  .section-title{font-family:'Sora',sans-serif;font-weight:600;font-size:1.02rem;flex:1}
+  .section-count{font-size:.76rem;color:var(--txt-faint);background:var(--bg-2);border:1px solid var(--line-soft);padding:3px 10px;border-radius:999px}
+  .section-count.done{color:var(--green);border-color:var(--teal-dim)}
+  .chev{transition:transform .25s;color:var(--txt-dim)}
+  .section.open .chev{transform:rotate(180deg)}
+  .section-body{display:none;padding:2px 14px 12px;border-top:1px solid var(--line-soft)}
+  .section.open .section-body{display:block}
+
+  .item{padding:14px 6px;border-bottom:1px solid var(--line-soft)}
+  .item:last-child{border-bottom:none}
+  .item-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .item-label{flex:1;min-width:160px;font-size:.94rem;padding-top:6px}
+  .states{display:flex;gap:6px}
+  .state-btn{border:1px solid var(--line);background:var(--bg-2);color:var(--txt-dim);padding:7px 11px;border-radius:9px;font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .14s;white-space:nowrap}
+  .state-btn:hover{border-color:var(--txt-faint);color:var(--txt)}
+  .state-btn.on.bien{background:rgba(67,215,130,.16);border-color:var(--green);color:var(--green)}
+  .state-btn.on.obs{background:rgba(246,178,75,.16);border-color:var(--amber);color:var(--amber)}
+  .state-btn.on.mal{background:rgba(255,107,107,.16);border-color:var(--red);color:var(--red)}
+  .note{margin-top:10px;width:100%;background:var(--bg-2);border:1px solid var(--line-soft);color:var(--txt);padding:9px 12px;border-radius:9px;font-family:inherit;font-size:.88rem;resize:vertical;display:none}
+  .note.show{display:block}
+  .note:focus{outline:none;border-color:var(--teal-dim);box-shadow:0 0 0 3px rgba(47,214,196,.10)}
+  .note::placeholder{color:var(--txt-faint)}
+
+  .photos{display:flex;flex-wrap:wrap;gap:9px;margin-top:11px}
+  .thumb{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb .ts{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);color:#fff;font-size:.55rem;text-align:center;padding:1px 0}
+  .thumb .rm{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;border:none;cursor:pointer;font-size:.7rem;line-height:1;display:grid;place-items:center}
+  .add-photo{width:74px;height:74px;border-radius:10px;border:1px dashed var(--line);background:var(--bg-2);color:var(--txt-faint);display:grid;place-items:center;cursor:pointer;font-size:1.4rem;transition:all .15s}
+  .add-photo:hover{border-color:var(--teal-dim);color:var(--teal)}
+  .add-photo input{display:none}
+
+  .section-tools{display:flex;justify-content:flex-end;padding:6px 4px 2px}
+  .mini-btn{background:none;border:1px solid var(--line);color:var(--txt-dim);font-family:inherit;font-size:.74rem;padding:5px 11px;border-radius:8px;cursor:pointer;transition:all .14s}
+  .mini-btn:hover{border-color:var(--green);color:var(--green)}
+
+  .send-zone{margin-top:24px;border:1px solid var(--line);background:linear-gradient(165deg,var(--panel),var(--bg-2));border-radius:var(--radius);padding:26px;text-align:center}
+  .send-zone h3{font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:6px}
+  .send-zone p{color:var(--txt-dim);font-size:.88rem;margin-bottom:18px}
+  .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn-primary{display:inline-flex;align-items:center;gap:9px;justify-content:center;background:linear-gradient(135deg,var(--teal),var(--teal-dim));color:#04221f;font-family:'Sora',sans-serif;font-weight:700;font-size:.98rem;border:none;padding:14px 28px;border-radius:12px;cursor:pointer;box-shadow:0 12px 30px -10px rgba(47,214,196,.55);transition:transform .12s,box-shadow .12s}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px -12px rgba(47,214,196,.7)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{display:inline-flex;align-items:center;gap:9px;justify-content:center;background:var(--bg-2);color:var(--txt);border:1px solid var(--line);font-family:'Sora',sans-serif;font-weight:600;font-size:.92rem;padding:14px 24px;border-radius:12px;cursor:pointer;transition:all .14s}
+  .btn-ghost:hover{border-color:var(--teal-dim)}
+
+  .footbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(11,15,20,.86);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:11px 18px;display:flex;align-items:center;gap:14px;justify-content:space-between}
+  .footbar .fb-stats{display:flex;gap:14px;font-size:.8rem;color:var(--txt-dim)}
+  .footbar .fb-stats b{color:var(--txt);font-family:'Sora',sans-serif}
+  .footbar .fb-send{background:linear-gradient(135deg,var(--teal),var(--teal-dim));color:#04221f;border:none;font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem;padding:11px 18px;border-radius:10px;cursor:pointer;white-space:nowrap}
+  footer.credit{text-align:center;color:var(--txt-faint);font-size:.74rem;margin-top:30px}
+
+  .overlay{position:fixed;inset:0;background:rgba(4,7,10,.72);backdrop-filter:blur(4px);z-index:80;display:none;align-items:center;justify-content:center;padding:18px}
+  .overlay.show{display:flex}
+  .modal{width:100%;max-width:460px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
+  .modal h3{font-family:'Sora',sans-serif;font-size:1.2rem;margin-bottom:4px}
+  .modal .sub{color:var(--txt-dim);font-size:.86rem;margin-bottom:20px}
+  .modal .field{margin-bottom:14px}
+  .logo-up{display:flex;align-items:center;gap:14px}
+  .logo-prev{width:64px;height:64px;border-radius:12px;border:1px dashed var(--line);background:#fff;display:grid;place-items:center;overflow:hidden;flex-shrink:0}
+  .logo-prev img{width:100%;height:100%;object-fit:contain}
+  .logo-prev span{color:#7a7a7a;font-size:.65rem;text-align:center}
+  .modal-actions{display:flex;gap:10px;margin-top:22px}
+  .modal-actions button{flex:1;padding:12px;border-radius:11px;font-family:'Sora',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;border:1px solid var(--line)}
+  .save-b{background:linear-gradient(135deg,var(--teal),var(--teal-dim));color:#04221f;border:none}
+  .clear-b{background:transparent;color:var(--txt-dim)}
+  .clear-b:hover{color:var(--red);border-color:var(--red)}
+
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel-2);border:1px solid var(--teal-dim);color:var(--txt);padding:13px 20px;border-radius:11px;font-size:.9rem;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:all .3s;z-index:90;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:560px){.footbar .fb-stats{flex-direction:column;gap:2px}.state-btn{padding:7px 9px;font-size:.76rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo-mark">Inspec<span class="ac">·</span>Check</div>
+    <div class="spacer"></div>
+    <button class="tb-btn" id="cfg-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Mi marca
+    </button>
+    <button class="tb-btn" id="new-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      Nueva
+    </button>
+  </div>
+
+  <div class="brand unset" id="brand">
+    <div class="b-txt"><b>+ Configura tu marca</b><small>Logo y datos que aparecerán en el informe</small></div>
+  </div>
+
+  <div class="card">
+    <h2>Datos del inmueble</h2>
+    <div class="grid">
+      <div class="field"><label>Dirección</label><input id="p-addr" type="text" placeholder="Av. / Calle, nº, distrito" /></div>
+      <div class="field"><label>Tipo</label>
+        <select id="p-type">
+          <option>Departamento</option><option>Casa</option><option>Oficina</option><option>Local comercial</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label>Referencia / código</label><input id="p-ref" type="text" placeholder="Opcional" /></div>
+      <div class="field"><label>Inspector</label><input id="p-insp" type="text" placeholder="Quién inspecciona" /></div>
+      <div class="field"><label>Fecha</label><input id="p-date" type="date" /></div>
+      <div class="field"><label>Cliente / propietario</label><input id="p-client" type="text" placeholder="Opcional" /></div>
+    </div>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+    <div class="progress-stats">
+      <div class="pstat"><b id="st-rev">0</b><small>revisados</small></div>
+      <div class="pstat ok"><b id="st-ok">0</b><small>bien</small></div>
+      <div class="pstat obs"><b id="st-obs">0</b><small>obs.</small></div>
+      <div class="pstat bad"><b id="st-bad">0</b><small>problemas</small></div>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="send-zone">
+    <h3>Generar informe</h3>
+    <p>Crea el PDF con tu marca, fotos y notas — listo para enviar al cliente.</p>
+    <div class="btn-row">
+      <button class="btn-primary" id="pdf-btn">📄 Descargar informe PDF</button>
+      <button class="btn-ghost" id="wa-btn">💬 Copiar resumen (WhatsApp)</button>
+    </div>
+  </div>
+
+  <footer class="credit">Los datos y fotos viven solo en este dispositivo. Fase 1 · sin servidor.</footer>
+</div>
+
+<div class="footbar">
+  <div class="fb-stats">
+    <span>Revisados: <b id="fb-rev">0</b>/<b id="fb-total">0</b></span>
+    <span>Problemas: <b id="fb-bad">0</b></span>
+  </div>
+  <button class="fb-send" id="fb-pdf">Generar PDF →</button>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3>Tu marca</h3>
+    <p class="sub">Se guarda en este navegador y aparece en cada informe que generes.</p>
+    <div class="field">
+      <label>Logo</label>
+      <div class="logo-up">
+        <div class="logo-prev" id="logo-prev"><span>Sin logo</span></div>
+        <label class="tb-btn" style="cursor:pointer">
+          <input type="file" id="logo-input" accept="image/*" style="display:none" />
+          Subir imagen
+        </label>
+      </div>
+    </div>
+    <div class="field"><label>Agencia / inmobiliaria</label><input id="m-agency" type="text" placeholder="Nombre de tu agencia" /></div>
+    <div class="field"><label>Tu nombre</label><input id="m-agent" type="text" placeholder="Nombre del agente" /></div>
+    <div class="field"><label>Correo</label><input id="m-email" type="email" placeholder="tucorreo@ejemplo.com" /></div>
+    <div class="field"><label>Teléfono / WhatsApp</label><input id="m-phone" type="text" placeholder="+51 ..." /></div>
+    <div class="modal-actions">
+      <button class="clear-b" id="m-clear">Borrar</button>
+      <button class="save-b" id="m-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ Almacenamiento (localStorage con respaldo en memoria) ============ */
+const store = (() => {
+  let mem = {}, ok = true;
+  try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); } catch(e){ ok=false; }
+  return {
+    get:k=>{ try{ return ok?localStorage.getItem(k):(mem[k]??null); }catch(e){ return mem[k]??null; } },
+    set:(k,v)=>{ try{ ok?localStorage.setItem(k,v):(mem[k]=v); }catch(e){ mem[k]=v; } },
+    del:k=>{ try{ ok?localStorage.removeItem(k):delete mem[k]; }catch(e){ delete mem[k]; } }
+  };
+})();
+
+/* ============ Checklist ============ */
+const DATA = [
+  { icon:"🚪", title:"Acceso y entrada", items:[
+    "Puerta principal abre y cierra bien","Cerradura y pestillo funcionan","Juego de llaves completo (anotar cantidad)",
+    "Mirilla / visor","Bisagras sin óxido ni ruidos","Marco y sellos en buen estado","Timbre / intercomunicador funciona"]},
+  { icon:"🛋️", title:"Sala y comedor", items:[
+    "Paredes sin manchas, golpes ni grietas","Techo sin humedad ni manchas","Piso sin roturas ni rayones",
+    "Ventanas abren, cierran y sellan","Vidrios sin roturas","Persianas / cortinas funcionan",
+    "Tomacorrientes dan energía","Interruptores operan","Luces de techo encienden","Ventilador de techo (si aplica)"]},
+  { icon:"🍳", title:"Cocina", items:[
+    "Gabinetes: puertas, bisagras y manijas","Encimera sin daños ni quemaduras","Fregadero sin fugas; drena bien",
+    "Grifería sin goteo","Refrigerador enfría y congela","Estufa/cocina: quemadores encienden","Horno calienta",
+    "Campana / extractor funciona","Lavavajillas cicla sin fugas (si aplica)","Tomacorrientes funcionan","Limpieza y sin olores"]},
+  { icon:"🛏️", title:"Habitación principal", items:[
+    "Paredes, techo y piso en buen estado","Closet: puertas, barras y estantes","Ventanas y persianas",
+    "Luces e interruptores","Tomacorrientes funcionan","Ventilador / A.A. (si aplica)"]},
+  { icon:"🛏️", title:"Habitación(es) secundaria(s)", items:[
+    "Paredes, techo y piso en buen estado","Closet: puertas, barras y estantes","Ventanas y persianas",
+    "Luces e interruptores","Tomacorrientes funcionan"]},
+  { icon:"🚽", title:"Baño(s)", items:[
+    "Inodoro descarga y no corre agua","Base del inodoro firme y sellada","Lavamanos y grifería sin fugas",
+    "Ducha/tina: buena presión","Drenajes sin obstrucción","Azulejos y fragua en buen estado",
+    "Silicona/sellos sin moho","Espejo / botiquín","Extractor / ventilación","Calentador de agua / terma funciona"]},
+  { icon:"🌅", title:"Balcón / exteriores", items:[
+    "Piso / superficie sin daños","Barandilla firme y segura","Puerta corrediza desliza bien",
+    "Cerradura de corrediza","Vidrios sin roturas","Drenaje despejado"]},
+  { icon:"❄️", title:"Instalaciones y servicios", items:[
+    "Aire acondicionado enfría (si aplica)","Sistema eléctrico / tablero en orden","Detectores de humo (si aplica)",
+    "Presión de agua general adecuada","Sin fugas visibles bajo lavaderos","Lavadora: enciende y cicla (si aplica)",
+    "Conexiones de gas seguras (si aplica)"]},
+  { icon:"📋", title:"Cierre general", items:[
+    "Sin olores a humedad o moho","Sin señales de plagas","Limpieza general del inmueble",
+    "Controles remotos / accesorios entregados","Lecturas de medidores (anotar)","Inventario de muebles (si amoblado)"]}
+];
+
+/* ============ Estado ============ */
+const state = {};
+const STATUSES = [{key:"bien",label:"Bien"},{key:"obs",label:"Obs."},{key:"mal",label:"Problema"}];
+let TOTAL = 0;
+const cont = document.getElementById("sections");
+
+DATA.forEach((sec, si)=>{
+  const sEl = document.createElement("div");
+  sEl.className = "section" + (si===0?" open":"");
+  let itemsHtml = "";
+  sec.items.forEach((label, ii)=>{
+    const id = `s${si}_i${ii}`; TOTAL++;
+    state[id] = { status:null, note:"", photos:[], label, section:sec.title };
+    const btns = STATUSES.map(s=>`<button class="state-btn ${s.key}" data-id="${id}" data-st="${s.key}">${s.label}</button>`).join("");
+    itemsHtml += `
+      <div class="item" data-item="${id}">
+        <div class="item-top">
+          <div class="item-label">${label}</div>
+          <div class="states">${btns}</div>
+        </div>
+        <textarea class="note" data-note="${id}" placeholder="Nota / detalle (opcional)" rows="2"></textarea>
+        <div class="photos" data-photos="${id}">
+          <label class="add-photo">+
+            <input type="file" accept="image/*" multiple data-photoinput="${id}" />
+          </label>
+        </div>
+      </div>`;
+  });
+  sEl.innerHTML = `
+    <div class="section-head">
+      <div class="section-icon">${sec.icon}</div>
+      <div class="section-title">${sec.title}</div>
+      <div class="section-count" data-sc="${si}">0/${sec.items.length}</div>
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="section-tools"><button class="mini-btn" data-allgood="${si}">✓ Marcar todo "Bien"</button></div>
+      ${itemsHtml}
+    </div>`;
+  cont.appendChild(sEl);
+});
+document.getElementById("fb-total").textContent = TOTAL;
+
+/* ============ Redimensionar imágenes ============ */
+function resizeImage(file, maxDim, whiteBg){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w=img.width, h=img.height;
+        if(w>h && w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; }
+        else if(h>=w && h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; }
+        const c = document.createElement("canvas");
+        c.width=w; c.height=h;
+        const ctx = c.getContext("2d");
+        if(whiteBg){ ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h); }
+        ctx.drawImage(img,0,0,w,h);
+        resolve({ data:c.toDataURL("image/jpeg",0.72), w, h });
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ============ Interacciones del checklist ============ */
+cont.addEventListener("click", e=>{
+  const head = e.target.closest(".section-head");
+  if(head && !e.target.closest(".state-btn")){ head.parentElement.classList.toggle("open"); }
+  const stBtn = e.target.closest(".state-btn");
+  if(stBtn){ const id=stBtn.dataset.id, stt=stBtn.dataset.st;
+    state[id].status = (state[id].status===stt)?null:stt; refreshItem(id); recalc(); }
+  const allgood = e.target.closest("[data-allgood]");
+  if(allgood){ const si=allgood.dataset.allgood;
+    Object.keys(state).forEach(id=>{ if(id.startsWith(`s${si}_`) && !state[id].status){ state[id].status="bien"; refreshItem(id); } });
+    recalc(); }
+  const rm = e.target.closest(".rm");
+  if(rm){ const id=rm.dataset.id, idx=+rm.dataset.idx; state[id].photos.splice(idx,1); renderPhotos(id); }
+});
+cont.addEventListener("input", e=>{
+  const n = e.target.closest("[data-note]"); if(n) state[n.dataset.note].note = n.value;
+});
+cont.addEventListener("change", async e=>{
+  const inp = e.target.closest("[data-photoinput]");
+  if(inp && inp.files.length){
+    const id = inp.dataset.photoinput;
+    const ts = new Date().toLocaleString("es-PE",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"});
+    for(const f of inp.files){
+      try{ const r = await resizeImage(f, 1200, false); state[id].photos.push({data:r.data, w:r.w, h:r.h, ts}); }
+      catch(err){ console.error(err); }
+    }
+    inp.value="";
+    renderPhotos(id);
+  }
+});
+
+function refreshItem(id){
+  const item = document.querySelector(`[data-item="${id}"]`);
+  item.querySelectorAll(".state-btn").forEach(b=> b.classList.toggle("on", b.dataset.st===state[id].status));
+  item.querySelector(`[data-note="${id}"]`).classList.toggle("show", state[id].status==="obs"||state[id].status==="mal");
+}
+function renderPhotos(id){
+  const box = document.querySelector(`[data-photos="${id}"]`);
+  const thumbs = state[id].photos.map((p,i)=>`
+    <div class="thumb">
+      <img src="${p.data}" alt="" />
+      <span class="ts">${p.ts}</span>
+      <button class="rm" data-id="${id}" data-idx="${i}">×</button>
+    </div>`).join("");
+  box.innerHTML = thumbs + `<label class="add-photo">+<input type="file" accept="image/*" multiple data-photoinput="${id}" /></label>`;
+}
+function recalc(){
+  let rev=0,ok=0,obs=0,bad=0; const perSec={};
+  Object.keys(state).forEach(id=>{
+    const s=state[id].status, si=id.split("_")[0].slice(1);
+    perSec[si]=perSec[si]||{done:0,total:0}; perSec[si].total++;
+    if(s){ rev++; perSec[si].done++; if(s==="bien")ok++; else if(s==="obs")obs++; else bad++; }
+  });
+  setTxt("st-rev",rev);setTxt("st-ok",ok);setTxt("st-obs",obs);setTxt("st-bad",bad);setTxt("fb-rev",rev);setTxt("fb-bad",bad);
+  document.getElementById("fill").style.width=(rev/TOTAL*100).toFixed(1)+"%";
+  Object.keys(perSec).forEach(si=>{ const el=document.querySelector(`[data-sc="${si}"]`);
+    el.textContent=`${perSec[si].done}/${perSec[si].total}`; el.classList.toggle("done",perSec[si].done===perSec[si].total); });
+}
+function setTxt(id,v){ document.getElementById(id).textContent=v; }
+
+/* ============ Marca ============ */
+let brand = JSON.parse(store.get("inspBrand") || "null");
+let tmpLogo = null;
+function paintBrand(){
+  const el = document.getElementById("brand");
+  if(brand && (brand.agency || brand.agent || brand.logo)){
+    el.classList.remove("unset");
+    el.innerHTML = `${brand.logo?`<img src="${brand.logo.data}" alt="logo" />`:""}
+      <div class="b-txt"><b>${brand.agency||brand.agent||"Mi marca"}</b>
+      <small>${[brand.agent&&brand.agency?brand.agent:"",brand.email,brand.phone].filter(Boolean).join(" · ")||"Toca «Mi marca» para editar"}</small></div>`;
+  } else {
+    el.classList.add("unset");
+    el.innerHTML = `<div class="b-txt"><b>+ Configura tu marca</b><small>Logo y datos que aparecerán en el informe</small></div>`;
+  }
+}
+function openModal(){
+  const b = brand||{};
+  document.getElementById("m-agency").value=b.agency||"";
+  document.getElementById("m-agent").value=b.agent||"";
+  document.getElementById("m-email").value=b.email||"";
+  document.getElementById("m-phone").value=b.phone||"";
+  tmpLogo = b.logo||null;
+  paintLogoPrev();
+  document.getElementById("overlay").classList.add("show");
+}
+function paintLogoPrev(){
+  const p=document.getElementById("logo-prev");
+  p.innerHTML = tmpLogo?`<img src="${tmpLogo.data}" alt="logo" />`:`<span>Sin logo</span>`;
+}
+document.getElementById("cfg-btn").onclick = openModal;
+document.getElementById("brand").onclick = ()=> openModal();
+document.getElementById("overlay").onclick = e=>{ if(e.target.id==="overlay") e.currentTarget.classList.remove("show"); };
+document.getElementById("logo-input").onchange = async e=>{
+  if(e.target.files[0]){ tmpLogo = await resizeImage(e.target.files[0], 400, true); paintLogoPrev(); }
+};
+document.getElementById("m-save").onclick = ()=>{
+  brand = {
+    agency:document.getElementById("m-agency").value.trim(),
+    agent:document.getElementById("m-agent").value.trim(),
+    email:document.getElementById("m-email").value.trim(),
+    phone:document.getElementById("m-phone").value.trim(),
+    logo:tmpLogo
+  };
+  store.set("inspBrand", JSON.stringify(brand));
+  paintBrand(); document.getElementById("overlay").classList.remove("show"); toast("Marca guardada ✓");
+};
+document.getElementById("m-clear").onclick = ()=>{
+  brand=null; tmpLogo=null; store.del("inspBrand"); paintBrand();
+  document.getElementById("overlay").classList.remove("show"); toast("Marca borrada");
+};
+
+/* ============ Fecha por defecto ============ */
+document.getElementById("p-date").value = new Date().toISOString().slice(0,10);
+
+/* ============ Nueva inspección ============ */
+document.getElementById("new-btn").onclick = ()=>{
+  if(!confirm("¿Empezar una inspección nueva? Se borrarán los datos y fotos actuales (tu marca se conserva).")) return;
+  Object.keys(state).forEach(id=>{ state[id].status=null; state[id].note=""; state[id].photos=[]; });
+  ["p-addr","p-ref","p-insp","p-client"].forEach(i=>document.getElementById(i).value="");
+  document.getElementById("p-date").value=new Date().toISOString().slice(0,10);
+  document.querySelectorAll(".section").forEach(s=>{
+    s.querySelectorAll(".state-btn").forEach(b=>b.classList.remove("on"));
+    s.querySelectorAll(".note").forEach(n=>{n.value="";n.classList.remove("show");});
+  });
+  document.querySelectorAll("[data-photos]").forEach(b=>{ renderPhotos(b.dataset.photos); });
+  recalc(); window.scrollTo({top:0,behavior:"smooth"}); toast("Inspección nueva lista");
+};
+
+/* ============ Resumen WhatsApp ============ */
+function val(id){ return document.getElementById(id).value.trim(); }
+function summaryText(){
+  let ok=0,obs=0,bad=0,rev=0;
+  Object.values(state).forEach(s=>{ if(s.status){rev++; if(s.status==="bien")ok++; else if(s.status==="obs")obs++; else bad++;} });
+  const addr=val("p-addr")||"(sin dirección)", date=val("p-date"), type=val("p-type");
+  const lines=[];
+  lines.push(`*INFORME DE INSPECCIÓN*`);
+  if(brand&&(brand.agency||brand.agent)) lines.push(`${brand.agency||brand.agent}`);
+  lines.push(`${type} · ${addr}`);
+  lines.push(`Fecha: ${date}  |  Revisados: ${rev}/${TOTAL}`);
+  lines.push(`✅ ${ok}  ⚠️ ${obs}  ❌ ${bad}`);
+  const flagged=[];
+  Object.values(state).forEach(s=>{ if(s.status==="mal"||s.status==="obs")
+    flagged.push(`${s.status==="mal"?"❌":"⚠️"} ${s.label}${s.note?` — ${s.note}`:""}`); });
+  if(flagged.length){ lines.push(""); lines.push("*Puntos a atender:*"); flagged.forEach(f=>lines.push("• "+f)); }
+  return lines.join("\n");
+}
+document.getElementById("wa-btn").onclick = async ()=>{
+  const txt = summaryText();
+  try{ await navigator.clipboard.writeText(txt); toast("Resumen copiado — pégalo en WhatsApp ✓"); }
+  catch(e){ window.prompt("Copia el resumen:", txt); }
+};
+
+/* ============ Generar PDF ============ */
+async function generatePDF(){
+  let rev=0; Object.values(state).forEach(s=>{ if(s.status)rev++; });
+  if(rev===0){ toast("Marca al menos un ítem antes de generar el informe."); return; }
+  toast("Generando PDF…");
+  await new Promise(r=>setTimeout(r,40));
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:"mm",format:"a4"});
+  const W=210, H=297, M=15; let y=M;
+  const hr=(g)=>{ doc.setDrawColor(g);doc.setLineWidth(.2);doc.line(M,y,W-M,y); };
+  const check=(need)=>{ if(y+need>H-15){ footer(); doc.addPage(); y=M; } };
+
+  let ok=0,obs=0,bad=0,r2=0;
+  Object.values(state).forEach(s=>{ if(s.status){r2++; if(s.status==="bien")ok++; else if(s.status==="obs")obs++; else bad++;} });
+
+  let textX = M;
+  if(brand && brand.logo){
+    const lw=24, lh=Math.min(24, lw*brand.logo.h/brand.logo.w);
+    try{ doc.addImage(brand.logo.data,"JPEG",M,y,lw,lh); }catch(e){}
+    textX = M+lw+6;
+  }
+  doc.setTextColor(20,30,40); doc.setFont("helvetica","bold"); doc.setFontSize(16);
+  doc.text(brand&&(brand.agency||brand.agent)?(brand.agency||brand.agent):"Informe de Inspección", textX, y+6);
+  doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(110,120,130);
+  const sub=[brand&&brand.agency&&brand.agent?brand.agent:"", brand&&brand.email, brand&&brand.phone].filter(Boolean).join("  ·  ");
+  if(sub) doc.text(sub, textX, y+12);
+  y += 26;
+
+  doc.setTextColor(20,30,40); doc.setFont("helvetica","bold"); doc.setFontSize(13);
+  doc.text("INFORME DE INSPECCIÓN", M, y); y+=7;
+  doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(60,70,80);
+  const meta=[`${val("p-type")} · ${val("p-addr")||"(sin dirección)"}`,
+    `Fecha: ${val("p-date")}    Inspector: ${val("p-insp")||"—"}`,
+    (val("p-client")?`Cliente: ${val("p-client")}    `:"")+(val("p-ref")?`Ref: ${val("p-ref")}`:"")].filter(Boolean);
+  meta.forEach(m=>{ doc.text(m,M,y); y+=5.5; });
+  y+=2; hr(210); y+=6;
+
+  doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(20,30,40);
+  doc.text(`Resumen:  ${r2}/${TOTAL} revisados`, M, y);
+  doc.setTextColor(40,160,90); doc.text(`Bien: ${ok}`, M+70, y);
+  doc.setTextColor(200,150,40); doc.text(`Obs.: ${obs}`, M+100, y);
+  doc.setTextColor(210,70,70); doc.text(`Problemas: ${bad}`, M+128, y);
+  y+=8;
+
+  const mark={bien:["BIEN",[40,160,90]],obs:["OBS.",[200,150,40]],mal:["PROBLEMA",[210,70,70]]};
+  const none=["—",[150,150,150]];
+  for(let si=0; si<DATA.length; si++){
+    const sec=DATA[si];
+    check(14);
+    doc.setFillColor(20,30,40); doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(10.5);
+    doc.rect(M,y-4,W-2*M,7,"F"); doc.text(sec.title, M+2, y+1); y+=8;
+
+    for(let ii=0; ii<sec.items.length; ii++){
+      const id=`s${si}_i${ii}`, s=state[id];
+      check(8);
+      const m=mark[s.status]||none;
+      doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.setTextColor(m[1][0],m[1][1],m[1][2]);
+      doc.text(`[${m[0]}]`, M, y);
+      doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(40,48,58);
+      const labelLines = doc.splitTextToSize(s.label, W-2*M-26);
+      doc.text(labelLines, M+24, y);
+      y += labelLines.length*4.6;
+      if(s.note){
+        check(6);
+        doc.setFont("helvetica","italic"); doc.setFontSize(8.5); doc.setTextColor(110,120,130);
+        const nl=doc.splitTextToSize("> "+s.note, W-2*M-26);
+        doc.text(nl, M+24, y); y+=nl.length*4.2;
+      }
+      if(s.photos.length){
+        const pw=42, gap=4; let px=M+24, rowH=0;
+        for(const p of s.photos){
+          const ph=Math.min(34, pw*p.h/p.w); rowH=Math.max(rowH,ph);
+          if(px+pw>W-M){ y+=rowH+8; px=M+24; rowH=ph; }
+          check(ph+8);
+          try{ doc.addImage(p.data,"JPEG",px,y,pw,ph); }catch(e){}
+          doc.setFontSize(6.5); doc.setTextColor(130,140,150); doc.text(p.ts, px, y+ph+3);
+          px+=pw+gap;
+        }
+        y+=rowH+8;
+      }
+      y+=2.5;
+    }
+    y+=3;
+  }
+  footer();
+  function footer(){
+    const cur = doc.internal.getCurrentPageInfo().pageNumber;
+    doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(150,160,170);
+    const ft = (brand&&(brand.agency||brand.agent)?`${brand.agency||brand.agent} · `:"")+`Generado ${new Date().toLocaleDateString("es-PE")}`;
+    doc.text(ft, M, H-8);
+    doc.text(`Pag. ${cur}`, W-M-12, H-8);
+  }
+  const fname = `Inspeccion_${(val("p-addr")||val("p-date")||"informe").replace(/[^\w]+/g,"_").slice(0,40)}.pdf`;
+  doc.save(fname);
+  toast("Informe PDF generado ✓");
+}
+document.getElementById("pdf-btn").onclick = generatePDF;
+document.getElementById("fb-pdf").onclick = generatePDF;
+
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),3600);
+}
+
+/* ============ Init ============ */
+paintBrand();
+recalc();
+</script>
+</body>
+</html>
