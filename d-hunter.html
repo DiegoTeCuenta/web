@@ -71,38 +71,33 @@
     position:relative; z-index:1; text-align:center; padding:0 20px; flex-shrink:0;
   }
 
-  /* --- tarjetas: fila en desktop, carrusel horizontal en móvil --- */
+  /* --- tarjetas: fila en desktop, columna con scroll vertical en móvil --- */
   #modes{
-    display:flex; gap:14px; justify-content:center;
+    display:flex; gap:16px; justify-content:center;
     padding:4px 24px 8px; position:relative; z-index:1; flex-shrink:0;
-    overflow-x:auto; -webkit-overflow-scrolling:touch;
-    scroll-snap-type:x mandatory;
-    scrollbar-width:none;
   }
-  #modes::-webkit-scrollbar{ display:none; }
-
   .mode{
-    min-width:min(260px, 78vw);
-    flex-shrink:0;
+    width:260px; flex-shrink:0;
     border-radius:12px; cursor:pointer; text-align:left;
     border:1px solid rgba(255,255,255,.08);
     background:#0c1018; overflow:hidden; position:relative;
     transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
     color:var(--texto); font-family:inherit;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
-    scroll-snap-align:center;
   }
-
+  .mode:hover:not(.locked), .mode:focus-visible:not(.locked){
+    transform:translateY(-4px) scale(1.02);
+    border-color:var(--beam);
+    box-shadow: 0 16px 48px rgba(0,0,0,.7), 0 0 24px rgba(126,240,192,.15);
+    outline:none;
+  }
   @media(max-width:700px){
+    #title{ justify-content:flex-start; padding-top:max(28px,4vh); }
     #modes{
-      /* padding lateral = (100vw - 88vw) / 2 para centrar la tarjeta activa */
-      padding: 4px calc((100vw - 88vw) / 2) 8px;
-      gap: 12px;
+      flex-direction:column; align-items:center;
+      overflow-x:visible; width:100%; padding:4px 20px 16px;
     }
-    .mode{
-      min-width: 88vw;   /* ocupa 88%, la siguiente se asoma un 6% */
-      scroll-snap-align: center;
-    }
+    .mode{ width:100%; max-width:420px; }
   }
   .mode:hover:not(.locked), .mode:focus-visible:not(.locked){
     transform:translateY(-4px) scale(1.02);
@@ -136,19 +131,7 @@
   .mode.locked{ opacity:.5; cursor:not-allowed; }
   .mode.locked .dif{ color:var(--texto); border-color:var(--linea); }
 
-  /* puntitos indicadores de carrusel (solo móvil) */
-  #modeDots{
-    display:none; gap:8px; justify-content:center; z-index:1; flex-shrink:0;
-  }
-  .dot{
-    width:7px; height:7px; border-radius:50%;
-    background:rgba(126,240,192,.25); transition:background .2s;
-  }
-  .dot.active{ background:var(--beam); }
-  @media(max-width:700px){
-    #modeDots{ display:flex; }
-    #title{ justify-content:flex-start; padding-top:max(32px,5vh); }
-  }
+  #modeDots{ display:none !important; }
 
   /* instrucciones como keycaps */
   .hint{
