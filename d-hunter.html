@@ -143,17 +143,18 @@
   #hud{
     position:absolute; top:0; left:0; right:0; display:none;
     justify-content:space-between; align-items:flex-start;
-    padding:14px 18px; pointer-events:none; z-index:10;
+    padding:16px 22px; pointer-events:none; z-index:10;
     font-family:"Arial Black", Impact, system-ui, sans-serif;
   }
-  .hudBox{ background:rgba(11,13,16,.55); border:1px solid var(--linea);
-    border-radius:8px; padding:8px 14px; display:flex; gap:18px; backdrop-filter: blur(3px); }
-  .stat{ display:flex; align-items:center; gap:7px; font-size:15px; letter-spacing:.05em; }
-  .stat .ico{ font-size:16px; }
+  .hudBox{ background:rgba(11,13,16,.65); border:1px solid var(--linea);
+    border-radius:10px; padding:10px 18px; display:flex; gap:22px;
+    backdrop-filter: blur(4px); }
+  .stat{ display:flex; align-items:center; gap:8px; font-size:20px; letter-spacing:.04em; }
+  .stat .ico{ font-size:20px; }
   .stat.coins .val{ color:var(--ambar); }
   .stat.ammo  .val{ color:var(--beam); }
   .stat.lives .val{ color:var(--peligro); }
-  .stat.score .val{ color:#eef2f6; }
+  .stat.score .val{ color:#eef2f6; font-size:22px; }
 
   /* mensajes centrales (game over / victoria / pausa) */
   #overlay{
@@ -641,7 +642,7 @@ function update(dt){
       P.ammo--;
       P.shootCd=.22;
       const bx = P.dir>0 ? P.x+P.w-6 : P.x+6;
-      G.beams.push({ x:bx, y:P.y+P.h*.42, w:34, h:6, vx:P.dir*820, life:.9 });
+      G.beams.push({ x:bx, y:P.y+P.h*.42, w:38, h:7, vx:P.dir*820, life:.9, maxLife:.9, originX:bx, range:320 });
       AudioMgr.play('beam');
       spawnFlash(bx+(P.dir>0?10:-10), P.y+P.h*.42);
       G.shake=Math.min(G.shake+.8,3);
@@ -653,6 +654,10 @@ function update(dt){
   /* --- beams --- */
   for (const b of G.beams){
     b.x += b.vx*dt; b.life-=dt;
+    /* rango: desaparece al superar la distancia máxima */
+    const dist = Math.abs(b.x - b.originX);
+    if (dist >= b.range) b.life = 0;
+    b.alpha = Math.max(0, 1 - dist/b.range);  // se desvanece con la distancia
     for (const z of G.zombies){
       if (z.dead) continue;
       if (aabb(b,z)){
@@ -930,13 +935,17 @@ function drawZombies(){
 
 function drawBeams(){
   for (const b of Game.beams){
+    const alpha = b.alpha ?? 1;
     ctx.save();
+    ctx.globalAlpha = alpha;
     ctx.shadowColor='rgba(126,240,192,.9)'; ctx.shadowBlur=16;
-    const grad=ctx.createLinearGradient(b.x,0,b.x+b.w,0);
-    grad.addColorStop(0,'rgba(126,240,192,.1)');
-    grad.addColorStop(1,'#bffde6');
+    const x0 = b.vx>0 ? b.x : b.x+b.w;
+    const x1 = b.vx>0 ? b.x+b.w : b.x;
+    const grad=ctx.createLinearGradient(x0,0,x1,0);
+    grad.addColorStop(0,'rgba(126,240,192,.12)');
+    grad.addColorStop(1,`rgba(191,253,230,${alpha})`);
     ctx.fillStyle=grad;
-    ctx.fillRect(b.x, b.y-b.h/2, b.w, b.h);
+    ctx.fillRect(b.vx<0?b.x-b.w:b.x, b.y-b.h/2, b.w, b.h);
     ctx.restore();
   }
 }
