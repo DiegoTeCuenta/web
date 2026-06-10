@@ -73,18 +73,16 @@
 
   /* --- tarjetas: fila en desktop, carrusel horizontal en móvil --- */
   #modes{
-    display:flex; gap:16px; justify-content:center;
+    display:flex; gap:14px; justify-content:center;
     padding:4px 24px 8px; position:relative; z-index:1; flex-shrink:0;
-    /* scroll horizontal en pantallas estrechas */
     overflow-x:auto; -webkit-overflow-scrolling:touch;
     scroll-snap-type:x mandatory;
-    /* ocultar scrollbar visual pero permitir scroll */
     scrollbar-width:none;
   }
   #modes::-webkit-scrollbar{ display:none; }
 
   .mode{
-    min-width:min(260px, 78vw);   /* en móvil ocupa ~78% del ancho */
+    min-width:min(260px, 78vw);
     flex-shrink:0;
     border-radius:12px; cursor:pointer; text-align:left;
     border:1px solid rgba(255,255,255,.08);
@@ -93,6 +91,18 @@
     color:var(--texto); font-family:inherit;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
     scroll-snap-align:center;
+  }
+
+  @media(max-width:700px){
+    #modes{
+      /* padding lateral = (100vw - 88vw) / 2 para centrar la tarjeta activa */
+      padding: 4px calc((100vw - 88vw) / 2) 8px;
+      gap: 12px;
+    }
+    .mode{
+      min-width: 88vw;   /* ocupa 88%, la siguiente se asoma un 6% */
+      scroll-snap-align: center;
+    }
   }
   .mode:hover:not(.locked), .mode:focus-visible:not(.locked){
     transform:translateY(-4px) scale(1.02);
@@ -1075,6 +1085,8 @@ loadSprites().then(()=>{
   document.getElementById('cardImgZ').src = IMG_CARD_Z;
   document.getElementById('cardImgB').src = IMG_CARD_B;
   document.getElementById('cardImgF').src = IMG_CARD_F;
+  // asegurar que el carrusel empieza en la primera tarjeta
+  document.getElementById('modes').scrollLeft = 0;
   requestAnimationFrame(loop);
 });
 
