@@ -30,34 +30,33 @@
   /* ============ PANTALLA DE TÍTULO ============ */
   #title{
     position:absolute; inset:0; display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:28px; z-index:20;
+    align-items:center; justify-content:center; gap:20px; z-index:20;
     background: radial-gradient(ellipse 120% 80% at 50% -10%, #0d1520 0%, #060809 55%);
     overflow:hidden;
+    /* en móvil el contenido puede ser más alto que la pantalla */
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding: 24px 0 32px;
   }
-  /* niebla animada de fondo */
   #title::before{
-    content:""; position:absolute; inset:0; pointer-events:none;
+    content:""; position:absolute; inset:0; pointer-events:none; flex-shrink:0;
     background:
       radial-gradient(ellipse 60% 40% at 20% 80%, rgba(126,240,192,.04) 0%, transparent 60%),
       radial-gradient(ellipse 50% 35% at 80% 70%, rgba(126,240,192,.03) 0%, transparent 60%);
     animation: fogdrift 12s ease-in-out infinite alternate;
   }
-  @keyframes fogdrift{ from{opacity:.5; transform:scale(1)} to{opacity:1; transform:scale(1.08)} }
+  @keyframes fogdrift{ from{opacity:.5;transform:scale(1)} to{opacity:1;transform:scale(1.08)} }
 
   .eyebrow{
     letter-spacing:.38em; font-size:11px; text-transform:uppercase;
-    color:var(--ambar); opacity:.8; position:relative; z-index:1;
+    color:var(--ambar); opacity:.8; position:relative; z-index:1; flex-shrink:0;
   }
-
   h1{
     font-family: "Arial Black", Impact, system-ui, sans-serif;
-    font-size: clamp(72px, 14vw, 148px);
+    font-size: clamp(48px, 11vw, 148px);
     line-height:.9; letter-spacing:.03em; color:#eef2f8;
     text-transform:uppercase; text-align:center;
-    position:relative; z-index:1; margin:-8px 0 0;
-    text-shadow:
-      0 0 60px rgba(126,240,192,.18),
-      0 4px 24px rgba(0,0,0,.8);
+    position:relative; z-index:1; margin:-4px 0 0; flex-shrink:0;
+    text-shadow: 0 0 60px rgba(126,240,192,.18), 0 4px 24px rgba(0,0,0,.8);
     animation: fluor 5s linear infinite;
   }
   h1 span{
@@ -65,32 +64,42 @@
     text-shadow: 0 0 40px rgba(126,240,192,.55), 0 0 80px rgba(126,240,192,.2);
   }
   @keyframes fluor{
-    0%,6%,8%,58%,60%,100%{opacity:1}
-    7%{opacity:.5} 59%{opacity:.72}
+    0%,6%,8%,58%,60%,100%{opacity:1} 7%{opacity:.5} 59%{opacity:.72}
   }
   .tag{
-    font-size:13px; opacity:.55; letter-spacing:.1em; margin-top:-20px;
-    position:relative; z-index:1; text-align:center; padding:0 16px;
+    font-size:12px; opacity:.5; letter-spacing:.09em; margin-top:-16px;
+    position:relative; z-index:1; text-align:center; padding:0 20px; flex-shrink:0;
   }
 
-  /* tarjetas de modo */
-  #modes{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; padding:0 20px; position:relative; z-index:1; }
+  /* --- tarjetas: fila en desktop, carrusel horizontal en móvil --- */
+  #modes{
+    display:flex; gap:16px; justify-content:center;
+    padding:4px 24px 8px; position:relative; z-index:1; flex-shrink:0;
+    /* scroll horizontal en pantallas estrechas */
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    /* ocultar scrollbar visual pero permitir scroll */
+    scrollbar-width:none;
+  }
+  #modes::-webkit-scrollbar{ display:none; }
 
   .mode{
-    width:260px; border-radius:12px; cursor:pointer; text-align:left;
+    min-width:min(260px, 78vw);   /* en móvil ocupa ~78% del ancho */
+    flex-shrink:0;
+    border-radius:12px; cursor:pointer; text-align:left;
     border:1px solid rgba(255,255,255,.08);
     background:#0c1018; overflow:hidden; position:relative;
     transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
     color:var(--texto); font-family:inherit;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
+    scroll-snap-align:center;
   }
   .mode:hover:not(.locked), .mode:focus-visible:not(.locked){
-    transform:translateY(-5px) scale(1.02);
+    transform:translateY(-4px) scale(1.02);
     border-color:var(--beam);
     box-shadow: 0 16px 48px rgba(0,0,0,.7), 0 0 24px rgba(126,240,192,.15);
     outline:none;
   }
-  /* imagen de fondo de la card */
   .mode-img{
     width:100%; height:148px; object-fit:cover; display:block;
     filter:brightness(.82) saturate(.9);
@@ -98,14 +107,11 @@
   }
   .mode:hover:not(.locked) .mode-img{ filter:brightness(.95) saturate(1.1); }
   .mode.locked .mode-img{ filter:brightness(.4) saturate(.3); }
-
-  /* gradiente sobre la imagen para que el texto encima sea legible */
   .mode-img-wrap{ position:relative; }
   .mode-img-wrap::after{
     content:""; position:absolute; bottom:0; left:0; right:0; height:50%;
     background:linear-gradient(to bottom, transparent, #0c1018);
   }
-  /* cuerpo de texto */
   .mode-body{ padding:12px 16px 16px; }
   .mode .vs{ font-size:10px; letter-spacing:.32em; color:var(--ambar); text-transform:uppercase; opacity:.85; }
   .mode h2{ font-size:22px; margin:4px 0 6px; color:#eef2f6; font-weight:900; letter-spacing:.01em; }
@@ -116,16 +122,28 @@
     padding:4px 14px; font-weight:700; text-transform:uppercase;
     transition: background .15s ease, color .15s ease;
   }
-  .mode:hover:not(.locked) .dif{
-    background:var(--beam); color:#041a10;
-  }
+  .mode:hover:not(.locked) .dif{ background:var(--beam); color:#041a10; }
   .mode.locked{ opacity:.5; cursor:not-allowed; }
   .mode.locked .dif{ color:var(--texto); border-color:var(--linea); }
 
+  /* puntitos indicadores de carrusel (solo móvil) */
+  #modeDots{
+    display:none; gap:8px; justify-content:center; z-index:1; flex-shrink:0;
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:rgba(126,240,192,.25); transition:background .2s;
+  }
+  .dot.active{ background:var(--beam); }
+  @media(max-width:700px){
+    #modeDots{ display:flex; }
+    #title{ justify-content:flex-start; padding-top:max(32px,5vh); }
+  }
+
   /* instrucciones como keycaps */
   .hint{
-    font-size:12px; opacity:.6; letter-spacing:.03em; text-align:center;
-    line-height:2; position:relative; z-index:1; padding:0 16px;
+    font-size:12px; opacity:.55; letter-spacing:.03em; text-align:center;
+    line-height:2.2; position:relative; z-index:1; padding:0 20px; flex-shrink:0;
   }
   .hint kbd{
     display:inline-block; background:#1a2030; border:1px solid #3a4456;
@@ -134,6 +152,8 @@
     margin:0 2px; letter-spacing:.05em; vertical-align:middle;
     box-shadow:0 1px 0 #0a0d12;
   }
+  /* en móvil ocultar instrucciones de teclado (no aplican) */
+  @media(max-width:700px){ .hint{ display:none; } }
 
   /* ============ JUEGO ============ */
   #gameWrap{ position:absolute; inset:0; display:none; }
@@ -235,6 +255,12 @@
           <span class="dif">Próximamente</span>
         </div>
       </button>
+    </div>
+
+    <div id="modeDots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
     </div>
 
     <div class="hint">
@@ -1036,6 +1062,14 @@ function loop(t){
 
 /* arranque */
 loadSprites().then(()=>{
+  // carrusel: puntos indicadores
+  const modesEl = document.getElementById('modes');
+  const dots = document.querySelectorAll('.dot');
+  modesEl.addEventListener('scroll', ()=>{
+    const idx = Math.min(Math.round(modesEl.scrollLeft / (modesEl.scrollWidth / dots.length)), dots.length-1);
+    dots.forEach((d,n)=> d.classList.toggle('active', n===idx));
+  }, {passive:true});
+
   resize();
   // asignar imágenes de las tarjetas de título
   document.getElementById('cardImgZ').src = IMG_CARD_Z;
