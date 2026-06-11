@@ -456,10 +456,12 @@ addEventListener('keyup', e=>{ const k=keymap[e.key]; if(k) keys[k]=false; });
 /* controles táctiles */
 document.querySelectorAll('.tbtn').forEach(b=>{
   const k=b.dataset.k;
-  const on =e=>{ e.preventDefault(); keys[k]=true; };
-  const off=e=>{ e.preventDefault(); keys[k]=false; };
+  const on =e=>{ e.preventDefault(); e.stopPropagation(); AudioMgr.unlock(); keys[k]=true; };
+  const off=e=>{ e.preventDefault(); e.stopPropagation(); keys[k]=false; };
   b.addEventListener('touchstart',on,{passive:false});
   b.addEventListener('touchend',off); b.addEventListener('touchcancel',off);
+  b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off);
+  b.addEventListener('pointerleave',off);
 });
 
 /* ---------------- MUNDO (modo Zombies / Warehouse) ----------------
@@ -613,8 +615,14 @@ document.getElementById('ovMenu').addEventListener('click', ()=>Game.toMenu());
 document.getElementById('modeZombies').addEventListener('click', ()=>{ AudioMgr.unlock(); Game.start(LEVEL_ZOMBIES); });
 
 /* disparo con clic / tap sobre el canvas */
-cv.addEventListener('pointerdown', ()=>{ AudioMgr.unlock(); if(Game.state==='play') keys.shoot=true; });
-cv.addEventListener('pointerup',   ()=>{ keys.shoot=false; });
+/* clic para disparar SOLO en escritorio (mouse). En táctil se usa el botón ⚡,
+   para que tocar cualquier parte de la pantalla no gaste balas. */
+cv.addEventListener('pointerdown', e=>{
+  AudioMgr.unlock();
+  if (e.pointerType === 'touch') return;   // ignorar toques; el botón ⚡ se encarga
+  if (Game.state==='play') keys.shoot=true;
+});
+cv.addEventListener('pointerup', e=>{ if (e.pointerType!=='touch') keys.shoot=false; });
 
 /* ---------------- ACTUALIZACIÓN ---------------- */
 function update(dt){
