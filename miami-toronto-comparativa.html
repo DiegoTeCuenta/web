@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miami → Cataratas del Niágara → Toronto · Comparativa de viaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EFE7D2;
+    --paper-deep:#E6DCC1;
+    --ink:#26221A;
+    --ink-soft:#5C5646;
+    --line:#C9BE9E;
+    --pine:#2F4B3C;
+    --pine-soft:#DCE6DA;
+    --rust:#B5482A;
+    --rust-soft:#F1DCCF;
+    --steel:#33566F;
+    --steel-soft:#DBE6EA;
+    --mustard:#C98A1F;
+    --mustard-soft:#F3E3C1;
+    --good:#3F6B3F;
+    --bad:#A23A2A;
+    --radius:14px;
+    --shadow:0 1px 0 rgba(38,34,26,0.06), 0 8px 20px -14px rgba(38,34,26,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 100% 0%, rgba(181,72,42,0.05), transparent 45%),
+      radial-gradient(circle at 0% 100%, rgba(47,75,60,0.06), transparent 40%);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 0.4em 0;
+    color:var(--ink);
+  }
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead{
+    padding:38px 24px 22px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    background:
+      repeating-linear-gradient(135deg, rgba(38,34,26,0.025) 0 2px, transparent 2px 14px);
+  }
+  .masthead .stamp-mark{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    padding:6px 14px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.35);
+    margin-bottom:18px;
+  }
+  .masthead .stamp-mark span.dot{width:5px;height:5px;border-radius:50%;background:var(--rust);display:inline-block;}
+  .masthead h1{
+    font-size:clamp(30px, 5vw, 52px);
+    font-weight:700;
+    line-height:1.08;
+    max-width:900px;
+    margin:0 auto 14px;
+  }
+  .masthead h1 em{font-style:italic; color:var(--rust); font-weight:500;}
+  .masthead p.sub{
+    max-width:620px;
+    margin:0 auto;
+    font-size:17.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- NAV ---------- */
+  nav.tabs{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    justify-content:center;
+    gap:0;
+    background:var(--paper-deep);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 2px 10px -6px rgba(38,34,26,0.25);
+    overflow-x:auto;
+  }
+  nav.tabs .tab{
+    appearance:none;
+    border:none;
+    background:transparent;
+    font-family:'Public Sans', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--ink-soft);
+    padding:16px 22px 14px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  nav.tabs .tab:hover{background:rgba(38,34,26,0.04);}
+  nav.tabs .tab:focus-visible{outline:2px solid var(--ink); outline-offset:-2px;}
+  nav.tabs .tab svg{width:18px;height:18px;flex:none;}
+  nav.tabs .tab[data-tab="resumen"].active{color:var(--ink); border-color:var(--ink);}
+  nav.tabs .tab[data-tab="tren"].active{color:var(--pine); border-color:var(--pine);}
+  nav.tabs .tab[data-tab="auto"].active{color:var(--rust); border-color:var(--rust);}
+  nav.tabs .tab[data-tab="avion"].active{color:var(--steel); border-color:var(--steel);}
+
+  main{max-width:1080px; margin:0 auto; padding:44px 24px 90px;}
+  section.panel{display:none; animation:fade .35s ease;}
+  section.panel.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    font-weight:600;
+    margin-bottom:10px;
+    display:inline-block;
+  }
+  .eyebrow.pine{color:var(--pine);}
+  .eyebrow.rust{color:var(--rust);}
+  .eyebrow.steel{color:var(--steel);}
+
+  .panel-head{margin-bottom:34px;}
+  .panel-head h2{font-size:clamp(26px,4vw,38px);}
+  .panel-head p{font-size:18px; color:var(--ink-soft); max-width:680px;}
+
+  /* ---------- RESUMEN CARDS ---------- */
+  .compare-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+    margin-bottom:40px;
+  }
+  @media (max-width:820px){.compare-grid{grid-template-columns:1fr;}}
+  .compare-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:24px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .compare-card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:6px;
+  }
+  .compare-card.pine::before{background:var(--pine);}
+  .compare-card.rust::before{background:var(--rust);}
+  .compare-card.steel::before{background:var(--steel);}
+  .compare-card .icon-badge{
+    width:44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .compare-card.pine .icon-badge{background:var(--pine-soft); color:var(--pine);}
+  .compare-card.rust .icon-badge{background:var(--rust-soft); color:var(--rust);}
+  .compare-card.steel .icon-badge{background:var(--steel-soft); color:var(--steel);}
+  .compare-card .icon-badge svg{width:22px;height:22px;}
+  .compare-card h3{font-size:22px; margin-bottom:0;}
+  .compare-card .tagline{color:var(--ink-soft); font-size:15.5px; margin:-8px 0 4px;}
+  .compare-card .price-row{
+    display:flex; align-items:baseline; gap:8px;
+    border-top:1px dashed var(--line); padding-top:14px; margin-top:4px;
+  }
+  .compare-card .price-row .big{font-family:'IBM Plex Mono',monospace; font-size:30px; font-weight:600;}
+  .compare-card .price-row .lbl{font-size:13.5px; color:var(--ink-soft);}
+  .compare-card .mini-table{width:100%; border-collapse:collapse; font-size:14.5px; margin-top:4px;}
+  .compare-card .mini-table td{padding:4px 0; color:var(--ink-soft);}
+  .compare-card .mini-table td.val{text-align:right; font-family:'IBM Plex Mono',monospace; color:var(--ink); font-weight:600;}
+  .compare-card .duration{font-size:14.5px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
+  .compare-card .verdict-chip{
+    align-self:flex-start;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px; font-weight:600;
+  }
+  .compare-card.pine .verdict-chip{background:var(--pine-soft); color:var(--pine);}
+  .compare-card.rust .verdict-chip{background:var(--rust-soft); color:var(--rust);}
+  .compare-card.steel .verdict-chip{background:var(--steel-soft); color:var(--steel);}
+
+  .callout{
+    background:var(--ink); color:var(--paper);
+    border-radius:var(--radius);
+    padding:26px 28px;
+    margin-bottom:42px;
+    display:flex; gap:18px; align-items:flex-start;
+  }
+  .callout svg{flex:none; width:26px; height:26px; margin-top:3px; color:var(--mustard);}
+  .callout p{margin:0; font-size:17px; line-height:1.6;}
+  .callout strong{color:var(--mustard);}
+
+  /* full comparison table */
+  .full-compare{width:100%; border-collapse:collapse; margin-bottom:20px; background:#fff; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);}
+  .full-compare th, .full-compare td{padding:13px 16px; text-align:left; border-bottom:1px solid var(--line); font-size:15.5px;}
+  .full-compare thead th{background:var(--ink); color:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600;}
+  .full-compare tbody tr:last-child td{border-bottom:none;}
+  .full-compare td.num{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+  .full-compare tbody tr:nth-child(odd){background:rgba(38,34,26,0.02);}
+  .full-compare .row-label{color:var(--ink-soft); font-weight:600;}
+
+  section.panel h4.table-title{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; text-transform:uppercase; letter-spacing:0.1em;
+    color:var(--ink-soft); font-weight:700; margin:38px 0 12px;
+  }
+
+  /* ---------- STAMP TRAIL (auto route) ---------- */
+  .trail-wrap{overflow-x:auto; padding-bottom:6px; margin-bottom:8px;}
+  .trail{display:flex; align-items:flex-start; gap:0; min-width:640px; padding:10px 4px 0;}
+  .trail-node{display:flex; flex-direction:column; align-items:center; width:150px; text-align:center; flex:none;}
+  .trail-node .stamp{
+    width:64px; height:64px; border-radius:50%;
+    border:2.5px dashed currentColor;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px;
+    transform:rotate(-4deg);
+    background:#fff;
+  }
+  .trail-node:nth-child(odd) .stamp{transform:rotate(3deg);}
+  .trail-node .day{font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); margin-top:10px;}
+  .trail-node .place{font-weight:700; font-size:15px; margin-top:2px;}
+  .trail-connector{flex:1; height:2px; background:repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 6px 12px); margin-top:32px; min-width:24px;}
+
+  .day-card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:22px 24px; margin-bottom:16px;
+  }
+  .day-card .day-head{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+  .day-card .day-num{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px;
+    background:var(--rust); color:#fff; padding:4px 11px; border-radius:6px; flex:none;
+  }
+  .day-card h4{font-size:19px; margin:0;}
+  .day-card .states{font-size:14px; color:var(--ink-soft); margin:6px 0 12px;}
+  .day-card .states .stt{
+    display:inline-block; border:1px solid var(--line); border-radius:5px; padding:1px 7px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; margin-right:4px; background:var(--paper);
+  }
+  .day-card ul{margin:0; padding-left:20px;}
+  .day-card li{margin-bottom:4px;}
+
+  /* ---------- TIMELINE (tren) ---------- */
+  .timeline{border-left:2px dashed var(--line); margin-left:14px; padding-left:26px; margin-bottom:10px;}
+  .tl-item{position:relative; padding-bottom:26px;}
+  .tl-item:last-child{padding-bottom:4px;}
+  .tl-item::before{
+    content:""; position:absolute; left:-33.5px; top:3px;
+    width:14px; height:14px; border-radius:50%; background:var(--pine); border:3px solid var(--paper);
+  }
+  .tl-item.warn::before{background:var(--rust);}
+  .tl-item .tl-time{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); margin-bottom:2px;}
+  .tl-item h4{font-size:17.5px; margin-bottom:3px;}
+  .tl-item p{margin:0; color:var(--ink-soft); font-size:15.5px;}
+  .tl-item.warn p, .tl-item.warn h4{color:var(--rust);}
+  .tl-item.warn{background:var(--rust-soft); margin-left:-16px; padding:12px 16px 24px 16px; border-radius:10px;}
+  .tl-item.warn::before{left:-17.5px;}
+
+  /* simple hop (avion) */
+  .hop-row{display:flex; align-items:center; gap:14px; margin-bottom:28px; flex-wrap:wrap;}
+  .hop-pill{
+    background:#fff; border:1px solid var(--line); border-radius:999px; padding:10px 20px;
+    font-weight:700; font-size:15.5px; box-shadow:var(--shadow);
+  }
+  .hop-arrow{color:var(--steel); flex:none;}
+  .hop-arrow svg{width:26px; height:14px;}
+
+  /* ---------- LEDGER ---------- */
+  .ledger{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden; margin-bottom:10px;
+  }
+  .ledger-group-title{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:0.1em;
+    font-weight:700; padding:14px 22px 8px; color:var(--ink-soft);
+  }
+  .ledger-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:8px 22px; border-bottom:1px dashed var(--line);
+    font-size:16px;
+  }
+  .ledger-row .concept{color:var(--ink);}
+  .ledger-row .note{display:block; font-size:13px; color:var(--ink-soft); margin-top:1px;}
+  .ledger-row .amt{font-family:'IBM Plex Mono',monospace; font-weight:600; white-space:nowrap; padding-left:16px;}
+  .ledger-total{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 22px; background:var(--ink); color:var(--paper);
+  }
+  .ledger-total .lbl{font-family:'Fraunces',serif; font-weight:600; font-size:19px;}
+  .ledger-total .amt{font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:26px; color:var(--mustard);}
+
+  /* ---------- SAVINGS ---------- */
+  .savings-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:10px;}
+  @media (max-width:700px){.savings-grid{grid-template-columns:1fr;}}
+  .savings-card{
+    border:1px solid var(--line); border-radius:var(--radius); padding:20px; background:#fff;
+    text-align:center;
+  }
+  .savings-card .who{font-family:'IBM Plex Mono',monospace; font-size:12.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-soft); margin-bottom:8px;}
+  .savings-card .amt{font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:700;}
+  .savings-card .per{font-size:13.5px; color:var(--ink-soft); margin-bottom:10px;}
+  .savings-card .total{font-size:13.5px; color:var(--ink-soft); border-top:1px dashed var(--line); padding-top:8px; margin-top:4px;}
+  .savings-card.highlight{border-color:var(--good); box-shadow:0 0 0 2px var(--good) inset;}
+  .savings-card .save-tag{
+    display:inline-block; margin-top:8px; font-size:12.5px; font-weight:700; color:var(--good);
+    background:#E4EEDF; padding:3px 10px; border-radius:999px;
+  }
+
+  /* ---------- PROS/CONS ---------- */
+  .proscons{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:8px;}
+  @media (max-width:700px){.proscons{grid-template-columns:1fr;}}
+  .pc-col{border-radius:var(--radius); padding:20px 22px; background:#fff; border:1px solid var(--line);}
+  .pc-col.pro{border-left:4px solid var(--good);}
+  .pc-col.con{border-left:4px solid var(--bad);}
+  .pc-col h4{font-size:15px; text-transform:uppercase; letter-spacing:0.08em; font-family:'IBM Plex Mono',monospace; margin-bottom:12px;}
+  .pc-col.pro h4{color:var(--good);}
+  .pc-col.con h4{color:var(--bad);}
+  .pc-col ul{list-style:none; margin:0; padding:0;}
+  .pc-col li{display:flex; gap:10px; margin-bottom:11px; font-size:15.5px; line-height:1.5;}
+  .pc-col li svg{flex:none; width:18px; height:18px; margin-top:2px;}
+  .pc-col.pro li svg{color:var(--good);}
+  .pc-col.con li svg{color:var(--bad);}
+
+  .note-box{
+    font-size:14.5px; color:var(--ink-soft); border-top:1px solid var(--line);
+    margin-top:16px; padding-top:14px;
+  }
+
+  footer{
+    text-align:center; padding:36px 24px 50px; color:var(--ink-soft); font-size:14px;
+    border-top:1px solid var(--line); margin-top:20px;
+  }
+  footer .stamp-mark{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="stamp-mark"><span class="dot"></span> PBI · YYZ · IAG &nbsp;—&nbsp; presupuesto de viaje</div>
+  <h1>Miami → <em>Cataratas del Niágara</em> → Toronto</h1>
+  <p class="sub">Comparativa completa de tren, auto y avión: itinerario día por día, costos reales y cuánto se ahorra viajando en pareja o en grupo de tres.</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Opciones de viaje">
+  <button class="tab active" data-tab="resumen" role="tab" aria-selected="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="4" x2="8" y2="10"/></svg>
+    Resumen
+  </button>
+  <button class="tab" data-tab="tren" role="tab" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="13" rx="3"/><path d="M4 11h16"/><path d="M8 16l-2 4"/><path d="M16 16l2 4"/><circle cx="8.5" cy="13.5" r="0.6"/><circle cx="15.5" cy="13.5" r="0.6"/></svg>
+    Tren
+  </button>
+  <button class="tab" data-tab="auto" role="tab" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.5-5A2 2 0 0 1 6.4 6.5h11.2a2 2 0 0 1 1.9 1.5L21 13"/><rect x="2.5" y="13" width="19" height="6" rx="2"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>
+    Auto
+  </button>
+  <button class="tab" data-tab="avion" role="tab" aria-selected="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 21l1.5-6.5 6 2-1-3-6-3.5 0.2-5A1.4 1.4 0 0 0 9.8 3.4 1.4 1.4 0 0 0 8.5 5l-.5 4.8-6 1.7 1 2.7 5.6-.7-1 6.5z"/></svg>
+    Avión
+  </button>
+</nav>
+
+<main>
+
+<!-- ================= RESUMEN ================= -->
+<section class="panel active" id="resumen">
+  <div class="panel-head">
+    <span class="eyebrow" style="color:var(--ink-soft)">Resumen comparativo</span>
+    <h2>Las tres formas de llegar, en una sola mirada</h2>
+    <p>Precio por persona viajando solo/a, y cuánto baja compartiendo auto y hotel entre 2 o 3 personas.</p>
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-card pine">
+      <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="13" rx="3"/><path d="M4 11h16"/><path d="M8 16l-2 4"/><path d="M16 16l2 4"/></svg></div>
+      <h3>Tren</h3>
+      <p class="tagline">Miami → NY (noche obligatoria) → Cataratas/Toronto</p>
+      <div class="price-row"><span class="big">$825</span><span class="lbl">por persona,<br>viajando solo/a</span></div>
+      <table class="mini-table">
+        <tr><td>Con 2 personas</td><td class="val">$735 c/u</td></tr>
+        <tr><td>Con 3 personas</td><td class="val">$722 c/u</td></tr>
+      </table>
+      <div class="duration">⏱ ~2 días y medio (solo ida)</div>
+      <span class="verdict-chip">No recomendado</span>
+    </div>
+
+    <div class="compare-card rust">
+      <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.5-5A2 2 0 0 1 6.4 6.5h11.2a2 2 0 0 1 1.9 1.5L21 13"/><rect x="2.5" y="13" width="19" height="6" rx="2"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg></div>
+      <h3>Auto</h3>
+      <p class="tagline">Ruta panorámica por los Apalaches, 4 días</p>
+      <div class="price-row"><span class="big">$1,305</span><span class="lbl">por persona,<br>viajando solo/a</span></div>
+      <table class="mini-table">
+        <tr><td>Con 2 personas</td><td class="val">$815 c/u</td></tr>
+        <tr><td>Con 3 personas</td><td class="val">$685 c/u</td></tr>
+      </table>
+      <div class="duration">⏱ 4 días (solo ida)</div>
+      <span class="verdict-chip">Si el viaje es la meta</span>
+    </div>
+
+    <div class="compare-card steel">
+      <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 21l1.5-6.5 6 2-1-3-6-3.5 0.2-5A1.4 1.4 0 0 0 9.8 3.4 1.4 1.4 0 0 0 8.5 5l-.5 4.8-6 1.7 1 2.7 5.6-.7-1 6.5z"/></svg></div>
+      <h3>Avión</h3>
+      <p class="tagline">Vuelo directo + excursión a las cataratas</p>
+      <div class="price-row"><span class="big">$605</span><span class="lbl">por persona,<br>viajando solo/a</span></div>
+      <table class="mini-table">
+        <tr><td>Con 2 personas</td><td class="val">$495 c/u</td></tr>
+        <tr><td>Con 3 personas</td><td class="val">$485 c/u</td></tr>
+      </table>
+      <div class="duration">⏱ ~3.5 horas de vuelo</div>
+      <span class="verdict-chip">Más barato y rápido</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.6" fill="currentColor"/></svg>
+    <p>El video que viste mostraba el tren a <strong>$237</strong>, pero ese número no incluye la noche obligatoria en Nueva York (se pierde la conexión) ni el regreso. El <strong>avión resulta la opción más barata y rápida con diferencia</strong>. El auto solo compensa si el objetivo es el viaje en sí — los paisajes de los Apalaches y llegar manejando hasta las propias cataratas.</p>
+  </div>
+
+  <h4 class="table-title">Tabla comparativa completa</h4>
+  <table class="full-compare">
+    <thead>
+      <tr><th>Concepto</th><th>Tren</th><th>Auto</th><th>Avión</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-label">Duración (solo ida)</td><td>~27h + noche en NY + 12.5h</td><td>4 días manejando</td><td>~3.5 horas</td></tr>
+      <tr><td class="row-label">Transbordos / paradas</td><td>1 cambio de tren + 1 control de aduana</td><td>3 paradas para dormir</td><td>Vuelo directo</td></tr>
+      <tr><td class="row-label">1 persona</td><td class="num">$825</td><td class="num">$1,305</td><td class="num">$605</td></tr>
+      <tr><td class="row-label">2 personas (c/u)</td><td class="num">$735</td><td class="num">$815</td><td class="num">$495</td></tr>
+      <tr><td class="row-label">3 personas (c/u)</td><td class="num">$722</td><td class="num">$685</td><td class="num">$485</td></tr>
+      <tr><td class="row-label">Paisaje / experiencia</td><td>Bueno solo en el tramo NY–Toronto</td><td>Excelente, ruta pensada para eso</td><td>Ninguno (se vuela)</td></tr>
+      <tr><td class="row-label">Nivel de logística</td><td>Medio (hotel imprevisto en NY)</td><td>Alto (auto, gasolina, hoteles)</td><td>Bajo</td></tr>
+    </tbody>
+  </table>
+  <p class="note-box">Todos los precios son estimados en dólares, por persona, para temporada media (septiembre–noviembre). Los precios reales varían según fecha de compra y disponibilidad — conviene cotizar antes de reservar.</p>
+</section>
+
+<!-- ================= TREN ================= -->
+<section class="panel" id="tren">
+  <div class="panel-head">
+    <span class="eyebrow pine">Opción 1</span>
+    <h2>Tren</h2>
+    <p>Miami → Nueva York → Cataratas del Niágara / Toronto. No es un tren directo: hay un cambio de tren en Nueva York que obliga a pasar la noche ahí.</p>
+  </div>
+
+  <h4 class="table-title">Itinerario</h4>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">Día 1 · ~7:00 am</div>
+      <h4>Sale de Miami (Silver Meteor)</h4>
+      <p>27 horas de tren rumbo a Nueva York, a lo largo de la costa este.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Día 2 · ~10:00 am</div>
+      <h4>Llega a Nueva York (Penn Station)</h4>
+      <p>El próximo tren hacia Toronto ya salió a las 7:15 am — se pierde la conexión.</p>
+    </div>
+    <div class="tl-item warn">
+      <div class="tl-time">Día 2 · noche</div>
+      <h4>⚠ Noche obligatoria en Nueva York</h4>
+      <p>Gasto no anunciado en el video: una noche de hotel que no está incluida en el precio del boleto.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Día 3 · 7:15 am</div>
+      <h4>Sale de Nueva York (Maple Leaf)</h4>
+      <p>12.5 horas de tren vía el valle del río Hudson y Finger Lakes — el tramo más bonito del viaje.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Día 3 · ~5:00 pm</div>
+      <h4>Cataratas del Niágara</h4>
+      <p>Parada de aduana obligatoria: todos bajan con su equipaje y vuelven a subir al mismo tren.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Día 3 · 7:48 pm</div>
+      <h4>Llega a Toronto</h4>
+      <p>Fin del recorrido en tren — se necesita vuelo aparte para el regreso.</p>
+    </div>
+  </div>
+
+  <h4 class="table-title">Costo por persona (ida)</h4>
+  <div class="ledger">
+    <div class="ledger-group-title">Gasto compartible entre el grupo</div>
+    <div class="ledger-row"><div class="concept">Hotel 1 noche en Nueva York<span class="note">Mismo cuarto para 2; cuarto más grande para 3</span></div><div class="amt">$180</div></div>
+    <div class="ledger-group-title">Gasto fijo por persona</div>
+    <div class="ledger-row"><div class="concept">Boleto Miami → Toronto (coach)<span class="note">Rango real: $233–$825 según fecha</span></div><div class="amt">$420</div></div>
+    <div class="ledger-row"><div class="concept">Comidas en tránsito (2 días)</div><div class="amt">$70</div></div>
+    <div class="ledger-row"><div class="concept">Entradas a las cataratas (2 lados)</div><div class="amt">$65</div></div>
+    <div class="ledger-row"><div class="concept">Vuelo de regreso Toronto → Florida</div><div class="amt">$90</div></div>
+    <div class="ledger-total"><div class="lbl">Total, 1 persona</div><div class="amt">$825</div></div>
+  </div>
+
+  <h4 class="table-title">Ahorro viajando en grupo</h4>
+  <div class="savings-grid">
+    <div class="savings-card"><div class="who">1 persona</div><div class="amt">$825</div><div class="per">por persona</div><div class="total">Total del viaje: $825</div></div>
+    <div class="savings-card highlight"><div class="who">2 personas</div><div class="amt">$735</div><div class="per">por persona</div><div class="total">Total del viaje: $1,470</div><span class="save-tag">Ahorra $90 c/u</span></div>
+    <div class="savings-card highlight"><div class="who">3 personas</div><div class="amt">$722</div><div class="per">por persona</div><div class="total">Total del viaje: $2,166</div><span class="save-tag">Ahorra $103 c/u</span></div>
+  </div>
+
+  <div class="proscons">
+    <div class="pc-col pro">
+      <h4>A favor</h4>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>El tramo Nueva York–Toronto es realmente escénico (valle del Hudson, Finger Lakes).</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Nadie maneja — se puede descansar o disfrutar el paisaje.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Llegada directa al centro de Toronto (Union Station).</li>
+      </ul>
+    </div>
+    <div class="pc-col con">
+      <h4>En contra</h4>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No es directo: obliga a pagar una noche de hotel no anunciada en Nueva York.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>El precio real ($400+ típico) es bastante más alto que el anunciado ($237).</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>El tramo Miami–Nueva York (27h) no tiene paisajes destacables.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Sigue siendo más caro y más lento que volar directo.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AUTO ================= -->
+<section class="panel" id="auto">
+  <div class="panel-head">
+    <span class="eyebrow rust">Opción 2</span>
+    <h2>Auto</h2>
+    <p>Ruta panorámica por el interior: Pembroke Pines → Asheville → Cincinnati → Cataratas del Niágara, entregando el auto del lado de EE.UU. y volando de regreso desde Búfalo, NY.</p>
+  </div>
+
+  <h4 class="table-title">Estados que se cruzan</h4>
+  <div class="day-card" style="margin-bottom:26px;">
+    <div class="states" style="font-size:15.5px;">
+      <span class="stt">Florida</span>→
+      <span class="stt">Georgia</span>→
+      <span class="stt">Carolina del Norte</span>→
+      <span class="stt">Tennessee</span>→
+      <span class="stt">Kentucky</span>→
+      <span class="stt">Ohio</span>→
+      <span class="stt">Nueva York</span>→
+      <span class="stt" style="border-color:var(--steel); color:var(--steel);">Ontario, Canadá</span>
+    </div>
+  </div>
+
+  <h4 class="table-title">Recorrido — 4 días</h4>
+  <div class="trail-wrap">
+    <div class="trail">
+      <div class="trail-node" style="color:var(--rust)">
+        <div class="stamp">FL</div>
+        <div class="day">Día 1 — salida</div>
+        <div class="place">Pembroke Pines</div>
+      </div>
+      <div class="trail-connector"></div>
+      <div class="trail-node" style="color:var(--pine)">
+        <div class="stamp">NC</div>
+        <div class="day">Noche 1</div>
+        <div class="place">Asheville</div>
+      </div>
+      <div class="trail-connector"></div>
+      <div class="trail-node" style="color:var(--mustard)">
+        <div class="stamp">OH</div>
+        <div class="day">Noche 2</div>
+        <div class="place">Cincinnati</div>
+      </div>
+      <div class="trail-connector"></div>
+      <div class="trail-node" style="color:var(--steel)">
+        <div class="stamp">NY</div>
+        <div class="day">Noche 3</div>
+        <div class="place">Cataratas del Niágara</div>
+      </div>
+      <div class="trail-connector"></div>
+      <div class="trail-node" style="color:var(--ink)">
+        <div class="stamp">✈</div>
+        <div class="day">Día 4</div>
+        <div class="place">Vuelo desde Búfalo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-head"><span class="day-num">DÍA 1</span><h4>Pembroke Pines, FL → Asheville, NC</h4></div>
+    <div class="states"><span class="stt">FL</span><span class="stt">GA</span><span class="stt">NC</span> · ~10–11 horas de manejo</div>
+    <ul>
+      <li>Tramo largo, mayormente autopista (I-75 / I-26).</li>
+      <li><strong>Asheville:</strong> ciudad de montaña, puerta de entrada al Blue Ridge Parkway.</li>
+      <li>Vale la pena: Biltmore Estate, centro histórico, cervecerías artesanales.</li>
+    </ul>
+  </div>
+
+  <div class="day-card">
+    <div class="day-head"><span class="day-num">DÍA 2</span><h4>Asheville → Great Smoky Mountains → Red River Gorge, KY → Cincinnati, OH</h4></div>
+    <div class="states"><span class="stt">NC</span><span class="stt">TN</span><span class="stt">KY</span><span class="stt">OH</span> · ~8–9 horas con paradas</div>
+    <ul>
+      <li><strong>Great Smoky Mountains National Park:</strong> desvío de 2–3h, Newfound Gap Road, posibilidad de ver osos negros.</li>
+      <li><strong>Red River Gorge, KY:</strong> cañón con arcos naturales y acantilados de 90 metros — menos turístico que los Smokies pero igual de espectacular.</li>
+      <li>Llegada a Cincinnati al anochecer, a orillas del río Ohio.</li>
+    </ul>
+  </div>
+
+  <div class="day-card">
+    <div class="day-head"><span class="day-num">DÍA 3</span><h4>Cincinnati, OH → Cataratas del Niágara</h4></div>
+    <div class="states"><span class="stt">OH</span><span class="stt">NY</span> · ~7–8 horas</div>
+    <ul>
+      <li><strong>Niagara Falls State Park</strong> (lado EE.UU.): vista de las cataratas American y Bridal Veil.</li>
+      <li>Cruzar el <strong>Rainbow Bridge</strong> a pie hacia el lado canadiense: la mejor vista de Horseshoe Falls, y verlas iluminadas de noche.</li>
+      <li><strong>Clifton Hill</strong> (lado Canadá): ambiente familiar, buena zona para cenar.</li>
+    </ul>
+  </div>
+
+  <div class="day-card">
+    <div class="day-head"><span class="day-num">DÍA 4</span><h4>Entrega del auto y vuelo de regreso</h4></div>
+    <div class="states"><span class="stt">NY</span> · ~30 min a Búfalo</div>
+    <ul>
+      <li>Entregar el auto del lado de EE.UU. (Niagara Falls, NY o Búfalo) — evita la tarifa más alta de entrega internacional en Canadá.</li>
+      <li>Vuelo de regreso desde el Aeropuerto de Búfalo (BUF) hacia Florida.</li>
+    </ul>
+  </div>
+
+  <h4 class="table-title">Costo por persona</h4>
+  <div class="ledger">
+    <div class="ledger-group-title">Gasto compartible entre el grupo</div>
+    <div class="ledger-row"><div class="concept">Renta de auto + entrega one-way<span class="note">Estimado — cotizar fechas exactas</span></div><div class="amt">$500</div></div>
+    <div class="ledger-row"><div class="concept">Gasolina<span class="note">~1,350 millas totales</span></div><div class="amt">$180</div></div>
+    <div class="ledger-row"><div class="concept">Hoteles, 3 noches tipo carretera<span class="note">Asheville, Cincinnati, Cataratas</span></div><div class="amt">$300</div></div>
+    <div class="ledger-group-title">Gasto fijo por persona</div>
+    <div class="ledger-row"><div class="concept">Comidas (4 días)</div><div class="amt">$185</div></div>
+    <div class="ledger-row"><div class="concept">Entradas a las cataratas</div><div class="amt">$50</div></div>
+    <div class="ledger-row"><div class="concept">Vuelo de regreso Búfalo → Florida</div><div class="amt">$90</div></div>
+    <div class="ledger-total"><div class="lbl">Total, 1 persona</div><div class="amt">$1,305</div></div>
+  </div>
+
+  <h4 class="table-title">Ahorro viajando en grupo</h4>
+  <div class="savings-grid">
+    <div class="savings-card"><div class="who">1 persona</div><div class="amt">$1,305</div><div class="per">por persona</div><div class="total">Total del viaje: $1,305</div></div>
+    <div class="savings-card highlight"><div class="who">2 personas</div><div class="amt">$815</div><div class="per">por persona</div><div class="total">Total del viaje: $1,630</div><span class="save-tag">Ahorra $490 c/u</span></div>
+    <div class="savings-card highlight"><div class="who">3 personas</div><div class="amt">$685</div><div class="per">por persona</div><div class="total">Total del viaje: $2,055</div><span class="save-tag">Ahorra $620 c/u</span></div>
+  </div>
+  <p class="note-box">El auto, la gasolina y los hoteles se dividen entre el grupo — por eso es la opción donde más se nota el ahorro al viajar acompañados.</p>
+
+  <div class="proscons">
+    <div class="pc-col pro">
+      <h4>A favor</h4>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>La ruta completa es escénica: Blue Ridge, Smoky Mountains, Red River Gorge.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Llegan manejando hasta las propias cataratas — sin depender de un tour desde Toronto.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Libertad total de horarios y paradas.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>El costo baja mucho si viajan acompañados.</li>
+      </ul>
+    </div>
+    <div class="pc-col con">
+      <h4>En contra</h4>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>4 días de manejo — el más cansado de los tres.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>La tarifa de entrega one-way es difícil de cotizar con precisión de antemano.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Más logística: hoteles, gasolina, cruce de frontera con la rentadora.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Viajando solo/a, sigue siendo la opción más cara de las tres.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AVION ================= -->
+<section class="panel" id="avion">
+  <div class="panel-head">
+    <span class="eyebrow steel">Opción 3</span>
+    <h2>Avión</h2>
+    <p>Vuelo directo Florida → Toronto, con 2 noches en Toronto para hacer una excursión de un día a las cataratas.</p>
+  </div>
+
+  <h4 class="table-title">Itinerario</h4>
+  <div class="hop-row">
+    <div class="hop-pill">Florida (FLL)</div>
+    <div class="hop-arrow"><svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="2"><line x1="0" y1="6" x2="24" y2="6"/><polyline points="18 1 24 6 18 11"/></svg></div>
+    <div class="hop-pill">Toronto (YYZ)<br><span style="font-weight:400; font-size:13px; color:var(--ink-soft)">~3.5h de vuelo directo</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">Día 1</div>
+      <h4>Vuelo directo Florida → Toronto</h4>
+      <p>~3.5 horas. Check-in en el hotel, tarde libre en la ciudad.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Día 2</div>
+      <h4>Excursión a las Cataratas del Niágara</h4>
+      <p>Ida y vuelta el mismo día en GO Train o VIA Rail (~2h cada trayecto). Bote Maid of the Mist / Hornblower, vista de Horseshoe Falls.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Día 3</div>
+      <h4>Vuelo de regreso Toronto → Florida</h4>
+      <p>~3.5 horas de vuelo directo.</p>
+    </div>
+  </div>
+
+  <h4 class="table-title">Costo por persona</h4>
+  <div class="ledger">
+    <div class="ledger-group-title">Gasto compartible entre el grupo</div>
+    <div class="ledger-row"><div class="concept">Hotel en Toronto, 2 noches<span class="note">Habitación básica, se comparte</span></div><div class="amt">$220</div></div>
+    <div class="ledger-group-title">Gasto fijo por persona</div>
+    <div class="ledger-row"><div class="concept">Vuelo redondo Florida ↔ Toronto<span class="note">Temporada set–nov, aerolíneas low-cost</span></div><div class="amt">$150</div></div>
+    <div class="ledger-row"><div class="concept">Transporte Toronto ↔ Cataratas (ida y vuelta)</div><div class="amt">$45</div></div>
+    <div class="ledger-row"><div class="concept">Entradas a las cataratas</div><div class="amt">$50</div></div>
+    <div class="ledger-row"><div class="concept">Comidas (3 días)</div><div class="amt">$140</div></div>
+    <div class="ledger-total"><div class="lbl">Total, 1 persona</div><div class="amt">$605</div></div>
+  </div>
+
+  <h4 class="table-title">Ahorro viajando en grupo</h4>
+  <div class="savings-grid">
+    <div class="savings-card"><div class="who">1 persona</div><div class="amt">$605</div><div class="per">por persona</div><div class="total">Total del viaje: $605</div></div>
+    <div class="savings-card highlight"><div class="who">2 personas</div><div class="amt">$495</div><div class="per">por persona</div><div class="total">Total del viaje: $990</div><span class="save-tag">Ahorra $110 c/u</span></div>
+    <div class="savings-card highlight"><div class="who">3 personas</div><div class="amt">$485</div><div class="per">por persona</div><div class="total">Total del viaje: $1,455</div><span class="save-tag">Ahorra $120 c/u</span></div>
+  </div>
+
+  <div class="proscons">
+    <div class="pc-col pro">
+      <h4>A favor</h4>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>La opción más barata de las tres, con o sin compañía.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>La más rápida: horas en vez de días.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Mínima logística — nada de manejar, ni cambios de tren.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Precio más predecible y fácil de cotizar de antemano.</li>
+      </ul>
+    </div>
+    <div class="pc-col con">
+      <h4>En contra</h4>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Sin paisaje ni experiencia de viaje — es solo traslado.</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Hay que organizar la excursión a las cataratas por separado (aunque es sencilla).</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Sin la "aventura" del camino que sí ofrece el auto.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="stamp-mark">Precios aproximados en USD, por persona · temporada septiembre–noviembre · confirmar cotización real antes de reservar</div>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('nav.tabs .tab');
+  const panels = document.querySelectorAll('section.panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+</script>
+
+</body>
+</html>
