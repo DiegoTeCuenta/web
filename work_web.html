@@ -95,6 +95,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 @media(min-width:600px){.lb-grid{grid-template-columns:repeat(3,1fr)}}
 .lb-img{aspect-ratio:16/9;background-size:cover;background-position:center;opacity:0.8;transition:opacity 0.3s}
 .lb-img:hover{opacity:1}
+.lb-cta{display:inline-flex;align-items:center;gap:10px;margin:20px 0 22px;font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(245,242,238,0.85);text-decoration:none;border:0.5px solid rgba(212,168,50,0.5);padding:13px 30px;transition:all 0.35s;background:rgba(0,0,0,0.4)}
+.lb-cta:hover{background:rgba(212,168,50,0.12);border-color:#d4a832;color:#d4a832}
 .lb-tags{display:flex;gap:7px;flex-wrap:wrap}
 .lb-tag{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;border:0.5px solid rgba(212,168,50,0.22);color:rgba(212,168,50,0.65)}
 
@@ -138,7 +140,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 <!-- PROJECTS -->
 <div class="projects">
 
-  <!-- PORTFOLIO SITES -->
+  <!-- D-HUNTER -->
   <div class="proj-row">
     <div class="proj-row-bg">
       <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.22">
@@ -146,24 +148,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
       </video>
     </div>
     <div class="proj-row-ov"></div>
-    <div class="proj-card from-right" onclick="openLB('sites')">
+    <div class="proj-card from-right" onclick="openLB('dhunter')">
       <div class="card-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo01.webm" type="video/webm">
-        </video>
+        <img src="https://diegotecuenta.com/assets/web_demo_dhunter.webp" alt="D-Hunter demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div class="card-img-ov"></div>
       </div>
       <div class="card-body">
         <div class="card-num">01</div>
-        <div class="card-cat">Portfolio · Brand Sites</div>
-        <div class="card-title">Portfolio Sites</div>
-        <div class="card-desc" id="desc-sites">Custom portfolio and brand sites with cinematic motion, scroll storytelling and a filmmaker’s pacing.</div>
-        <div class="card-play"><div class="play-circle">▶</div><span id="play1">View demos</span></div>
+        <div class="card-cat">Web Game · Playable Demo</div>
+        <div class="card-title">D-Hunter</div>
+        <div class="card-desc" id="desc-dhunter">A playable web game: guide a paranormal explorer through haunted pixel-art scenarios — zombies, witches and ghosts.</div>
+        <div class="card-play"><div class="play-circle">↗</div><span id="play1">View live</span></div>
       </div>
     </div>
   </div>
 
-  <!-- LANDING PAGES -->
+  <!-- QORI -->
   <div class="proj-row">
     <div class="proj-row-bg">
       <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.22">
@@ -171,24 +171,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
       </video>
     </div>
     <div class="proj-row-ov"></div>
-    <div class="proj-card from-left" onclick="openLB('landing')">
+    <div class="proj-card from-left" onclick="openLB('qori')">
       <div class="card-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo02.webm" type="video/webm">
-        </video>
+        <img src="https://diegotecuenta.com/assets/web_demo_qori.webp" alt="Qori demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div class="card-img-ov"></div>
       </div>
       <div class="card-body">
         <div class="card-num">02</div>
-        <div class="card-cat">Landing Pages · Campaigns</div>
-        <div class="card-title">Landing Pages</div>
-        <div class="card-desc" id="desc-landing">High-impact landing pages designed to convert — sharp messaging, bold visuals, built for every screen.</div>
-        <div class="card-play"><div class="play-circle">▶</div><span id="play2">View demos</span></div>
+        <div class="card-cat">Product Page · E-commerce</div>
+        <div class="card-title">Qori</div>
+        <div class="card-desc" id="desc-qori">Elegant product page for a fictional single-origin Sacha Inchi oil. Minimal, luminous, conversion-focused.</div>
+        <div class="card-play"><div class="play-circle">↗</div><span id="play2">View live</span></div>
       </div>
     </div>
   </div>
 
-  <!-- INTERACTIVE EXPERIENCES -->
+  <!-- DJI AIR 2S PRO KIT -->
   <div class="proj-row">
     <div class="proj-row-bg">
       <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.22">
@@ -196,94 +194,110 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
       </video>
     </div>
     <div class="proj-row-ov"></div>
-    <div class="proj-card from-right" onclick="openLB('interactive')">
+    <div class="proj-card from-right" onclick="openLB('djiair2s')">
       <div class="card-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo03.webm" type="video/webm">
-        </video>
+        <img src="https://diegotecuenta.com/assets/web_demo_djiair2s.webp" alt="DJI Air 2S Pro Kit demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div class="card-img-ov"></div>
       </div>
       <div class="card-body">
         <div class="card-num">03</div>
-        <div class="card-cat">Interactive · Motion Web</div>
-        <div class="card-title">Interactive Experiences</div>
-        <div class="card-desc" id="desc-interactive">Motion-driven interactive pieces where the interface becomes part of the story.</div>
-        <div class="card-play"><div class="play-circle">▶</div><span id="play3">View demos</span></div>
+        <div class="card-cat">Sale Page · Classified</div>
+        <div class="card-title">DJI Air 2S Pro Kit</div>
+        <div class="card-desc" id="desc-djiair2s">High-impact sale page for a drone kit: bold typography, aerial visuals, one goal — contact to buy.</div>
+        <div class="card-play"><div class="play-circle">↗</div><span id="play3">View live</span></div>
       </div>
     </div>
   </div>
 
-</div>
-
-<!-- LB SITES -->
-<div class="lb" id="lb-sites">
-  <button class="lb-close" onclick="closeLB('sites')">✕ Close</button>
-  <div class="lb-inner">
-    <div class="lb-cat">Portfolio · Brand Sites · Web</div>
-    <div class="lb-title">Portfolio Sites — Web Design</div>
-    <div class="lb-desc">Portfolio and brand sites built like films: opening shot, rhythm, climax. Every scroll choreographed, every transition with intent.</div>
-    <div class="lb-grid">
-      <div class="lb-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo01.webm" type="video/webm">
-        </video>
-      </div>
-      <div class="lb-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo01b.webm" type="video/webm">
-        </video>
-      </div>
-      <div class="lb-img" style="background:#0a0a0d;display:flex;align-items:center;justify-content:center;font-family:Cormorant Garamond,serif;font-size:15px;font-style:italic;color:rgba(245,242,238,0.2);text-align:center;padding:16px">More<br>coming soon</div>
+  <!-- APARTMENT TOUR -->
+  <div class="proj-row">
+    <div class="proj-row-bg">
+      <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.22">
+        <source src="https://diegotecuenta.com/assets/web_backok.webm" type="video/webm">
+      </video>
     </div>
-    <div class="lb-tags"><span class="lb-tag">Portfolio</span><span class="lb-tag">Brand Sites</span><span class="lb-tag">UI Design</span><span class="lb-tag">Motion</span></div>
+    <div class="proj-row-ov"></div>
+    <div class="proj-card from-left" onclick="openLB('apartment')">
+      <div class="card-img" style="background:#000;overflow:hidden;position:relative">
+        <img src="https://diegotecuenta.com/assets/web_demo_apartment.webp" alt="Apartment Tour demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+        <div class="card-img-ov"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-num">04</div>
+        <div class="card-cat">Listing · Video Tour</div>
+        <div class="card-title">Apartment Tour</div>
+        <div class="card-desc" id="desc-apartment">Detailed rental listing with a photo walkthrough and a video tour featuring a live guide.</div>
+        <div class="card-play"><div class="play-circle">↗</div><span id="play4">View live</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- LB LANDING -->
-<div class="lb" id="lb-landing">
-  <button class="lb-close" onclick="closeLB('landing')">✕ Close</button>
+<!-- LB DHUNTER -->
+<div class="lb" id="lb-dhunter">
+  <button class="lb-close" onclick="closeLB('dhunter')">✕ Close</button>
   <div class="lb-inner">
-    <div class="lb-cat">Landing Pages · Campaigns · Web</div>
-    <div class="lb-title">Landing Pages — Web Design</div>
-    <div class="lb-desc">Landing pages engineered around one goal: conversion. Sharp messaging, bold cinematic visuals and flawless responsive behavior.</div>
+    <div class="lb-cat">Web Game · Playable Demo</div>
+    <div class="lb-title">D-Hunter — Web Design</div>
+    <div class="lb-desc">D-Hunter is a fully playable browser game starring a paranormal explorer. Three haunted scenarios (Zombies, Witches, Ghosts), coin recharges and keyboard controls — designed, illustrated and coded as a web demo.</div>
     <div class="lb-grid">
-      <div class="lb-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo02.webm" type="video/webm">
-        </video>
+      <div class="lb-img" style="background:#000;overflow:hidden;position:relative;grid-column:1/-1;aspect-ratio:16/9">
+        <img src="https://diegotecuenta.com/assets/web_demo_dhunter.webp" alt="D-Hunter demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
       </div>
-      <div class="lb-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo02b.webm" type="video/webm">
-        </video>
-      </div>
-      <div class="lb-img" style="background:#0a0a0d;display:flex;align-items:center;justify-content:center;font-family:Cormorant Garamond,serif;font-size:15px;font-style:italic;color:rgba(245,242,238,0.2);text-align:center;padding:16px">More<br>coming soon</div>
     </div>
-    <div class="lb-tags"><span class="lb-tag">Landing Pages</span><span class="lb-tag">Campaigns</span><span class="lb-tag">Responsive</span><span class="lb-tag">Copy & Design</span></div>
+    <a class="lb-cta" href="https://diegotecuenta.com/d-hunter.html" target="_blank" rel="noopener">View live demo ↗</a>
+    <div class="lb-tags"><span class="lb-tag">Web Game</span><span class="lb-tag">Pixel Art</span><span class="lb-tag">JavaScript</span></div>
   </div>
 </div>
 
-<!-- LB INTERACTIVE -->
-<div class="lb" id="lb-interactive">
-  <button class="lb-close" onclick="closeLB('interactive')">✕ Close</button>
+<!-- LB QORI -->
+<div class="lb" id="lb-qori">
+  <button class="lb-close" onclick="closeLB('qori')">✕ Close</button>
   <div class="lb-inner">
-    <div class="lb-cat">Interactive · Motion Web</div>
-    <div class="lb-title">Interactive Experiences — Web Design</div>
-    <div class="lb-desc">Interactive web pieces where motion leads: hover states, scroll-driven scenes and interfaces that feel alive.</div>
+    <div class="lb-cat">Product Page · E-commerce</div>
+    <div class="lb-title">Qori — Web Design</div>
+    <div class="lb-desc">Concept product page for 'Qori — Luminosidad Natural', a fictional single-origin Peruvian Sacha Inchi oil. Editorial layout, soft palette and a product-first narrative.</div>
     <div class="lb-grid">
-      <div class="lb-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo03.webm" type="video/webm">
-        </video>
+      <div class="lb-img" style="background:#000;overflow:hidden;position:relative;grid-column:1/-1;aspect-ratio:16/9">
+        <img src="https://diegotecuenta.com/assets/web_demo_qori.webp" alt="Qori demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
       </div>
-      <div class="lb-img" style="background:#000;overflow:hidden;position:relative">
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
-          <source src="https://diegotecuenta.com/assets/web_demo03b.webm" type="video/webm">
-        </video>
-      </div>
-      <div class="lb-img" style="background:#0a0a0d;display:flex;align-items:center;justify-content:center;font-family:Cormorant Garamond,serif;font-size:15px;font-style:italic;color:rgba(245,242,238,0.2);text-align:center;padding:16px">More<br>coming soon</div>
     </div>
-    <div class="lb-tags"><span class="lb-tag">Interactive</span><span class="lb-tag">Motion</span><span class="lb-tag">Creative Dev</span><span class="lb-tag">WebGL</span></div>
+    <a class="lb-cta" href="https://diegotecuenta.github.io/QORI/" target="_blank" rel="noopener">View live demo ↗</a>
+    <div class="lb-tags"><span class="lb-tag">Product Page</span><span class="lb-tag">Branding</span><span class="lb-tag">Responsive</span></div>
+  </div>
+</div>
+
+<!-- LB DJIAIR2S -->
+<div class="lb" id="lb-djiair2s">
+  <button class="lb-close" onclick="closeLB('djiair2s')">✕ Close</button>
+  <div class="lb-inner">
+    <div class="lb-cat">Sale Page · Classified</div>
+    <div class="lb-title">DJI Air 2S Pro Kit — Web Design</div>
+    <div class="lb-desc">A real sale page built to sell Diego's own drone: FAA Part 107 pilot credentials, price anchoring and a single call to action. Designed to convert visitors into buyers.</div>
+    <div class="lb-grid">
+      <div class="lb-img" style="background:#000;overflow:hidden;position:relative;grid-column:1/-1;aspect-ratio:16/9">
+        <img src="https://diegotecuenta.com/assets/web_demo_djiair2s.webp" alt="DJI Air 2S Pro Kit demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <a class="lb-cta" href="https://diegotecuenta.github.io/djiair2s/" target="_blank" rel="noopener">View live demo ↗</a>
+    <div class="lb-tags"><span class="lb-tag">Sale Page</span><span class="lb-tag">Copywriting</span><span class="lb-tag">Responsive</span></div>
+  </div>
+</div>
+
+<!-- LB APARTMENT -->
+<div class="lb" id="lb-apartment">
+  <button class="lb-close" onclick="closeLB('apartment')">✕ Close</button>
+  <div class="lb-inner">
+    <div class="lb-cat">Listing · Video Tour</div>
+    <div class="lb-title">Apartment Tour — Web Design</div>
+    <div class="lb-desc">Rental listing presented like a walkthrough: photos in visit order, full details, EN/ES toggle — and a video tour that blends real footage with a live guide.</div>
+    <div class="lb-grid">
+      <div class="lb-img" style="background:#000;overflow:hidden;position:relative;grid-column:1/-1;aspect-ratio:16/9">
+        <img src="https://diegotecuenta.com/assets/web_demo_apartment.webp" alt="Apartment Tour demo" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <a class="lb-cta" href="https://diegotecuenta.github.io/apartment/" target="_blank" rel="noopener">View live demo ↗</a>
+    <div class="lb-tags"><span class="lb-tag">Real Estate</span><span class="lb-tag">Video Tour</span><span class="lb-tag">Bilingual</span></div>
   </div>
 </div>
 
@@ -341,62 +355,45 @@ document.querySelectorAll(".lb").forEach(lb=>{
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape") document.querySelectorAll(".lb").forEach(lb=>{
-    if(lb.style.opacity==="1") closeLB(lb.id.replace("lb-",""));
-  });
+    if(lb.style.opacity==="1") closeLB(lb.id.replace("lb-",""))});
 });
 
-const copy={
-  en:{eye:"05 \u2014 Commercial Work",accent:"Design \u00b7 Motion \u00b7 Code",sub:"Cinematic websites with a filmmaker's eye. 30 years of audiovisual craft translated into interactive web experiences \u2014 designed with AI as a creative partner.",scroll:"Scroll to explore",
-    d1:"Custom portfolio and brand sites with cinematic motion, scroll storytelling and a filmmaker\u2019s pacing.",
-    d2:"High-impact landing pages designed to convert \u2014 sharp messaging, bold visuals, built for every screen.",
-    d3:"Motion-driven interactive pieces where the interface becomes part of the story.",
-    p1:"View demos",p2:"View demos",p3:"View demos",
-    lbc1:"Portfolio \u00b7 Brand Sites \u00b7 Web",lbt1:"Portfolio Sites \u2014 Web Design",
-    lbd1:"Portfolio and brand sites built like films: opening shot, rhythm, climax. Every scroll choreographed, every transition with intent.",
-    lbc2:"Landing Pages \u00b7 Campaigns \u00b7 Web",lbt2:"Landing Pages \u2014 Web Design",
-    lbd2:"Landing pages engineered around one goal: conversion. Sharp messaging, bold cinematic visuals and flawless responsive behavior.",
-    lbc3:"Interactive \u00b7 Motion Web",lbt3:"Interactive Experiences \u2014 Web Design",
-    lbd3:"Interactive web pieces where motion leads: hover states, scroll-driven scenes and interfaces that feel alive."},
-  es:{eye:"05 \u2014 Trabajo Comercial",accent:"Dise\u00f1o \u00b7 Motion \u00b7 C\u00f3digo",sub:"Sitios web cinematogr\u00e1ficos con ojo de cineasta. 30 a\u00f1os de oficio audiovisual traducidos en experiencias web interactivas, dise\u00f1adas con la IA como aliada creativa.",scroll:"Desliza para explorar",
-    d1:"Portafolios y sitios de marca a medida, con motion cinematogr\u00e1fico, narrativa de scroll y ritmo de cineasta.",
-    d2:"Landing pages de alto impacto dise\u00f1adas para convertir: mensaje claro, visuales potentes, listas para cada pantalla.",
-    d3:"Piezas interactivas con motion donde la interfaz se vuelve parte de la historia.",
-    p1:"Ver demos",p2:"Ver demos",p3:"Ver demos",
-    lbc1:"Portafolio \u00b7 Sitios de Marca \u00b7 Web",lbt1:"Sitios Portafolio \u2014 Dise\u00f1o Web",
-    lbd1:"Sitios de portafolio y marca construidos como pel\u00edculas: plano de apertura, ritmo, cl\u00edmax. Cada scroll coreografiado, cada transici\u00f3n con intenci\u00f3n.",
-    lbc2:"Landing Pages \u00b7 Campa\u00f1as \u00b7 Web",lbt2:"Landing Pages \u2014 Dise\u00f1o Web",
-    lbd2:"Landing pages dise\u00f1adas alrededor de un solo objetivo: convertir. Mensaje claro, visuales cinematogr\u00e1ficos y responsive impecable.",
-    lbc3:"Interactivo \u00b7 Web con Motion",lbt3:"Experiencias Interactivas \u2014 Dise\u00f1o Web",
-    lbd3:"Piezas web interactivas donde el motion manda: hovers, escenas guiadas por scroll e interfaces que se sienten vivas."}
-};
+const copy={"en":{"eye":"05 — Commercial Work","accent":"Design · Motion · Code","sub":"Cinematic websites with a filmmaker's eye. 30 years of audiovisual craft translated into interactive web experiences — designed with AI as a creative partner.","scroll":"Scroll to explore","play1":"View live","desc-dhunter":"A playable web game: guide a paranormal explorer through haunted pixel-art scenarios — zombies, witches and ghosts.","lbc-dhunter":"Web Game · Playable Demo","lbt-dhunter":"D-Hunter — Web Design","lbd-dhunter":"D-Hunter is a fully playable browser game starring a paranormal explorer. Three haunted scenarios (Zombies, Witches, Ghosts), coin recharges and keyboard controls — designed, illustrated and coded as a web demo.","play2":"View live","desc-qori":"Elegant product page for a fictional single-origin Sacha Inchi oil. Minimal, luminous, conversion-focused.","lbc-qori":"Product Page · E-commerce","lbt-qori":"Qori — Web Design","lbd-qori":"Concept product page for 'Qori — Luminosidad Natural', a fictional single-origin Peruvian Sacha Inchi oil. Editorial layout, soft palette and a product-first narrative.","play3":"View live","desc-djiair2s":"High-impact sale page for a drone kit: bold typography, aerial visuals, one goal — contact to buy.","lbc-djiair2s":"Sale Page · Classified","lbt-djiair2s":"DJI Air 2S Pro Kit — Web Design","lbd-djiair2s":"A real sale page built to sell Diego's own drone: FAA Part 107 pilot credentials, price anchoring and a single call to action. Designed to convert visitors into buyers.","play4":"View live","desc-apartment":"Detailed rental listing with a photo walkthrough and a video tour featuring a live guide.","lbc-apartment":"Listing · Video Tour","lbt-apartment":"Apartment Tour — Web Design","lbd-apartment":"Rental listing presented like a walkthrough: photos in visit order, full details, EN/ES toggle — and a video tour that blends real footage with a live guide.","cta":"View live demo ↗"},"es":{"eye":"05 — Trabajo Comercial","accent":"Diseño · Motion · Código","sub":"Sitios web cinematográficos con ojo de cineasta. 30 años de oficio audiovisual traducidos en experiencias web interactivas, diseñadas con la IA como aliada creativa.","scroll":"Desliza para explorar","play1":"Ver en vivo","desc-dhunter":"Videojuego web jugable: guía a un explorador paranormal por escenarios pixel-art embrujados — zombies, brujas y fantasmas.","lbc-dhunter":"Videojuego Web · Demo Jugable","lbt-dhunter":"D-Hunter — Diseño Web","lbd-dhunter":"D-Hunter es un videojuego jugable en el navegador protagonizado por un explorador paranormal. Tres escenarios embrujados (Zombies, Brujas, Fantasmas), recarga con monedas y controles de teclado — diseñado, ilustrado y programado como demo web.","play2":"Ver en vivo","desc-qori":"Página de producto elegante para un aceite ficticio de Sacha Inchi de origen único. Minimalista, luminosa, enfocada en conversión.","lbc-qori":"Página de Producto · E-commerce","lbt-qori":"Qori — Diseño Web","lbd-qori":"Página de producto conceptual para 'Qori — Luminosidad Natural', un aceite ficticio de Sacha Inchi peruano de origen único. Layout editorial, paleta suave y narrativa centrada en el producto.","play3":"Ver en vivo","desc-djiair2s":"Página de venta de alto impacto para un kit de drone: tipografía audaz, visuales aéreos, un solo objetivo — contactar para comprar.","lbc-djiair2s":"Página de Venta · Clasificado","lbt-djiair2s":"DJI Air 2S Pro Kit — Diseño Web","lbd-djiair2s":"Página de venta real construida para vender el propio drone de Diego: credenciales de piloto FAA Part 107, anclaje de precio y un solo llamado a la acción. Diseñada para convertir visitas en compradores.","play4":"Ver en vivo","desc-apartment":"Listing de alquiler detallado con recorrido fotográfico y video tour con guía en vivo.","lbc-apartment":"Listing · Video Tour","lbt-apartment":"Apartment Tour — Diseño Web","lbd-apartment":"Listing de alquiler presentado como un walkthrough: fotos en orden de visita, detalles completos, toggle EN/ES — y un video tour que integra video real con una guía en vivo.","cta":"Ver demo en vivo ↗"}};
+
 // LANG PERSISTENCE
 const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
 window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLang('es'); });
 
 function setLang(l){
-  sessionStorage.setItem('dtc_lang', l);
-  const t=copy[l];
-  document.getElementById("lbl-eye").textContent=t.eye;
-  document.querySelector(".sec-accent").textContent=t.accent;
-  document.getElementById("lbl-sub").textContent=t.sub;
-  document.getElementById("lbl-scroll").textContent=t.scroll;
-  document.getElementById("desc-sites").textContent=t.d1;
-  document.getElementById("desc-landing").textContent=t.d2;
-  document.getElementById("desc-interactive").textContent=t.d3;
-  document.getElementById("play1").textContent=t.p1;
-  document.getElementById("play2").textContent=t.p2;
-  document.getElementById("play3").textContent=t.p3;
-  const lbs=["sites","landing","interactive"];
-  lbs.forEach((id,i)=>{
-    const n=i+1;
-    const c=document.querySelector("#lb-"+id+" .lb-cat");
-    const ti=document.querySelector("#lb-"+id+" .lb-title");
-    const d=document.querySelector("#lb-"+id+" .lb-desc");
-    if(c) c.textContent=t["lbc"+n];
-    if(ti) ti.textContent=t["lbt"+n];
-    if(d) d.textContent=t["lbd"+n];
-  });
-  document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.textContent===l.toUpperCase()));
+  const t=copy[l]||copy.en;
+  document.getElementById('lbl-eye').textContent=t.eye;
+  document.querySelector('.sec-accent').textContent=t.accent;
+  document.getElementById('lbl-sub').textContent=t.sub;
+  document.querySelector('.sec-title em').textContent=(l==='es'?'Dise\u00f1o':'Design');
+  document.getElementById('lbl-scroll').textContent=t.scroll;
+    document.getElementById('play1').textContent=t.play1;
+    document.getElementById('desc-dhunter').textContent=t['desc-dhunter'];
+    document.querySelector('#lb-dhunter .lb-cat').textContent=t['lbc-dhunter'];
+    document.querySelector('#lb-dhunter .lb-title').textContent=t['lbt-dhunter'];
+    document.querySelector('#lb-dhunter .lb-desc').textContent=t['lbd-dhunter'];
+    document.getElementById('play2').textContent=t.play2;
+    document.getElementById('desc-qori').textContent=t['desc-qori'];
+    document.querySelector('#lb-qori .lb-cat').textContent=t['lbc-qori'];
+    document.querySelector('#lb-qori .lb-title').textContent=t['lbt-qori'];
+    document.querySelector('#lb-qori .lb-desc').textContent=t['lbd-qori'];
+    document.getElementById('play3').textContent=t.play3;
+    document.getElementById('desc-djiair2s').textContent=t['desc-djiair2s'];
+    document.querySelector('#lb-djiair2s .lb-cat').textContent=t['lbc-djiair2s'];
+    document.querySelector('#lb-djiair2s .lb-title').textContent=t['lbt-djiair2s'];
+    document.querySelector('#lb-djiair2s .lb-desc').textContent=t['lbd-djiair2s'];
+    document.getElementById('play4').textContent=t.play4;
+    document.getElementById('desc-apartment').textContent=t['desc-apartment'];
+    document.querySelector('#lb-apartment .lb-cat').textContent=t['lbc-apartment'];
+    document.querySelector('#lb-apartment .lb-title').textContent=t['lbt-apartment'];
+    document.querySelector('#lb-apartment .lb-desc').textContent=t['lbd-apartment'];
+    document.querySelectorAll('.lb-cta').forEach(e=>e.textContent=t.cta);
+  localStorage.setItem('dtc-lang',l);
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));
 }
 </script>
 </body>
