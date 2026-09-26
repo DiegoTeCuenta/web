@@ -119,7 +119,7 @@ body{background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif
     <!-- CTA -->
     <div class="cta-layer" id="cta-layer">
       <div class="cta-eyebrow">Commercial Work</div>
-      <div class="cta-title">Mapping · Club visuals<br><em>AI characters · AI video</em></div>
+      <div class="cta-title">Mapping · Club visuals<br><em>AI characters · AI video · Web design</em></div>
       <a class="cta-btn" href="work_index.html">Enter the work &nbsp;→</a>
     </div>
 
@@ -127,6 +127,13 @@ body{background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif
 </div>
 
 <script>
+// ============ SCROLL RESET ============
+// Stop the browser from restoring a mid-page scroll position on reload
+if('scrollRestoration' in history){ history.scrollRestoration = 'manual'; }
+window.scrollTo(0, 0);
+window.addEventListener('load', () => { window.scrollTo(0, 0); });
+window.addEventListener('pageshow', e => { if(e.persisted) window.scrollTo(0, 0); });
+
 // ============ CONFIG ============
 const FRAME_COUNT = 180;
 const FRAME_PATH  = 'assets/hero/';
