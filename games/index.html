@@ -69,7 +69,7 @@
     position:fixed; inset:0; z-index:50; display:flex; flex-direction:column;
     align-items:center; justify-content:center; text-align:center;
     background:rgba(12,18,12,.88); color:#fff; padding:24px;
-    backdrop-filter:blur(3px);
+    backdrop-filter:blur(3px); overflow-y:auto;
   }
   .screen.hidden { display:none; }
   .screen h1 { font-size:clamp(38px,9vw,64px); letter-spacing:2px; color:#ff9d2e; text-shadow:0 4px 0 #7a3f00; }
@@ -94,6 +94,20 @@
     margin-top:8px; padding:12px 16px; font-size:18px; border-radius:12px; border:2px solid #ff9d2e;
     background:#1f1812; color:#fff; text-align:center; width:220px; outline:none;
   }
+  .textinput {
+    margin-top:8px; padding:10px 14px; font-size:16px; border-radius:12px; border:2px solid #ff9d2e;
+    background:#1f1812; color:#fff; text-align:center; width:200px; outline:none;
+  }
+  /* ============ SHARE / RIVAL ============ */
+  #shareBox { margin-top:14px; }
+  #shareLabel { font-size:13px; color:#b9b0a1; line-height:1.5; max-width:300px; margin:0 auto 8px; }
+  #shareRow { justify-content:center; align-items:center; }
+  #shareCode {
+    background:#1f1812; border:1px dashed #ff9d2e; border-radius:10px; color:#ffcf8f;
+    font-size:13px; padding:10px 12px; max-width:230px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  #rivalBox { margin-top:14px; }
+  #rivalLabel { font-size:13px; color:#b9b0a1; line-height:1.5; max-width:300px; margin:0 auto 4px; }
   #board { margin-top:16px; min-width:260px; }
   #board h3 { color:#ff9d2e; letter-spacing:3px; font-size:15px; margin-bottom:8px; }
   #board ol { list-style:none; }
@@ -146,6 +160,20 @@
     <button class="bigbtn" id="againBtn" style="margin-top:0">PLAY AGAIN</button>
   </div>
   <div id="board"><h3>🏆 TOP MIAMI</h3><ol id="boardList"></ol></div>
+  <div id="shareBox" style="display:none">
+    <p id="shareLabel"></p>
+    <div class="row" id="shareRow">
+      <code id="shareCode"></code>
+      <button class="ghostbtn" id="copyScoreBtn">COPY</button>
+    </div>
+  </div>
+  <div id="rivalBox">
+    <p id="rivalLabel"></p>
+    <div class="row" style="justify-content:center;align-items:center">
+      <input id="rivalInput" class="textinput" maxlength="64" autocomplete="off">
+      <button class="ghostbtn" id="addRivalBtn">ADD</button>
+    </div>
+  </div>
 </div>
 
 <!-- LOSE -->
@@ -440,8 +468,12 @@ const STR = {
     deskKeys: '<kbd>WASD</kbd> / <kbd>←↑↓→</kbd> move &nbsp; <kbd>Shift</kbd> sprint &nbsp; <kbd>T</kbd> treat',
     touchKeys: 'Left thumb: joystick (push to edge to sprint) · Right thumb: 🦴 button',
     winTitle: 'ROUTE DONE!', winSub: '¡RUTA COMPLETADA!',
-    winName: 'Enter your name for the <b>TOP MIAMI</b> leaderboard:',
+    winName: 'Driver name (registered on this phone for the <b>TOP MIAMI</b> leaderboard):',
     namePh: 'Driver', save: 'SAVE', again: 'PLAY AGAIN',
+    shareLabel: 'Copy this code and share it — drivers on other phones can add your score to their board:',
+    copy: 'COPY', copied: 'COPIED!',
+    rivalLabel: 'Compete: paste a rival\'s code to add their score here:',
+    rivalPh: 'LM1-…', addRival: 'ADD', invalidCode: 'Invalid code — ask for the exact code.',
     scoreLine: (t, s) => `⏱ ${t} left — score: ${s}`,
     loseTitle: 'SHIFT OVER', loseSub: 'SE ACABÓ EL BLOQUE',
     loseText: 'The block timer hit zero with packages still on the van.<br>The dogs are laughing at you. 🐕',
@@ -457,8 +489,12 @@ const STR = {
     deskKeys: '<kbd>WASD</kbd> / <kbd>←↑↓→</kbd> moverse &nbsp; <kbd>Shift</kbd> correr &nbsp; <kbd>T</kbd> galleta',
     touchKeys: 'Pulgar izquierdo: joystick (al borde para correr) · Pulgar derecho: botón 🦴',
     winTitle: '¡RUTA COMPLETADA!', winSub: 'ROUTE DONE!',
-    winName: 'Escribe tu nombre para el ranking <b>TOP MIAMI</b>:',
+    winName: 'Nombre del driver (se registra en este teléfono para el ranking <b>TOP MIAMI</b>):',
     namePh: 'Driver', save: 'GUARDAR', again: 'JUGAR OTRA VEZ',
+    shareLabel: 'Copia este código y compártelo — otros drivers pueden agregar tu puntaje a su ranking:',
+    copy: 'COPIAR', copied: '¡COPIADO!',
+    rivalLabel: 'Compite: pega el código de un rival para agregar su puntaje aquí:',
+    rivalPh: 'LM1-…', addRival: 'AGREGAR', invalidCode: 'Código inválido — pide el código exacto.',
     scoreLine: (t, s) => `⏱ quedan ${t} — puntos: ${s}`,
     loseTitle: 'SE ACABÓ EL BLOQUE', loseSub: 'SHIFT OVER',
     loseText: 'El bloque terminó con paquetes todavía en la van.<br>Los perros se están riendo de ti. 🐕',
@@ -478,6 +514,11 @@ function applyLang() {
   document.getElementById('winNameLabel').innerHTML = S.winName;
   document.getElementById('nameInput').placeholder = S.namePh;
   document.getElementById('saveScoreBtn').textContent = S.save;
+  document.getElementById('copyScoreBtn').textContent = S.copy;
+  document.getElementById('shareLabel').textContent = S.shareLabel;
+  document.getElementById('rivalLabel').textContent = S.rivalLabel;
+  document.getElementById('rivalInput').placeholder = S.rivalPh;
+  document.getElementById('addRivalBtn').textContent = S.addRival;
   document.getElementById('againBtn').textContent = S.again;
   document.getElementById('loseTitle').textContent = S.loseTitle;
   document.getElementById('loseSub').textContent = S.loseSub;
@@ -906,6 +947,9 @@ function win() {
   beep(880, 0.1); setTimeout(() => beep(1100, 0.1), 110); setTimeout(() => beep(1470, 0.18), 220);
   document.getElementById('scoreLine').textContent = STR[LANG].scoreLine(fmtTime(timeLeft), Math.ceil(timeLeft));
   document.getElementById('winScreen').classList.remove('hidden');
+  const saved = getDriver();
+  if (saved) document.getElementById('nameInput').value = saved;
+  document.getElementById('shareBox').style.display = 'none';
   renderBoard(-1);
 }
 function lose() {
@@ -915,11 +959,41 @@ function lose() {
   document.getElementById('loseScreen').classList.remove('hidden');
 }
 
-/* ---- local leaderboard: TOP MIAMI (localStorage) ---- */
+/* ---- driver registration + cross-phone leaderboard competition ---- */
 const BOARD_KEY = 'lastmile_topmiami_v1';
+const DRIVER_KEY = 'lastmile_driver_v1';
+const CODE_PREFIX = 'LM1-';
+function getDriver() {
+  try { return localStorage.getItem(DRIVER_KEY) || ''; }
+  catch (e) { return ''; }
+}
+function saveDriver(name) {
+  try { localStorage.setItem(DRIVER_KEY, name); } catch (e) { /* ignore */ }
+}
+/* share code: unicode-safe base64 of {n: name, s: score} */
+function encodeScore(name, score) {
+  const json = JSON.stringify({ n: name, s: score });
+  const b64 = btoa(unescape(encodeURIComponent(json))).replace(/=+$/, '');
+  return CODE_PREFIX + b64;
+}
+function decodeScore(code) {
+  try {
+    const c = String(code).trim();
+    if (!c.startsWith(CODE_PREFIX)) return null;
+    const b64 = c.slice(CODE_PREFIX.length);
+    const json = decodeURIComponent(escape(atob(b64 + '='.repeat((4 - b64.length % 4) % 4))));
+    const o = JSON.parse(json);
+    if (typeof o.n !== 'string' || !o.n.trim() || o.n.length > 12) return null;
+    if (!Number.isInteger(o.s) || o.s < 1 || o.s > 180) return null;
+    return { name: o.n.trim(), score: o.s };
+  } catch (e) { return null; }
+}
 function getBoard() {
   try { return JSON.parse(localStorage.getItem(BOARD_KEY)) || []; }
   catch (e) { return []; }
+}
+function setBoard(board) {
+  try { localStorage.setItem(BOARD_KEY, JSON.stringify(board.slice(0, 8))); } catch (e) { /* ignore */ }
 }
 function renderBoard(highlightIdx) {
   const ol = document.getElementById('boardList');
@@ -933,13 +1007,49 @@ function escapeHtml(s) {
 }
 document.getElementById('saveScoreBtn').addEventListener('click', () => {
   const name = (document.getElementById('nameInput').value.trim() || 'Driver').slice(0, 12);
+  const score = Math.ceil(timeLeft);
+  saveDriver(name);
   const board = getBoard();
-  board.push({ name, score: Math.ceil(timeLeft) });
+  board.push({ name, score });
   board.sort((a, b) => b.score - a.score);
-  const top = board.slice(0, 5);
-  try { localStorage.setItem(BOARD_KEY, JSON.stringify(top)); } catch (e) { /* ignore */ }
-  renderBoard(top.findIndex(e => e.name === name && e.score === Math.ceil(timeLeft)));
+  setBoard(board);
+  const top = getBoard();
+  renderBoard(top.findIndex(e => e.name === name && e.score === score));
+  document.getElementById('shareCode').textContent = encodeScore(name, score);
+  document.getElementById('copyScoreBtn').textContent = STR[LANG].copy;
+  document.getElementById('shareBox').style.display = 'block';
   document.getElementById('saveScoreBtn').disabled = true;
+});
+document.getElementById('copyScoreBtn').addEventListener('click', () => {
+  const code = document.getElementById('shareCode').textContent;
+  const done = () => {
+    const btn = document.getElementById('copyScoreBtn');
+    btn.textContent = STR[LANG].copied;
+    setTimeout(() => { btn.textContent = STR[LANG].copy; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(done).catch(() => fallbackCopy(code, done));
+  } else {
+    fallbackCopy(code, done);
+  }
+});
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) { /* ignore */ }
+  document.body.removeChild(ta);
+}
+document.getElementById('addRivalBtn').addEventListener('click', () => {
+  const input = document.getElementById('rivalInput');
+  const entry = decodeScore(input.value);
+  if (!entry) { alert(STR[LANG].invalidCode); return; }
+  const board = getBoard();
+  board.push({ name: entry.name + ' ✊', score: entry.score });
+  board.sort((a, b) => b.score - a.score);
+  setBoard(board);
+  renderBoard(getBoard().findIndex(e => e.score === entry.score && e.name.startsWith(entry.name)));
+  input.value = '';
 });
 
 /* ---------------- SCREEN FLOW ---------------------------------------- */
@@ -950,7 +1060,8 @@ function startGame() {
   document.getElementById('winScreen').classList.add('hidden');
   document.getElementById('loseScreen').classList.add('hidden');
   document.getElementById('saveScoreBtn').disabled = false;
-  document.getElementById('nameInput').value = '';
+  document.getElementById('nameInput').value = getDriver();
+  document.getElementById('shareBox').style.display = 'none';
   try { AC && AC.resume(); } catch (e) {}
 }
 document.getElementById('startBtn').addEventListener('click', startGame);
