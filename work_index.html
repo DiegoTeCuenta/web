@@ -280,7 +280,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
   <h2 class="contact-title" id="lbl-ctitle"><em>Let's</em> work together</h2>
   <p class="contact-sub" id="lbl-csub">Tell me about your project — I reply within 24 hours.</p>
   <div class="contact-btns">
-    <a class="contact-btn" href="https://wa.me/17865064571?text=Hola%20Diego%2C%20vi%20tu%20portafolio%20y%20quiero%20conversar%20de%20un%20proyecto." target="_blank" rel="noopener">WhatsApp</a>
+    <a class="contact-btn" id="wa-btn" href="https://wa.me/17865064571?text=Hi%20Diego%2C%20I%20saw%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener">WhatsApp</a>
     <a class="contact-btn" href="mailto:contacto@diegotecuenta.com">Email</a>
     <a class="contact-btn" href="https://instagram.com/diegotecuenta" target="_blank" rel="noopener">Instagram</a>
   </div>
@@ -333,14 +333,16 @@ document.querySelectorAll(".work-card").forEach((c,i)=>{
 // NOTE: the first-ever submission triggers an activation email to contacto@ — it must be clicked once.
 function sendWhatsApp(e){
   e.preventDefault();
+  const lang=sessionStorage.getItem('dtc_lang')||'en';
   const name=document.getElementById("cf-name").value.trim();
   const msg=document.getElementById("cf-msg").value.trim();
+  const greet=lang==='es'?"Hola Diego, soy "+name+". ":"Hi Diego, I'm "+name+". ";
   fetch("https://formsubmit.co/ajax/contacto@diegotecuenta.com",{
     method:"POST",
     headers:{"Content-Type":"application/json","Accept":"application/json"},
     body:JSON.stringify({name:name,message:msg,_subject:"Nuevo mensaje desde diegotecuenta.com"})
   }).catch(()=>{});
-  const text=encodeURIComponent("Hola Diego, soy "+name+". "+msg);
+  const text=encodeURIComponent(greet+msg);
   window.open("https://wa.me/17865064571?text="+text,"_blank");
   return false;
 }
@@ -389,6 +391,7 @@ function setLang(l){
   document.getElementById("lbl-cmsg").textContent=t.cmsg;
   document.getElementById("lbl-csend").textContent=t.csend;
   document.getElementById("lbl-cnote").textContent=t.cnote;
+  document.getElementById("wa-btn").href="https://wa.me/17865064571?text="+encodeURIComponent(l==='es'?"Hola Diego, vi tu portafolio y quiero conversar de un proyecto.":"Hi Diego, I saw your portfolio and I'd like to discuss a project.");
   document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.textContent===l.toUpperCase()));
 }
 </script>
