@@ -115,6 +115,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 .lb-tag{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;border:0.5px solid rgba(212,168,50,0.22);color:rgba(212,168,50,0.65)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+/* CONTACT NAV */
+.nav-contact{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.5);text-decoration:none;border:0.5px solid rgba(212,168,50,0.35);padding:7px 14px;transition:color 0.3s;animation:contactGlow 2.8s ease-in-out infinite}
+.nav-contact:hover{color:var(--gold);animation-play-state:paused;box-shadow:0 0 16px rgba(212,168,50,0.5);border-color:var(--gold)}
+@keyframes contactGlow{
+  0%,100%{box-shadow:0 0 0 rgba(212,168,50,0);border-color:rgba(212,168,50,0.35);color:rgba(245,242,238,0.5)}
+  50%{box-shadow:0 0 18px rgba(212,168,50,0.55);border-color:rgba(212,168,50,0.8);color:var(--gold)}
+}
+@media (prefers-reduced-motion:reduce){.nav-contact{animation:none}}
 </style>
 </head>
 <body>
@@ -125,6 +133,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 <nav>
   <a class="nav-back" href="work_index.html">← Back</a>
   <div class="nav-title">Diego Te Cuenta</div>
+  <a class="nav-contact" href="work_index.html#contacto" id="lbl-cnav">Contact</a>
   <div class="nav-lang">
     <button class="lang-btn active" onclick="setLang('en')">EN</button>
     <button class="lang-btn" onclick="setLang('es')">ES</button>
@@ -482,12 +491,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // LANG
 const copy={
-  en:{eye:"01 — Commercial Work",sub:"Projection mapping, immersive environments and live visual production.",scroll:"Scroll to explore",interview:"Interview extract · 37 sec",p1:"Watch",p2:"Watch",p3:"Ver todo",p4:"Watch",
+  en:{cnav:"Contact",eye:"01 — Commercial Work",sub:"Projection mapping, immersive environments and live visual production.",scroll:"Scroll to explore",interview:"Interview extract · 37 sec",p1:"Watch",p2:"Watch",p3:"Ver todo",p4:"Watch",
     e1:"Iglesia La Compañía de Jesús. Multitudinous live show on historic patrimony. Official Epson America event.",
     e2:"Architectural mapping on a historic convent façade. Full motion design and live operation. Arequipa, Peru.",
     e3:"Vehicle projection mapping at Casona del Museo Pedro de Osma. PIP animation, drone coverage and live performers.",
     e4:"Ceiling projection, wall mapping and LED entrance portal. Brands: L'Oréal, Vichy, CeraVe, La Roche-Posay, SkinCeuticals."},
-  es:{eye:"01 — Trabajo Comercial",sub:"Projection mapping, ambientes inmersivos y producción visual en vivo.",scroll:"Desliza para explorar",interview:"Extracto de entrevista · 37 seg",p1:"Ver",p2:"Ver",p3:"Ver todo",p4:"Ver",
+  es:{cnav:"Contacto",eye:"01 — Trabajo Comercial",sub:"Projection mapping, ambientes inmersivos y producción visual en vivo.",scroll:"Desliza para explorar",interview:"Extracto de entrevista · 37 seg",p1:"Ver",p2:"Ver",p3:"Ver todo",p4:"Ver",
     e1:"Mapping projection para la inauguración del Mapping Challenge de Epson y Dataton. Show masivo en la Iglesia de La Compañía de Jesús.",
     e2:"Mapping projection para la clausura del Seminario Internacional de Finanzas organizado por Caja Arequipa.",
     e3:"Mapping sobre vehículos y estructuras para lanzamientos de marca. Chery Tiggo, Audi Q6, Land Rover Evoque, Samsung, Citroën, Oncosalud.",
@@ -496,6 +505,7 @@ const copy={
 function setLang(l){
   sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
+  document.getElementById("lbl-cnav").textContent=t.cnav;
   document.getElementById("lbl-eye").textContent=t.eye;
   document.getElementById("lbl-sub").textContent=t.sub;
   document.getElementById("lbl-scroll").textContent=t.scroll;

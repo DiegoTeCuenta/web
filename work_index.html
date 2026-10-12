@@ -92,8 +92,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 .contact-submit{width:100%;padding:16px;background:var(--gold);border:none;color:#050505;font-family:"DM Sans",sans-serif;font-size:12px;letter-spacing:0.25em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:opacity 0.3s}
 .contact-submit:hover{opacity:0.85}
 .contact-note{margin-top:24px;font-size:12px;color:rgba(245,242,238,0.35);letter-spacing:0.05em}
-.nav-contact{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.5);text-decoration:none;transition:color 0.3s}
-.nav-contact:hover{color:var(--gold)}
+.nav-contact{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.5);text-decoration:none;border:0.5px solid rgba(212,168,50,0.35);padding:7px 14px;transition:color 0.3s;animation:contactGlow 2.8s ease-in-out infinite}
+.nav-contact:hover{color:var(--gold);animation-play-state:paused;box-shadow:0 0 16px rgba(212,168,50,0.5);border-color:var(--gold)}
+@keyframes contactGlow{
+  0%,100%{box-shadow:0 0 0 rgba(212,168,50,0);border-color:rgba(212,168,50,0.35);color:rgba(245,242,238,0.5)}
+  50%{box-shadow:0 0 18px rgba(212,168,50,0.55);border-color:rgba(212,168,50,0.8);color:var(--gold)}
+}
+@media (prefers-reduced-motion:reduce){.nav-contact{animation:none}}
 </style>
 </head>
 <body>
@@ -324,11 +329,17 @@ document.querySelectorAll(".work-card").forEach((c,i)=>{
   observer.observe(c);
 });
 
-// WhatsApp form → opens chat with prefilled message
+// Contact form → WhatsApp (instant) + email copy via FormSubmit
+// NOTE: the first-ever submission triggers an activation email to contacto@ — it must be clicked once.
 function sendWhatsApp(e){
   e.preventDefault();
   const name=document.getElementById("cf-name").value.trim();
   const msg=document.getElementById("cf-msg").value.trim();
+  fetch("https://formsubmit.co/ajax/contacto@diegotecuenta.com",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify({name:name,message:msg,_subject:"Nuevo mensaje desde diegotecuenta.com"})
+  }).catch(()=>{});
   const text=encodeURIComponent("Hola Diego, soy "+name+". "+msg);
   window.open("https://wa.me/17865064571?text="+text,"_blank");
   return false;

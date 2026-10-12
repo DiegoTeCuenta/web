@@ -83,6 +83,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 .ugc-thumb.active{border-color:rgba(212,168,50,0.9);box-shadow:0 0 12px rgba(212,168,50,0.2)}
 .ugc-thumb-label{position:absolute;bottom:0;left:0;right:0;padding:4px 6px;background:rgba(0,0,0,0.7);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,242,238,0.8);text-align:center}
 .ugc-thumb.active .ugc-thumb-label{color:rgba(212,168,50,0.95)}
+/* CONTACT NAV */
+.nav-contact{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.5);text-decoration:none;border:0.5px solid rgba(212,168,50,0.35);padding:7px 14px;transition:color 0.3s;animation:contactGlow 2.8s ease-in-out infinite}
+.nav-contact:hover{color:var(--gold);animation-play-state:paused;box-shadow:0 0 16px rgba(212,168,50,0.5);border-color:var(--gold)}
+@keyframes contactGlow{
+  0%,100%{box-shadow:0 0 0 rgba(212,168,50,0);border-color:rgba(212,168,50,0.35);color:rgba(245,242,238,0.5)}
+  50%{box-shadow:0 0 18px rgba(212,168,50,0.55);border-color:rgba(212,168,50,0.8);color:var(--gold)}
+}
+@media (prefers-reduced-motion:reduce){.nav-contact{animation:none}}
 </style>
 </head>
 <body>
@@ -91,6 +99,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 <nav>
   <a class="nav-back" href="work_index.html">← Back</a>
   <div class="nav-title">Diego Te Cuenta</div>
+  <a class="nav-contact" href="work_index.html#contacto" id="lbl-cnav">Contact</a>
   <div class="nav-lang">
     <button class="lang-btn active" onclick="setLang('en')">EN</button>
     <button class="lang-btn" onclick="setLang('es')">ES</button>
@@ -303,16 +312,7 @@ function closeLB(id){
   const lb=document.getElementById("lb-"+id);
   lb.style.opacity="0";
   setTimeout(()=>{lb.style.display="none";document.body.style.overflow=""},380);
-  // Stop iframes (YouTube)
   lb.querySelectorAll("iframe").forEach(f=>{const s=f.src;f.src="";f.src=s});
-  // Stop and reset any HTML5 video inside
-  lb.querySelectorAll("video").forEach(v=>{v.pause();v.currentTime=0;v.muted=true;});
-  // Reset mute state for UGC player
-  if(id==="ugc"){
-    ugcMuted=true;
-    const btn=document.getElementById("ugc-mute-btn");
-    if(btn) btn.textContent="🔇 Tap for sound";
-  }
 }
 document.querySelectorAll(".lb").forEach(lb=>{
   lb.addEventListener("click",e=>{if(e.target===lb) closeLB(lb.id.replace("lb-",""))});
@@ -323,10 +323,10 @@ document.addEventListener("keydown",e=>{
   });
 });
 const copy={
-  en:{eye:"04 — AI Work",sub:"Cinematic AI video production. From fan films to brand visuals — no camera needed.",scroll:"Scroll to explore",
+  en:{cnav:"Contact",eye:"04 — AI Work",sub:"Cinematic AI video production. From fan films to brand visuals — no camera needed.",scroll:"Scroll to explore",
     d1:"A full AI-produced music fan video for the band Zaguán del Cielo. Concept, direction and production entirely with AI tools. Released 2025.",
     d2:"Short cinematic loops, product visuals and UGC-style content. Currently in production with Runway, Veo and Kling.",soon:"New projects",p1:"Watch"},
-  es:{eye:"04 — Trabajo AI",sub:"Producción de video cinematográfico con IA. De fan films a visuales de marca — sin cámara.",scroll:"Desliza para explorar",
+  es:{cnav:"Contacto",eye:"04 — Trabajo AI",sub:"Producción de video cinematográfico con IA. De fan films a visuales de marca — sin cámara.",scroll:"Desliza para explorar",
     d1:"Fan video musical completamente producido con IA para la banda Zaguán del Cielo. Concepto, dirección y producción íntegramente con IA. Lanzado en 2025.",
     d2:"Loops cinemáticos cortos, visuales de producto y contenido estilo UGC. Actualmente en producción con Runway, Veo y Kling.",soon:"Nuevos proyectos",p1:"Ver"}
 };
@@ -337,6 +337,7 @@ window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLa
 function setLang(l){
   sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
+  document.getElementById("lbl-cnav").textContent=t.cnav;
   document.getElementById("lbl-eye").textContent=t.eye;
   document.getElementById("lbl-sub").textContent=t.sub;
   document.getElementById("lbl-scroll").textContent=t.scroll;
