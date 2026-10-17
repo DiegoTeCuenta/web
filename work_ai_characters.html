@@ -336,6 +336,7 @@ function setLang(l){
   document.getElementById("play1").textContent=t.p1;
   document.getElementById("play2").textContent=t.p2;
   document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.textContent===l.toUpperCase()));
+}
 
 // LOOKBOOK
 const lbState={m:'1',o:'1',s:'1'};
@@ -362,7 +363,6 @@ function updateLB(){
   t.src=url;
 }
 updateLB();
-}
 </script>
 </body>
 </html>
