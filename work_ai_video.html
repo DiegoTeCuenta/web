@@ -83,14 +83,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 .ugc-thumb.active{border-color:rgba(212,168,50,0.9);box-shadow:0 0 12px rgba(212,168,50,0.2)}
 .ugc-thumb-label{position:absolute;bottom:0;left:0;right:0;padding:4px 6px;background:rgba(0,0,0,0.7);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,242,238,0.8);text-align:center}
 .ugc-thumb.active .ugc-thumb-label{color:rgba(212,168,50,0.95)}
-/* CONTACT NAV */
-.nav-contact{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.5);text-decoration:none;border:0.5px solid rgba(212,168,50,0.35);padding:7px 14px;transition:color 0.3s;animation:contactGlow 2.8s ease-in-out infinite}
-.nav-contact:hover{color:var(--gold);animation-play-state:paused;box-shadow:0 0 16px rgba(212,168,50,0.5);border-color:var(--gold)}
-@keyframes contactGlow{
-  0%,100%{box-shadow:0 0 0 rgba(212,168,50,0);border-color:rgba(212,168,50,0.35);color:rgba(245,242,238,0.5)}
-  50%{box-shadow:0 0 18px rgba(212,168,50,0.55);border-color:rgba(212,168,50,0.8);color:var(--gold)}
-}
-@media (prefers-reduced-motion:reduce){.nav-contact{animation:none}}
 </style>
 </head>
 <body>
@@ -99,7 +91,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
 <nav>
   <a class="nav-back" href="work_index.html">← Back</a>
   <div class="nav-title">Diego Te Cuenta</div>
-  <a class="nav-contact" href="work_index.html#contacto" id="lbl-cnav">Contact</a>
   <div class="nav-lang">
     <button class="lang-btn active" onclick="setLang('en')">EN</button>
     <button class="lang-btn" onclick="setLang('es')">ES</button>
@@ -190,18 +181,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
       </video>
     </div>
     <div class="proj-row-ov"></div>
-    <div class="proj-card from-left" style="cursor:default">
-      <div class="card-img" style="background:#0a0c0a;display:flex;align-items:center;justify-content:center">
-        <div style="text-align:center;padding:40px">
-          <div style="font-family:Cormorant Garamond,serif;font-size:32px;font-weight:300;font-style:italic;color:rgba(245,242,238,0.2);margin-bottom:12px">More coming</div>
-          <div style="font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(212,168,50,0.3)">New work in production</div>
-        </div>
+    <div class="proj-card from-left" onclick="openLB('spokesperson')">
+      <div class="card-img">
+        <video autoplay muted loop playsinline
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <source src="https://diegotecuenta.com/assets/ai_spokesperson.webm" type="video/webm">
+        </video>
+        <div class="card-img-ov"></div>
       </div>
       <div class="card-body">
         <div class="card-num">02</div>
-        <div class="card-cat">AI Video · In Production</div>
-        <div class="card-title" id="lbl-soon">New projects<br><em style="font-style:italic;font-family:Cormorant Garamond,serif;color:rgba(212,168,50,0.4);font-size:0.75em">Coming soon</em></div>
-        <div class="card-desc" id="desc-soon">Short cinematic loops, product visuals and UGC-style content. Currently in production with Runway, Veo and Kling.</div>
+        <div class="card-cat">AI Video · AI Spokesperson</div>
+        <div class="card-title">AI Spokesperson<br><em style="font-style:italic;font-family:Cormorant Garamond,serif;color:rgba(212,168,50,0.7);font-size:0.75em">Demo reel</em></div>
+        <div class="card-desc" id="desc-soon">Photorealistic AI presenters for ads, explainers and UGC-style content. Script in, spokesperson out — no camera, no crew.</div>
+        <div class="card-play"><div class="play-circle">▶</div><span id="play2">Watch</span></div>
       </div>
     </div>
   </div>
@@ -257,6 +250,34 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 24px;display:fl
       <span class="lb-tag">AI Presenter</span>
       <span class="lb-tag">Veo</span>
       <span class="lb-tag">Runway</span>
+      <span class="lb-tag">No camera</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- LB SPOKESPERSON -->
+<div class="lb" id="lb-spokesperson">
+  <button class="lb-close" onclick="closeLB('spokesperson')">✕ Close</button>
+  <div class="lb-inner">
+    <div class="lb-cat">AI Video · AI Spokesperson</div>
+    <div class="lb-title">AI Spokesperson — Demo Reel</div>
+    <div class="lb-desc">Photorealistic AI presenters delivering your script straight to camera. For ads, explainers and UGC-style content. Script in, spokesperson out — no camera, no crew, entirely AI-generated.</div>
+    <div style="position:relative;width:100%;background:#000;margin-bottom:14px;overflow:hidden">
+      <video id="spk-video" autoplay muted loop playsinline
+        style="width:100%;display:block;max-height:65vh;object-fit:contain">
+        <source src="https://diegotecuenta.com/assets/ai_spokesperson.webm" type="video/webm">
+      </video>
+      <button id="spk-mute-btn" onclick="toggleSpkMute()"
+        style="position:absolute;bottom:14px;right:14px;background:rgba(0,0,0,0.65);border:0.5px solid rgba(212,168,50,0.5);color:rgba(212,168,50,0.9);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;padding:7px 14px;cursor:pointer;font-family:DM Sans,sans-serif;backdrop-filter:blur(4px)">
+        &#x1f507; Tap for sound
+      </button>
+    </div>
+    <div class="lb-tags">
+      <span class="lb-tag">AI Spokesperson</span>
+      <span class="lb-tag">AI Presenter</span>
+      <span class="lb-tag">Ads</span>
+      <span class="lb-tag">Explainers</span>
       <span class="lb-tag">No camera</span>
     </div>
   </div>
@@ -323,12 +344,12 @@ document.addEventListener("keydown",e=>{
   });
 });
 const copy={
-  en:{cnav:"Contact",eye:"04 — AI Work",sub:"Cinematic AI video production. From fan films to brand visuals — no camera needed.",scroll:"Scroll to explore",
+  en:{eye:"04 — AI Work",sub:"Cinematic AI video production. From fan films to brand visuals — no camera needed.",scroll:"Scroll to explore",
     d1:"A full AI-produced music fan video for the band Zaguán del Cielo. Concept, direction and production entirely with AI tools. Released 2025.",
-    d2:"Short cinematic loops, product visuals and UGC-style content. Currently in production with Runway, Veo and Kling.",soon:"New projects",p1:"Watch"},
-  es:{cnav:"Contacto",eye:"04 — Trabajo AI",sub:"Producción de video cinematográfico con IA. De fan films a visuales de marca — sin cámara.",scroll:"Desliza para explorar",
+    d2:"Photorealistic AI presenters for ads, explainers and UGC-style content. Script in, spokesperson out — no camera, no crew.",soon:"New projects",p1:"Watch"},
+  es:{eye:"04 — Trabajo AI",sub:"Producción de video cinematográfico con IA. De fan films a visuales de marca — sin cámara.",scroll:"Desliza para explorar",
     d1:"Fan video musical completamente producido con IA para la banda Zaguán del Cielo. Concepto, dirección y producción íntegramente con IA. Lanzado en 2025.",
-    d2:"Loops cinemáticos cortos, visuales de producto y contenido estilo UGC. Actualmente en producción con Runway, Veo y Kling.",soon:"Nuevos proyectos",p1:"Ver"}
+    d2:"Presentadores IA fotorrealistas para ads, explainers y contenido estilo UGC. Guion adentro, portavoz afuera — sin cámara, sin equipo.",soon:"Nuevos proyectos",p1:"Ver"}
 };
 // LANG PERSISTENCE
 const savedLang = sessionStorage.getItem('dtc_lang') || 'en';
@@ -337,13 +358,13 @@ window.addEventListener('DOMContentLoaded', () => { if(savedLang === 'es') setLa
 function setLang(l){
   sessionStorage.setItem('dtc_lang', l);
   const t=copy[l];
-  document.getElementById("lbl-cnav").textContent=t.cnav;
   document.getElementById("lbl-eye").textContent=t.eye;
   document.getElementById("lbl-sub").textContent=t.sub;
   document.getElementById("lbl-scroll").textContent=t.scroll;
   document.getElementById("desc-cat").textContent=t.d1;
   document.getElementById("desc-soon").textContent=t.d2;
   document.getElementById("play1").textContent=t.p1;
+  var pl2=document.getElementById("play2");if(pl2)pl2.textContent=t.p1;
   document.querySelectorAll(".lang-btn").forEach(b=>b.classList.toggle("active",b.textContent===l.toUpperCase()));
 }
 
@@ -369,6 +390,21 @@ function playClip(file, thumb, title){
 }
 // Reset mute when lightbox closes
 const origCloseLB = closeLB;
+var spkMuted = true;
+function toggleSpkMute(){
+  var v = document.getElementById('spk-video');
+  var btn = document.getElementById('spk-mute-btn');
+  spkMuted = !spkMuted;
+  v.muted = spkMuted;
+  btn.textContent = spkMuted ? '🔇 Tap for sound' : '🔊 Sound on';
+}
+closeLB = function(id){
+  if(id==='spokesperson'){
+    var v=document.getElementById('spk-video');
+    if(v){v.pause();}
+  }
+  origCloseLB(id);
+};
 </script>
 </body>
 </html>
