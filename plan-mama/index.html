@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Su dinero, en simple</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #faf6ef;
+    color: #20302a;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 21px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 28px 20px 60px; }
+  h1 { font-size: 38px; line-height: 1.2; margin: 10px 0 8px; }
+  .intro { font-size: 21px; color: #4a5a53; margin: 0 0 28px; }
+  h2 { font-size: 27px; margin: 36px 0 14px; }
+  .card {
+    background: #ffffff;
+    border: 2px solid #d8cfbc;
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .card .name { font-size: 24px; font-weight: bold; margin: 0 0 10px; }
+  .row {
+    display: flex; justify-content: space-between; gap: 14px;
+    padding: 7px 0; border-top: 1px solid #ece5d3; font-size: 21px;
+  }
+  .row:first-of-type { border-top: none; }
+  .k { color: #66766e; }
+  .v { font-weight: bold; text-align: right; }
+  .note { font-size: 19px; color: #4a5a53; margin: 10px 0 0; }
+  .hoy { background: #fdf1ec; border-color: #e3c3b4; }
+  .total {
+    background: #234434; color: #fdfbf5; border-radius: 16px;
+    padding: 26px 22px; text-align: center; margin: 28px 0 16px;
+  }
+  .total .big { font-size: 44px; font-weight: bold; line-height: 1.15; }
+  .total p { font-size: 21px; margin: 10px 0 0; }
+  .paso { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .cuando {
+    flex: 0 0 128px; font-weight: bold; background: #efe8d6;
+    border-radius: 10px; padding: 8px 10px; text-align: center; font-size: 19px;
+  }
+  .paso p { margin: 6px 0 0; font-size: 21px; }
+  .foot { font-size: 17px; color: #66766e; margin-top: 34px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Su dinero, en simple</h1>
+  <p class="intro">Esto es lo que pasaría si vende su parte del departamento y pone ese dinero a trabajar tranquilo. Todo está en esta sola página, explicado sin palabras raras.</p>
+
+  <div class="card hoy">
+    <p class="name">Hoy: el departamento rentado</p>
+    <p style="margin:0">Le deja unos <strong>$487 al mes</strong>… pero le toca lidiar con el inquilino, las reparaciones, los impuestos del departamento y la vecina problema.</p>
+  </div>
+
+  <h2>Si vende: el dinero se reparte en 4 lugares seguros</h2>
+  <p class="intro" style="margin-bottom:18px">Tendría unos <strong>$110,000</strong> en la mano (es un ejemplo). Así se repartirían:</p>
+
+  <div class="card">
+    <p class="name">1. En el banco, en una cuenta de ahorros que paga</p>
+    <div class="row"><span class="k">Pone</span><span class="v">$10,000</span></div>
+    <div class="row"><span class="k">Le da</span><span class="v">$320 al año (como $27 al mes)</span></div>
+    <div class="row"><span class="k">Le empieza a llegar</span><span class="v">Desde el primer mes</span></div>
+    <div class="row"><span class="k">¿Lo puede sacar?</span><span class="v">Cuando quiera</span></div>
+  </div>
+
+  <div class="card">
+    <p class="name">2. Prestado al gobierno — el que la cuida de la inflación</p>
+    <div class="row"><span class="k">Pone</span><span class="v">$10,000</span></div>
+    <div class="row"><span class="k">Le da</span><span class="v">$551 al año (como $46 al mes)</span></div>
+    <div class="row"><span class="k">Le empieza a llegar</span><span class="v">Va ganando desde el primer día</span></div>
+    <div class="row"><span class="k">¿Lo puede sacar?</span><span class="v">Después de 1 año</span></div>
+    <p class="note">Este se llama «I Bond». Es el que más paga, pero el gobierno solo deja poner $10,000 al año por persona — por eso no se puede poner todo ahí.</p>
+  </div>
+
+  <div class="card">
+    <p class="name">3. Prestado al gobierno, por plazos cortos</p>
+    <div class="row"><span class="k">Pone</span><span class="v">$45,000</span></div>
+    <div class="row"><span class="k">Le da</span><span class="v">$1,935 al año (como $161 al mes)</span></div>
+    <div class="row"><span class="k">Le empieza a llegar</span><span class="v">A los 3 meses empieza a caer, por partes</span></div>
+    <div class="row"><span class="k">¿Lo puede sacar?</span><span class="v">Por partes, entre 3 meses y 1 año</span></div>
+  </div>
+
+  <div class="card">
+    <p class="name">4. En el banco, a plazo fijo</p>
+    <div class="row"><span class="k">Pone</span><span class="v">$45,000</span></div>
+    <div class="row"><span class="k">Le da</span><span class="v">$1,980 al año (como $165 al mes)</span></div>
+    <div class="row"><span class="k">Le empieza a llegar</span><span class="v">Cuando vence cada plazo</span></div>
+    <div class="row"><span class="k">¿Lo puede sacar?</span><span class="v">Por partes, entre 6 meses y 2 años</span></div>
+  </div>
+
+  <h2>¿Desde cuándo le llega la plata?</h2>
+  <div class="paso"><div class="cuando">Primer mes</div><p>Empieza a ganar la cuenta de ahorros: unos <strong>$27 al mes</strong>. Y sus $10,000 de esa cuenta están libres por si los necesita.</p></div>
+  <div class="paso"><div class="cuando">A los 3 meses</div><p>Empiezan a vencer los préstamos cortos al gobierno y le va cayendo dinero seguido, pedazo a pedazo.</p></div>
+  <div class="paso"><div class="cuando">Primer año</div><p>Puede ir usando como <strong>$350 al mes</strong>. Un pedazo (el del gobierno contra la inflación) todavía está guardado, cumpliendo su año.</p></div>
+  <div class="paso"><div class="cuando">Segundo año</div><p>Ya todo está rodando: como <strong>$400 al mes</strong>, sin hacer nada. Y cada año puede poner otros $10,000 en el que más paga.</p></div>
+
+  <div class="total">
+    <div class="big">≈ $400 cada mes</div>
+    <p>Ganancia total: <strong>unos $4,786 al año</strong>.<br>Sin inquilinos. Sin reparaciones. Sin vecinas.</p>
+  </div>
+
+  <h2>¿Y es seguro?</h2>
+  <div class="card">
+    <p style="margin:0 0 8px">Lo prestado al gobierno lo respalda <strong>el gobierno de Estados Unidos</strong>: es el pago más seguro que existe.</p>
+    <p style="margin:0 0 8px">Lo del banco está <strong>asegurado hasta $250,000</strong> por el gobierno federal.</p>
+    <p style="margin:0">Esto <strong>no es la bolsa ni nada raro</strong>: el dinero que pone no baja. Ningún pedazo queda guardado más de 2 años.</p>
+  </div>
+
+  <p class="foot">Ejemplo con $110,000 ya en la mano, después de los gastos de la venta. Las tasas son las de noviembre de 2026; el día que se haga, se confirman las de ese momento. Esta página es solo una explicación en simple — la decisión final es suya, hablando con su contador y su asesor del banco.</p>
+
+</div>
+</body>
+</html>
