@@ -199,6 +199,23 @@
     border:1.5px solid var(--line);border-radius:11px;background:var(--surface-2);
     padding:13px;font-size:14.5px;line-height:1.55;
   }
+  .dna-block{
+    border:2px solid var(--teal);border-radius:14px;padding:14px;
+    background:color-mix(in srgb, var(--teal) 7%, var(--surface));
+  }
+  .dna-block .out-head{margin-bottom:6px}
+  .dna-badge{
+    display:inline-flex;align-items:center;background:var(--teal);color:#fff;
+    font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+    border-radius:999px;padding:3px 9px;margin-left:8px;vertical-align:2px;white-space:nowrap;
+  }
+  @media (prefers-color-scheme: dark){ .dna-badge{color:#0b1514} }
+  .dna-hint{color:var(--ink-2);font-size:13.5px;line-height:1.5;margin:0 0 10px}
+  .dna-out{
+    width:100%;border:1.5px solid var(--teal);border-radius:11px;background:var(--surface);
+    color:var(--ink);padding:13px;font-size:14.5px;line-height:1.55;resize:vertical;min-height:104px;
+  }
+  .dna-out:focus{outline:2px solid var(--teal);outline-offset:1px}
   .toast{
     position:fixed;left:50%;bottom:22px;transform:translate(-50%,80px);
     background:var(--ink);color:var(--bg);border-radius:999px;padding:11px 20px;
@@ -220,7 +237,7 @@
     <div class="top-row">
       <div>
         <h1>Creador de Personajes<span class="dot">.</span></h1>
-        <p class="lede">Crea tu protagonista, mujer u hombre: elige cada rasgo con los ojos, mira cómo el avatar toma forma en vivo y llévate la ficha completa: descripción, prompt listo para Flow y el JSON del personaje.</p>
+        <p class="lede">Crea tu protagonista, mujer u hombre: elige cada rasgo con los ojos, mira cómo el avatar toma forma en vivo y llévate la ficha completa: el ADN del personaje para pegar siempre en Flow, la descripción, el prompt completo y el JSON.</p>
       </div>
       <div class="top-actions">
         <button class="btn" id="btn-random" type="button">🎲 Aleatorio</button>
@@ -787,6 +804,17 @@ function buildControls(){
   p = panel("07","Ficha y prompts");
   p.classList.add("output");
   p.insertAdjacentHTML("beforeend", `
+    <div class="out-block dna-block">
+      <div class="out-head">
+        <h3>ADN del personaje<span class="dna-badge">Pega siempre</span></h3>
+        <div class="out-actions">
+          <button class="btn small" type="button" id="copy-dna">Copiar</button>
+          <button class="btn small" type="button" id="dl-dna">Descargar .txt</button>
+        </div>
+      </div>
+      <p class="dna-hint">En inglés, listo para pegar al inicio de cada prompt en Flow. Solo nombre, edad y rasgos físicos — sin locación, sin ropa y sin vibra: eso cambia en cada escena, el ADN no.</p>
+      <textarea class="dna-out" id="dna-out" readonly rows="5" aria-label="ADN del personaje en inglés"></textarea>
+    </div>
     <div class="out-block">
       <div class="out-head"><h3>Descripción del personaje <span>— el extracto en texto</span></h3></div>
       <div class="desc-out" id="desc-out"></div>
@@ -811,6 +839,8 @@ function buildControls(){
       </div>
       <pre class="code" id="json-out" tabindex="0"></pre>
     </div>`);
+  $("#copy-dna").addEventListener("click",()=>copyText(buildDNA(),"ADN copiado — pégalo en Flow"));
+  $("#dl-dna").addEventListener("click",()=>download(buildDNA(), slugName()+"-adn.txt","text/plain"));
   $("#copy-prompt").addEventListener("click",()=>copyText(buildPrompt(),"Prompt copiado"));
   $("#copy-json").addEventListener("click",()=>copyText(JSON.stringify(buildJSON(),null,2),"JSON copiado"));
   $("#dl-prompt").addEventListener("click",()=>download(buildPrompt(), slugName()+"-prompt.txt","text/plain"));
@@ -1189,6 +1219,32 @@ function buildDesc(){
   d+=`Vibra ${find(L("vibra"),state.vibra).es.toLowerCase()}, casi siempre en ${find(OPTS.escenario,state.escenario).es.toLowerCase()}.`;
   return d;
 }
+function buildDNA(){
+  // ADN: SOLO identidad física — nombre, edad y rasgos.
+  // Sin escenario/locación, sin conjunto/ropa, sin expresión y sin vibra.
+  const male = state.genero==="hombre";
+  const o=find(L("origen"),state.origen), piel=find(SKIN,state.piel);
+  const face=find(OPTS.rostro,state.rostro);
+  const pelo=find(HAIR_COLORS,state.peloColor), largo=find(L("peloLargo"),state.peloLargo), est=find(L("peloEstilo"),state.peloEstilo);
+  const fle=find(OPTS.flequillo,state.flequillo);
+  const comp=find(L("complexion"),state.complexion), alt=find(L("altura"),state.altura);
+  const dets=selectedDetails().map(d=>d.en);
+  const nombre=(state.nombre||"the character").trim();
+  let d;
+  if(male){
+    d=`${nombre}, a ${state.edad}-year-old ${o.en} man with ${piel.en} skin. `;
+    d+=`${face.en} face, ${find(OPTS.ojosForma,state.ojosForma).en} ${find(EYE_COLORS,state.ojosColor).en} eyes, ${find(OPTS.cejas,state.cejas).en} eyebrows, ${find(OPTS.nariz,state.nariz).en} nose, ${find(OPTS.labios,state.labios).en} lips. ${find(MALE.barba,state.barba).en}. `;
+    d+=`${largo.en} ${est.en} hair in ${pelo.en}. `;
+    d+=`${comp.en} build, ${alt.en}, ${find(MALE.hombros,state.hombros).en}, ${find(MALE.pecho,state.pecho).en}, ${find(OPTS.cintura,state.cintura).en} waist, ${find(OPTS.piernas,state.piernas).en} legs with ${find(OPTS.muslos,state.muslos).en} thighs.`;
+  } else {
+    d=`${nombre}, a ${state.edad}-year-old ${o.en} woman with ${piel.en} skin. `;
+    d+=`${face.en} face, ${find(OPTS.ojosForma,state.ojosForma).en} ${find(EYE_COLORS,state.ojosColor).en} eyes, ${find(OPTS.cejas,state.cejas).en} eyebrows, ${find(OPTS.nariz,state.nariz).en} nose, ${find(OPTS.labios,state.labios).en} lips. `;
+    d+=`${largo.en} ${est.en} hair in ${pelo.en}${fle.en?", with "+fle.en:""}. `;
+    d+=`${comp.en} build, ${alt.en}, ${find(OPTS.busto,state.busto).en} bust, ${find(OPTS.cintura,state.cintura).en} waist, ${find(OPTS.cadera,state.cadera).en}, ${find(OPTS.piernas,state.piernas).en} legs with ${find(OPTS.muslos,state.muslos).en} thighs.`;
+  }
+  if(dets.length) d+=` Skin detail: ${dets.join(", ")}.`;
+  return d;
+}
 function buildPrompt(){
   const male = state.genero==="hombre";
   const o=find(L("origen"),state.origen), piel=find(SKIN,state.piel);
@@ -1272,6 +1328,7 @@ function buildJSON(){
     },
     skin_realism: selectedDetails().map(d=>({id:d.id, es:d.es, en:d.en})),
     palette: buildPalette().map(c=>({name:c.name, hex:c.hex})),
+    character_dna: buildDNA(),
     prompt_extract: buildPrompt()
   };
 }
@@ -1327,6 +1384,7 @@ function refresh(syncControls=true){
   ];
   $("#summary").innerHTML=chips.map(c=>`<li>${escapeHtml(c)}</li>`).join("");
   // salidas
+  const dnaEl=$("#dna-out"); if(dnaEl) dnaEl.value=buildDNA();
   $("#desc-out").textContent=buildDesc();
   $("#prompt-out").value=buildPrompt();
   $("#json-out").textContent=JSON.stringify(buildJSON(),null,2);
