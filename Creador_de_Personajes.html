@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>Creador de Personajes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light dark;
+    --bg:#f4f4f1;
+    --surface:#ffffff;
+    --surface-2:#eceee9;
+    --ink:#16191d;
+    --ink-2:#4c545e;
+    --ink-3:#7c858f;
+    --line:#d9ddd6;
+    --accent:#e8492f;
+    --accent-ink:#ffffff;
+    --teal:#0d7a74;
+    --chip:#ffffff;
+    --chip-sel:#16191d;
+    --code-bg:#14181d;
+    --code-ink:#e8ecdf;
+    --shadow:0 10px 30px rgba(20,24,29,.10);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#101315;
+      --surface:#181c1f;
+      --surface-2:#20262a;
+      --ink:#eef1ea;
+      --ink-2:#b7bfb4;
+      --ink-3:#8b948c;
+      --line:#2c3338;
+      --accent:#ff6a4d;
+      --accent-ink:#17120e;
+      --teal:#3ec2b8;
+      --chip:#1d2225;
+      --chip-sel:#eef1ea;
+      --code-bg:#0b0e10;
+      --code-ink:#e8ecdf;
+      --shadow:0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;cursor:pointer;min-height:44px}
+  input,select,textarea{font:inherit}
+  h1,h2,h3{font-family:"Bricolage Grotesque","Archivo",sans-serif;line-height:1.05;margin:0}
+  .wrap{max-width:1280px;margin:0 auto;padding:20px 16px 64px}
+
+  /* ---------- header ---------- */
+  header.top{padding:10px 0 18px;border-bottom:2px solid var(--ink);margin-bottom:20px}
+  .top-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between}
+  h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.01em}
+  h1 .dot{color:var(--accent)}
+  .lede{color:var(--ink-2);max-width:56ch;margin:8px 0 0;font-size:15.5px}
+  .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{
+    border:2px solid var(--ink);background:var(--surface);color:var(--ink);
+    border-radius:999px;padding:8px 16px;font-weight:600;font-size:14.5px;
+    display:inline-flex;align-items:center;gap:8px;min-height:44px;
+  }
+  .btn:hover{background:var(--surface-2)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.small{min-height:40px;padding:6px 13px;font-size:13.5px;border-width:1.5px}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .presets span{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .preset{
+    border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
+    border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600;min-height:40px;
+  }
+  .preset:hover{border-color:var(--ink)}
+  .gender-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .gender-bar > span{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .gender-toggle{display:flex;background:var(--surface);border:2px solid var(--ink);border-radius:999px;padding:3px;gap:3px}
+  .gender-toggle button{border:0;background:transparent;color:var(--ink-2);border-radius:999px;padding:8px 22px;font-size:15px;font-weight:700;min-height:44px}
+  .gender-toggle button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:400px minmax(0,1fr);gap:22px;align-items:start}
+  @media (max-width:920px){.layout{grid-template-columns:1fr}}
+
+  /* ---------- preview ---------- */
+  .preview{
+    background:var(--surface);border:2px solid var(--ink);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  @media (min-width:921px){.preview{position:sticky;top:16px}}
+  .preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 0}
+  .preview-head h2{font-size:21px;font-weight:800}
+  .preview-head .who{color:var(--ink-2);font-size:13.5px;margin-top:2px}
+  .view-toggle{display:flex;background:var(--surface-2);border-radius:999px;padding:3px;flex-shrink:0}
+  .view-toggle button{
+    border:0;background:transparent;color:var(--ink-2);border-radius:999px;
+    padding:6px 13px;font-size:13.5px;font-weight:600;min-height:38px;
+  }
+  .view-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+  .stage{
+    margin:12px 16px 0;border-radius:14px;position:relative;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(13,122,116,.14), transparent 60%),
+      linear-gradient(180deg, var(--surface-2), var(--surface));
+    border:1.5px solid var(--line);
+    display:flex;justify-content:center;padding:10px 6px 0;
+  }
+  .stage svg{width:100%;max-width:300px;height:auto;display:block}
+  .stage.face svg{max-width:250px}
+  .stage-note{padding:9px 16px 12px;color:var(--ink-3);font-size:12.5px;text-align:center}
+  .palette{padding:4px 16px 16px}
+  .palette h3{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px;font-family:"Archivo";font-weight:700}
+  .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .swatch{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+  .swatch i{display:block;height:30px}
+  .swatch b{display:block;font-size:10.5px;font-weight:600;padding:5px 6px 1px;line-height:1.2}
+  .swatch s{display:block;text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3);padding:0 6px 5px}
+  .summary{padding:0 16px 18px}
+  .summary h3{font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;font-family:"Archivo";font-weight:700}
+  .summary ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+  .summary li{background:var(--surface-2);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:500}
+
+  /* ---------- controls ---------- */
+  .controls{display:flex;flex-direction:column;gap:16px;min-width:0}
+  section.panel{
+    background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);
+    padding:18px;
+  }
+  section.panel > h2{font-size:20px;font-weight:800;display:flex;align-items:baseline;gap:10px}
+  section.panel > h2 .num{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;color:var(--accent);
+    border:1.5px solid var(--accent);border-radius:999px;padding:2px 8px;transform:translateY(-2px);
+  }
+  .field{margin-top:16px}
+  .field:first-of-type{margin-top:14px}
+  .field > label,.field > .flabel{
+    display:block;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-2);margin-bottom:8px;
+  }
+  .field .hint{font-size:12.5px;color:var(--ink-3);margin-top:6px;text-transform:none;letter-spacing:0;font-weight:400}
+  .name-input{
+    width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--chip);
+    color:var(--ink);padding:11px 13px;font-size:16px;min-height:48px;
+  }
+  .name-input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+  input[type="range"]{width:100%;accent-color:var(--accent);min-height:44px;cursor:pointer}
+  .range-row{display:flex;align-items:center;gap:12px}
+  .range-val{
+    font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:15px;white-space:nowrap;
+    background:var(--surface-2);border-radius:8px;padding:6px 10px;min-width:86px;text-align:center;
+  }
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opt{
+    border:1.5px solid var(--line);background:var(--chip);color:var(--ink);
+    border-radius:11px;padding:8px 13px;font-size:14.5px;font-weight:500;
+    display:inline-flex;align-items:center;gap:9px;min-height:44px;text-align:left;
+  }
+  .opt:hover{border-color:var(--ink-3)}
+  .opt[aria-pressed="true"]{background:var(--chip-sel);color:var(--bg);border-color:var(--chip-sel)}
+  .opt .cdot{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(0,0,0,.18);flex-shrink:0}
+  .opt .mini{flex-shrink:0;display:flex;align-items:flex-end}
+  .opt small{display:block;font-size:11.5px;opacity:.75;font-weight:400}
+  .opts.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+  .opts.grid .opt{flex-direction:column;align-items:flex-start;gap:7px;padding:11px 12px}
+  .silhouette{display:block}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+  @media (max-width:560px){.two-col{grid-template-columns:1fr}}
+
+  /* ---------- output ---------- */
+  .output{border-color:var(--ink);border-width:2px}
+  .out-block{margin-top:18px}
+  .out-block:first-of-type{margin-top:14px}
+  .out-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .out-head h3{font-size:16.5px;font-weight:700;font-family:"Archivo"}
+  .out-head h3 span{color:var(--ink-3);font-weight:500;font-size:13px}
+  .out-actions{display:flex;gap:7px}
+  .text-out{
+    width:100%;border:1.5px solid var(--line);border-radius:11px;background:var(--surface-2);
+    color:var(--ink);padding:13px;font-size:14.5px;line-height:1.55;resize:vertical;min-height:110px;
+  }
+  pre.code{
+    margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:11px;
+    padding:14px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.55;
+    overflow:auto;max-height:380px;white-space:pre;
+  }
+  .desc-out{
+    border:1.5px solid var(--line);border-radius:11px;background:var(--surface-2);
+    padding:13px;font-size:14.5px;line-height:1.55;
+  }
+  .toast{
+    position:fixed;left:50%;bottom:22px;transform:translate(-50%,80px);
+    background:var(--ink);color:var(--bg);border-radius:999px;padding:11px 20px;
+    font-weight:600;font-size:14.5px;opacity:0;transition:all .25s ease;z-index:50;pointer-events:none;
+    box-shadow:var(--shadow);
+  }
+  .toast.show{transform:translate(-50%,0);opacity:1}
+  footer{margin-top:26px;color:var(--ink-3);font-size:13px;text-align:center}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .toast{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="top-row">
+      <div>
+        <h1>Creador de Personajes<span class="dot">.</span></h1>
+        <p class="lede">Crea tu protagonista, mujer u hombre: elige cada rasgo con los ojos, mira cómo el avatar toma forma en vivo y llévate la ficha completa: descripción, prompt listo para Flow y el JSON del personaje.</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn" id="btn-random" type="button">🎲 Aleatorio</button>
+        <button class="btn" id="btn-reset" type="button">↺ Reiniciar</button>
+      </div>
+    </div>
+    <div class="gender-bar">
+      <span>Personaje</span>
+      <div class="gender-toggle" role="group" aria-label="Género del personaje">
+        <button type="button" id="gender-f" aria-pressed="true">Mujer</button>
+        <button type="button" id="gender-m" aria-pressed="false">Hombre</button>
+      </div>
+    </div>
+    <div class="presets" id="presets">
+      <span>Empezar desde</span>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ======= PREVIEW ======= -->
+    <aside class="preview" aria-label="Vista previa del personaje">
+      <div class="preview-head">
+        <div>
+          <h2 id="pv-name">Tu personaje</h2>
+          <div class="who" id="pv-who"></div>
+        </div>
+        <div class="view-toggle" role="group" aria-label="Vista del avatar">
+          <button type="button" id="view-full" aria-pressed="true">Cuerpo</button>
+          <button type="button" id="view-face" aria-pressed="false">Rostro</button>
+        </div>
+      </div>
+      <div class="stage" id="stage"></div>
+      <p class="stage-note">Avatar ilustrado de referencia: muestra la combinación de rasgos, no es la foto final.</p>
+      <div class="palette">
+        <h3>Paleta del personaje</h3>
+        <div class="swatches" id="palette"></div>
+      </div>
+      <div class="summary">
+        <h3>En resumen</h3>
+        <ul id="summary"></ul>
+      </div>
+    </aside>
+
+    <!-- ======= CONTROLS ======= -->
+    <div class="controls" id="controls"></div>
+  </div>
+
+  <footer>Herramienta de Diego Te Cuenta — arma el personaje aquí y genera la foto con el prompt en tu generador favorito.</footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   Datos de opciones. Cada opción trae:
+   es = etiqueta en español · en = frase para el prompt en inglés
+   ============================================================ */
+const SKIN = [
+  {id:"porcelana", es:"Porcelana",      hex:"#f6ddc8", en:"porcelain fair"},
+  {id:"claro",     es:"Claro",          hex:"#eec9a8", en:"light"},
+  {id:"beige",     es:"Beige cálido",   hex:"#e2b48c", en:"warm beige"},
+  {id:"bronceado-claro", es:"Bronceado claro", hex:"#d29e6f", en:"lightly tanned"},
+  {id:"bronceado", es:"Bronceado",      hex:"#b57e4e", en:"tanned golden-brown"},
+  {id:"moreno",    es:"Moreno",         hex:"#8f5c33", en:"medium brown"},
+  {id:"oscuro",    es:"Oscuro",         hex:"#6e4225", en:"deep brown"},
+  {id:"profundo",  es:"Profundo",       hex:"#4c2c17", en:"rich deep brown"}
+];
+const HAIR_COLORS = [
+  {id:"negro",        es:"Negro azabache", hex:"#1c1a1a", en:"jet black"},
+  {id:"castano-osc",  es:"Castaño oscuro", hex:"#3a2417", en:"dark brown"},
+  {id:"castano",      es:"Castaño",        hex:"#5f3a20", en:"chestnut brown"},
+  {id:"balayage",     es:"Balayage miel",  hex:"#a97a45", en:"honey-blonde balayage"},
+  {id:"rubio",        es:"Rubio dorado",   hex:"#d9ae62", en:"golden blonde"},
+  {id:"platinado",    es:"Platinado",      hex:"#e6ddc9", en:"platinum blonde"},
+  {id:"cobrizo",      es:"Cobrizo",        hex:"#a34d24", en:"copper auburn"},
+  {id:"pelirrojo",    es:"Pelirrojo",      hex:"#8f2f16", en:"deep red"},
+  {id:"rosa",         es:"Rosa fantasía",  hex:"#d77a9c", en:"dusty pink"}
+];
+const EYE_COLORS = [
+  {id:"marron-osc", es:"Marrón oscuro", hex:"#3a2113", en:"dark brown"},
+  {id:"marron",     es:"Marrón",        hex:"#6b4423", en:"brown"},
+  {id:"miel",       es:"Miel",          hex:"#a97a2f", en:"honey amber"},
+  {id:"verde",      es:"Verde",         hex:"#4d7a4a", en:"green"},
+  {id:"azul",       es:"Azul",          hex:"#4a6f9e", en:"blue"},
+  {id:"gris",       es:"Gris",          hex:"#7d8891", en:"grey"}
+];
+const LIP_COLORS = [
+  {id:"natural", es:"Natural rosado", hex:"#c4746b", en:"natural rosy"},
+  {id:"coral",   es:"Coral",          hex:"#d96a55", en:"coral"},
+  {id:"rojo",    es:"Rojo clásico",   hex:"#a62b25", en:"classic red"},
+  {id:"nude",    es:"Nude",           hex:"#b98a72", en:"nude"},
+  {id:"baya",    es:"Baya",           hex:"#7e3049", en:"berry"}
+];
+const OUTFIT_COLORS = [
+  {id:"blanco", es:"Blanco",  hex:"#f2efe9", en:"white"},
+  {id:"negro",  es:"Negro",   hex:"#232323", en:"black"},
+  {id:"coral",  es:"Coral",   hex:"#e8492f", en:"coral red"},
+  {id:"turquesa", es:"Turquesa", hex:"#0d7a74", en:"teal"},
+  {id:"amarillo", es:"Amarillo", hex:"#eec53f", en:"sunny yellow"},
+  {id:"rosa",   es:"Rosa",    hex:"#e39bb4", en:"soft pink"},
+  {id:"oliva",  es:"Oliva",   hex:"#6d7245", en:"olive"},
+  {id:"denim",  es:"Denim",   hex:"#47648c", en:"denim blue"},
+  {id:"terracota", es:"Terracota", hex:"#b45a32", en:"terracotta"}
+];
+
+const OPTS = {
+  origen: [
+    {id:"latina", es:"Latina", en:"Latina"},
+    {id:"europea", es:"Europea", en:"European"},
+    {id:"afro", es:"Afrodescendiente", en:"Afro-descendant"},
+    {id:"asiatica", es:"Asiática", en:"East Asian"},
+    {id:"medio-oriente", es:"Medio Oriente", en:"Middle Eastern"},
+    {id:"mixta", es:"Mixta", en:"mixed-heritage"}
+  ],
+  rostro: [
+    {id:"ovalado", es:"Ovalado", en:"oval", rx:33, ry:42},
+    {id:"redondo", es:"Redondo", en:"round", rx:37, ry:38},
+    {id:"corazon", es:"Corazón", en:"heart-shaped", rx:35, ry:40},
+    {id:"cuadrado", es:"Cuadrado", en:"square with a defined jaw", rx:34, ry:40},
+    {id:"alargado", es:"Alargado", en:"long", rx:29, ry:47}
+  ],
+  ojosForma: [
+    {id:"almendrados", es:"Almendrados", en:"almond-shaped"},
+    {id:"redondos", es:"Redondos", en:"round"},
+    {id:"rasgados", es:"Rasgados", en:"upturned cat-eye"},
+    {id:"suaves", es:"Suaves / caídos", en:"soft downturned"}
+  ],
+  cejas: [
+    {id:"arqueadas", es:"Arqueadas y gruesas", en:"thick arched"},
+    {id:"rectas", es:"Rectas", en:"straight"},
+    {id:"suaves", es:"Suaves y naturales", en:"soft natural"},
+    {id:"finas", es:"Finas", en:"thin defined"}
+  ],
+  nariz: [
+    {id:"recta", es:"Recta y pequeña", en:"small straight"},
+    {id:"perfilada", es:"Perfilada", en:"refined sculpted"},
+    {id:"boton", es:"De botón", en:"button"},
+    {id:"ancha", es:"Ancha y natural", en:"natural wide"}
+  ],
+  labios: [
+    {id:"naturales", es:"Naturales", en:"natural"},
+    {id:"carnosos", es:"Carnosos", en:"full plump"},
+    {id:"definidos", es:"Muy definidos", en:"sharply defined"},
+    {id:"finos", es:"Finos", en:"slim"}
+  ],
+  peloLargo: [
+    {id:"pixie", es:"Pixie", en:"pixie-cut", len:26},
+    {id:"bob", es:"Bob a los hombros", en:"shoulder-length bob", len:95},
+    {id:"medio", es:"Medio (pecho)", en:"mid-length, chest-length", len:165},
+    {id:"largo", es:"Largo (cintura)", en:"long, waist-length", len:250},
+    {id:"muy-largo", es:"Muy largo", en:"very long, past-the-waist", len:320}
+  ],
+  peloEstilo: [
+    {id:"liso", es:"Liso", en:"straight and sleek"},
+    {id:"ondas", es:"Ondas suaves", en:"soft loose waves"},
+    {id:"rizado", es:"Rizado", en:"voluminous curls"},
+    {id:"cola", es:"Cola alta", en:"high ponytail"},
+    {id:"recogido", es:"Recogido / moño", en:"elegant updo bun"},
+    {id:"trenzas", es:"Trenzas", en:"long braids"}
+  ],
+  flequillo: [
+    {id:"sin", es:"Sin flequillo", en:""},
+    {id:"cortina", es:"Cortina", en:"curtain bangs"},
+    {id:"recto", es:"Recto", en:"straight bangs"},
+    {id:"lateral", es:"Lateral", en:"side-swept bangs"}
+  ],
+  complexion: [
+    {id:"delgada", es:"Delgada", en:"slim, slender", f:0.82, d:"Silueta fina y ligera"},
+    {id:"esbelta", es:"Esbelta", en:"lean and toned", f:0.94, d:"Equilibrada, sin exceso"},
+    {id:"atletica", es:"Atlética", en:"athletic, toned", f:1.0, d:"Hombros y músculos marcados"},
+    {id:"curvilinea", es:"Curvilínea", en:"curvy hourglass", f:1.12, d:"Curvas pronunciadas"},
+    {id:"rellenita", es:"Rellenita", en:"soft plus-size", f:1.27, d:"Suave y con volumen"}
+  ],
+  altura: [
+    {id:"baja", es:"Baja", en:"petite, 5'1\"", cm:"≈155 cm", s:0.94},
+    {id:"media-baja", es:"Media-baja", en:"5'4\"", cm:"≈163 cm", s:0.98},
+    {id:"media-alta", es:"Media-alta", en:"5'6\"", cm:"≈168 cm", s:1.02},
+    {id:"alta", es:"Alta", en:"tall, 5'9\"", cm:"≈175 cm", s:1.07}
+  ],
+  busto: [
+    {id:"pequeno", es:"Pequeño", en:"small", add:0},
+    {id:"mediano", es:"Mediano", en:"medium", add:7},
+    {id:"grande", es:"Grande", en:"large", add:14},
+    {id:"muy-grande", es:"Muy grande", en:"very large", add:21}
+  ],
+  cintura: [
+    {id:"muy-definida", es:"Muy definida", en:"very defined, narrow", add:-9},
+    {id:"definida", es:"Definida", en:"defined", add:-4},
+    {id:"natural", es:"Natural", en:"natural", add:2},
+    {id:"recta", es:"Recta / suave", en:"soft, straight", add:8}
+  ],
+  cadera: [
+    {id:"estrecha", es:"Estrecha", en:"narrow hips", add:-7},
+    {id:"media", es:"Media", en:"balanced hips", add:1},
+    {id:"ancha", es:"Ancha", en:"wide hips", add:10},
+    {id:"muy-ancha", es:"Muy ancha", en:"very wide hips with prominent glutes", add:18}
+  ],
+  piernas: [
+    {id:"cortas", es:"Cortas", en:"shorter", f:0.86},
+    {id:"proporcionadas", es:"Proporcionadas", en:"proportionate", f:1.0},
+    {id:"largas", es:"Largas", en:"long", f:1.13},
+    {id:"muy-largas", es:"Muy largas", en:"very long, model-like", f:1.24}
+  ],
+  muslos: [
+    {id:"delgados", es:"Delgados", en:"slim", add:-3},
+    {id:"tonificados", es:"Tonificados", en:"toned", add:1},
+    {id:"gruesos", es:"Gruesos", en:"thick", add:6}
+  ],
+  conjunto: [
+    {id:"miami", es:"Miami casual", en:"a fitted top with a mini skirt", d:"Top + minifalda"},
+    {id:"casual", es:"Casual diario", en:"a casual t-shirt with jeans", d:"Camiseta + jean"},
+    {id:"deportivo", es:"Deportivo", en:"athleisure: sports top and leggings", d:"Top deportivo + leggings"},
+    {id:"elegante", es:"Elegante", en:"an elegant fitted dress", d:"Vestido entallado"},
+    {id:"playa", es:"Playa", en:"a light summer top with shorts", d:"Top ligero + shorts"}
+  ],
+  expresion: [
+    {id:"sonrisa-suave", es:"Sonrisa suave", en:"soft gentle smile"},
+    {id:"alegre", es:"Alegre, riendo", en:"bright laughing smile"},
+    {id:"seria", es:"Seria editorial", en:"serious editorial expression"},
+    {id:"segura", es:"Segura, mirada firme", en:"confident, direct gaze"}
+  ],
+  vibra: [
+    {id:"dulce", es:"Dulce y cercana", en:"sweet, warm and approachable"},
+    {id:"segura", es:"Segura de sí misma", en:"self-assured and magnetic"},
+    {id:"sofisticada", es:"Sofisticada", en:"sophisticated and elegant"},
+    {id:"juguetona", es:"Juguetona", en:"playful and fun"}
+  ],
+  escenario: [
+    {id:"apartamento", es:"Apartamento minimalista", en:"minimalist apartment living room, white and beige linen, soft daylight"},
+    {id:"playa", es:"Playa de Miami", en:"Miami beach at golden hour, palm trees behind"},
+    {id:"calle", es:"Calle de Vice City", en:"colorful Miami street with art murals, wet pavement after rain"},
+    {id:"cocina", es:"Cocina luminosa", en:"bright modern kitchen in the morning"},
+    {id:"estudio", es:"Estudio fondo neutro", en:"neutral studio background, soft professional light"},
+    {id:"balcon", es:"Balcón con vista", en:"apartment balcony with city view at dusk"}
+  ],
+  detallesPiel: [
+    {id:"poros", es:"Poros visibles", en:"visible skin pores"},
+    {id:"pecas", es:"Pecas leves", en:"light natural freckles across nose and cheeks"},
+    {id:"lunar", es:"Lunar junto al labio", en:"a small beauty mark near the lips"},
+    {id:"imperfecciones", es:"Imperfecciones naturales", en:"subtle natural skin imperfections"},
+    {id:"bronceado-lineas", es:"Marcas leves de bronceado", en:"faint natural tan lines"},
+    {id:"estrias", es:"Estrías sutiles en muslos", en:"very subtle stretch marks on the thighs"},
+    {id:"hoyuelos", es:"Hoyuelos al sonreír", en:"dimples when smiling"}
+  ]
+};
+
+/* ---------- opciones masculinas (pelo, barba, cuerpo, ropa, vibra) ---------- */
+const MALE = {
+  origen: [
+    {id:"latino", es:"Latino", en:"Latino"},
+    {id:"europeo", es:"Europeo", en:"European"},
+    {id:"afro", es:"Afrodescendiente", en:"Afro-descendant"},
+    {id:"asiatico", es:"Asiático", en:"East Asian"},
+    {id:"medio-oriente", es:"Medio Oriente", en:"Middle Eastern"},
+    {id:"mixto", es:"Mixto", en:"mixed-heritage"}
+  ],
+  peloLargo: [
+    {id:"rapado", es:"Rapado / buzz", en:"buzz cut", len:8},
+    {id:"muy-corto", es:"Muy corto", en:"very short cropped", len:16},
+    {id:"corto", es:"Corto clásico", en:"short classic", len:30},
+    {id:"medio", es:"Medio (sobre las orejas)", en:"medium-length, over the ears", len:60},
+    {id:"largo", es:"Largo (hombros)", en:"long, shoulder-length", len:130}
+  ],
+  peloEstilo: [
+    {id:"clasico", es:"Clásico, al lado", en:"classic side-parted"},
+    {id:"fade", es:"Fade / degradado", en:"clean fade"},
+    {id:"texturizado", es:"Texturizado despeinado", en:"textured messy"},
+    {id:"atras", es:"Hacia atrás", en:"slicked back"},
+    {id:"rizado-corto", es:"Rizado corto", en:"short natural curls"},
+    {id:"linea", es:"Rapado con línea", en:"buzz cut with a sharp lineup"}
+  ],
+  barba: [
+    {id:"sin", es:"Sin barba, afeitado", en:"clean-shaven, no facial hair"},
+    {id:"sombra", es:"Sombra de 3 días", en:"short three-day stubble beard"},
+    {id:"corta", es:"Barba corta cuidada", en:"short neatly trimmed beard"},
+    {id:"completa", es:"Barba completa", en:"full thick beard"},
+    {id:"bigote", es:"Solo bigote", en:"mustache only"},
+    {id:"candado", es:"Candado / perilla", en:"goatee"}
+  ],
+  complexion: [
+    {id:"delgado", es:"Delgado", en:"slim, lean", f:0.82, d:"Silueta fina y ligera"},
+    {id:"esbelto", es:"Esbelto", en:"lean and fit", f:0.94, d:"Equilibrado, sin exceso"},
+    {id:"atletico", es:"Atlético", en:"athletic, toned", f:1.05, d:"Definido y en forma"},
+    {id:"musculoso", es:"Musculoso", en:"muscular, broad and built", f:1.18, d:"Pecho y hombros grandes"},
+    {id:"corpulento", es:"Corpulento", en:"heavyset, solid build", f:1.3, d:"Ancho y con volumen"}
+  ],
+  altura: [
+    {id:"baja", es:"Baja", en:"5'5\"", cm:"\u2248165 cm", s:0.94},
+    {id:"media-baja", es:"Media-baja", en:"5'8\"", cm:"\u2248173 cm", s:0.98},
+    {id:"media-alta", es:"Media-alta", en:"5'11\"", cm:"\u2248180 cm", s:1.02},
+    {id:"alta", es:"Alta", en:"tall, 6'2\"", cm:"\u2248188 cm", s:1.07}
+  ],
+  hombros: [
+    {id:"estrechos", es:"Estrechos", en:"narrow shoulders", add:-8},
+    {id:"medios", es:"Medios", en:"medium shoulders", add:0},
+    {id:"anchos", es:"Anchos", en:"broad shoulders", add:9},
+    {id:"muy-anchos", es:"Muy anchos", en:"very broad shoulders", add:17}
+  ],
+  pecho: [
+    {id:"estrecho", es:"Estrecho", en:"narrow chest", add:-6},
+    {id:"medio", es:"Medio", en:"medium chest", add:2},
+    {id:"ancho", es:"Ancho", en:"broad chest", add:10},
+    {id:"musculoso", es:"Musculoso", en:"large muscular chest", add:18}
+  ],
+  conjunto: [
+    {id:"ceo", es:"CEO / ejecutivo", en:"a tailored business suit with an open-collar shirt", d:"Traje entallado"},
+    {id:"casual", es:"Casual urbano", en:"a casual t-shirt with jeans", d:"Camiseta + jean"},
+    {id:"deportivo", es:"Deportivo / gym", en:"an athletic tank top and gym shorts", d:"Tank + shorts de gym"},
+    {id:"elegante", es:"Elegante de noche", en:"an elegant dark shirt with tailored trousers", d:"Camisa + pantalón"},
+    {id:"playa", es:"Miami playa", en:"an open linen shirt with shorts", d:"Camisa de lino + shorts"}
+  ],
+  vibra: [
+    {id:"seguro", es:"Seguro de sí mismo", en:"self-assured and magnetic"},
+    {id:"misterioso", es:"Misterioso, chico malo", en:"mysterious bad-boy energy"},
+    {id:"elegante-v", es:"Elegante y serio", en:"elegant, serious and commanding"},
+    {id:"cercano", es:"Cercano y carismático", en:"warm, charismatic and approachable"}
+  ]
+};
+
+/* ---------- estado por defecto ---------- */
+const DEFAULTS_F = {
+  genero:"mujer",
+  nombre:"Valentina", edad:27,
+  origen:"latina", piel:"bronceado-claro",
+  rostro:"ovalado", ojosForma:"almendrados", ojosColor:"marron", cejas:"arqueadas",
+  nariz:"recta", labios:"carnosos", labiosColor:"natural",
+  peloColor:"balayage", peloLargo:"largo", peloEstilo:"ondas", flequillo:"sin", barba:"sin",
+  complexion:"curvilinea", altura:"media-alta", busto:"mediano", cintura:"definida",
+  cadera:"ancha", piernas:"largas", muslos:"tonificados",
+  hombros:"medios", pecho:"medio",
+  conjunto:"miami", conjuntoColor:"coral",
+  expresion:"sonrisa-suave", vibra:"segura", escenario:"apartamento",
+  detalles:["poros","pecas","imperfecciones"]
+};
+const DEFAULTS_M = {
+  genero:"hombre",
+  nombre:"Mateo", edad:32,
+  origen:"latino", piel:"bronceado-claro",
+  rostro:"cuadrado", ojosForma:"almendrados", ojosColor:"marron", cejas:"rectas",
+  nariz:"recta", labios:"naturales", labiosColor:"natural",
+  peloColor:"castano-osc", peloLargo:"corto", peloEstilo:"fade", flequillo:"sin", barba:"corta",
+  complexion:"musculoso", altura:"media-alta", busto:"mediano", cintura:"definida",
+  cadera:"media", piernas:"proporcionadas", muslos:"tonificados",
+  hombros:"anchos", pecho:"ancho",
+  conjunto:"ceo", conjuntoColor:"negro",
+  expresion:"segura", vibra:"seguro", escenario:"apartamento",
+  detalles:["poros","imperfecciones"]
+};
+const DEFAULTS = DEFAULTS_F;
+let state = JSON.parse(JSON.stringify(DEFAULTS_F));
+let savedByGender = { mujer: JSON.parse(JSON.stringify(DEFAULTS_F)), hombre: JSON.parse(JSON.stringify(DEFAULTS_M)) };
+function L(key){
+  if(state.genero==="hombre" && MALE[key]) return MALE[key];
+  return OPTS[key] || MALE[key];
+}
+let viewMode = "full";
+
+const PRESETS_F = [
+  {name:"Latina Miami", data:{genero:"mujer",nombre:"Valentina",edad:27,origen:"latina",piel:"bronceado-claro",rostro:"ovalado",ojosForma:"almendrados",ojosColor:"marron",cejas:"arqueadas",nariz:"recta",labios:"carnosos",labiosColor:"natural",peloColor:"balayage",peloLargo:"largo",peloEstilo:"ondas",flequillo:"sin",barba:"sin",complexion:"curvilinea",altura:"media-alta",busto:"mediano",cintura:"definida",cadera:"ancha",piernas:"largas",muslos:"tonificados",hombros:"medios",pecho:"medio",conjunto:"miami",conjuntoColor:"coral",expresion:"sonrisa-suave",vibra:"segura",escenario:"apartamento",detalles:["poros","pecas","imperfecciones"]}},
+  {name:"Prima fashion (GRWM)", data:{genero:"mujer",nombre:"Maite",edad:21,origen:"latina",piel:"bronceado-claro",rostro:"ovalado",ojosForma:"almendrados",ojosColor:"miel",cejas:"arqueadas",nariz:"recta",labios:"naturales",labiosColor:"natural",peloColor:"balayage",peloLargo:"bob",peloEstilo:"ondas",flequillo:"sin",barba:"sin",complexion:"esbelta",altura:"alta",busto:"mediano",cintura:"muy-definida",cadera:"media",piernas:"muy-largas",muslos:"tonificados",hombros:"medios",pecho:"medio",conjunto:"casual",conjuntoColor:"blanco",expresion:"alegre",vibra:"dulce",escenario:"apartamento",detalles:["poros","pecas"]}},
+  {name:"Europea editorial", data:{genero:"mujer",nombre:"Camille",edad:30,origen:"europea",piel:"claro",rostro:"alargado",ojosForma:"rasgados",ojosColor:"verde",cejas:"rectas",nariz:"perfilada",labios:"definidos",labiosColor:"rojo",peloColor:"castano-osc",peloLargo:"medio",peloEstilo:"liso",flequillo:"cortina",barba:"sin",complexion:"esbelta",altura:"alta",busto:"pequeno",cintura:"definida",cadera:"media",piernas:"muy-largas",muslos:"delgados",hombros:"medios",pecho:"medio",conjunto:"elegante",conjuntoColor:"negro",expresion:"seria",vibra:"sofisticada",escenario:"estudio",detalles:["poros"]}},
+  {name:"Afro glam", data:{genero:"mujer",nombre:"Amara",edad:26,origen:"afro",piel:"oscuro",rostro:"corazon",ojosForma:"almendrados",ojosColor:"marron-osc",cejas:"arqueadas",nariz:"ancha",labios:"carnosos",labiosColor:"baya",peloColor:"negro",peloLargo:"largo",peloEstilo:"rizado",flequillo:"sin",barba:"sin",complexion:"curvilinea",altura:"media-alta",busto:"grande",cintura:"muy-definida",cadera:"muy-ancha",piernas:"largas",muslos:"gruesos",hombros:"medios",pecho:"medio",conjunto:"elegante",conjuntoColor:"amarillo",expresion:"segura",vibra:"segura",escenario:"calle",detalles:["poros","imperfecciones"]}},
+  {name:"Asiática dulce", data:{genero:"mujer",nombre:"Yuna",edad:24,origen:"asiatica",piel:"porcelana",rostro:"redondo",ojosForma:"redondos",ojosColor:"marron-osc",cejas:"suaves",nariz:"boton",labios:"naturales",labiosColor:"coral",peloColor:"negro",peloLargo:"largo",peloEstilo:"liso",flequillo:"recto",barba:"sin",complexion:"delgada",altura:"media-baja",busto:"pequeno",cintura:"natural",cadera:"media",piernas:"proporcionadas",muslos:"delgados",hombros:"medios",pecho:"medio",conjunto:"playa",conjuntoColor:"rosa",expresion:"alegre",vibra:"dulce",escenario:"playa",detalles:["poros","hoyuelos"]}}
+];
+const PRESETS_M = [
+  {name:"CEO de novela", data:{genero:"hombre",nombre:"Mateo",edad:32,origen:"latino",piel:"bronceado-claro",rostro:"cuadrado",ojosForma:"almendrados",ojosColor:"marron",cejas:"rectas",nariz:"recta",labios:"naturales",labiosColor:"natural",peloColor:"castano-osc",peloLargo:"corto",peloEstilo:"fade",flequillo:"sin",barba:"corta",complexion:"musculoso",altura:"media-alta",busto:"mediano",cintura:"definida",cadera:"media",piernas:"proporcionadas",muslos:"tonificados",hombros:"anchos",pecho:"ancho",conjunto:"ceo",conjuntoColor:"negro",expresion:"segura",vibra:"seguro",escenario:"apartamento",detalles:["poros","imperfecciones"]}},
+  {name:"Chico malo", data:{genero:"hombre",nombre:"Thiago",edad:28,origen:"latino",piel:"bronceado",rostro:"cuadrado",ojosForma:"rasgados",ojosColor:"miel",cejas:"arqueadas",nariz:"perfilada",labios:"naturales",labiosColor:"natural",peloColor:"negro",peloLargo:"medio",peloEstilo:"texturizado",flequillo:"sin",barba:"sombra",complexion:"atletico",altura:"media-alta",busto:"mediano",cintura:"definida",cadera:"media",piernas:"largas",muslos:"tonificados",hombros:"anchos",pecho:"medio",conjunto:"elegante",conjuntoColor:"negro",expresion:"segura",vibra:"misterioso",escenario:"calle",detalles:["poros"]}},
+  {name:"Doctor serio", data:{genero:"hombre",nombre:"Andrés",edad:38,origen:"europeo",piel:"claro",rostro:"ovalado",ojosForma:"almendrados",ojosColor:"verde",cejas:"rectas",nariz:"recta",labios:"naturales",labiosColor:"natural",peloColor:"castano",peloLargo:"corto",peloEstilo:"clasico",flequillo:"sin",barba:"sin",complexion:"esbelto",altura:"alta",busto:"mediano",cintura:"natural",cadera:"media",piernas:"largas",muslos:"delgados",hombros:"medios",pecho:"medio",conjunto:"casual",conjuntoColor:"blanco",expresion:"seria",vibra:"elegante-v",escenario:"estudio",detalles:["poros"]}},
+  {name:"Fitness", data:{genero:"hombre",nombre:"Bruno",edad:26,origen:"afro",piel:"oscuro",rostro:"cuadrado",ojosForma:"almendrados",ojosColor:"marron-osc",cejas:"rectas",nariz:"ancha",labios:"naturales",labiosColor:"natural",peloColor:"negro",peloLargo:"rapado",peloEstilo:"linea",flequillo:"sin",barba:"corta",complexion:"musculoso",altura:"media-alta",busto:"mediano",cintura:"muy-definida",cadera:"media",piernas:"proporcionadas",muslos:"gruesos",hombros:"muy-anchos",pecho:"musculoso",conjunto:"deportivo",conjuntoColor:"turquesa",expresion:"sonrisa-suave",vibra:"cercano",escenario:"estudio",detalles:["poros","imperfecciones"]}},
+  {name:"Galán de Miami", data:{genero:"hombre",nombre:"Enzo",edad:30,origen:"medio-oriente",piel:"bronceado",rostro:"ovalado",ojosForma:"almendrados",ojosColor:"marron-osc",cejas:"arqueadas",nariz:"perfilada",labios:"naturales",labiosColor:"natural",peloColor:"negro",peloLargo:"medio",peloEstilo:"atras",flequillo:"sin",barba:"completa",complexion:"atletico",altura:"alta",busto:"mediano",cintura:"definida",cadera:"media",piernas:"largas",muslos:"tonificados",hombros:"anchos",pecho:"ancho",conjunto:"playa",conjuntoColor:"amarillo",expresion:"sonrisa-suave",vibra:"seguro",escenario:"playa",detalles:["poros","pecas"]}}
+];
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+function find(list,id){ return list.find(o=>o.id===id) || list[0]; }
+function shade(hex,amt){
+  const n=parseInt(hex.slice(1),16);
+  let r=(n>>16)+amt, g=((n>>8)&255)+amt, b=(n&255)+amt;
+  r=Math.max(0,Math.min(255,r)); g=Math.max(0,Math.min(255,g)); b=Math.max(0,Math.min(255,b));
+  return "#"+((r<<16)|(g<<8)|b).toString(16).padStart(6,"0");
+}
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+/* ============================================================
+   Construcción de controles
+   ============================================================ */
+const controlsEl = $("#controls");
+
+function optButton(group, opt, extra){
+  const b=document.createElement("button");
+  b.type="button"; b.className="opt"; b.dataset.group=group; b.dataset.id=opt.id;
+  b.setAttribute("aria-pressed", state[group]===opt.id ? "true":"false");
+  b.innerHTML = extra ? extra(opt) : escapeHtml(opt.es) + (opt.d ? `<small>${escapeHtml(opt.d)}</small>`:"");
+  b.addEventListener("click",()=>{ state[group]=opt.id; refresh(); });
+  return b;
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function field(label, hint){
+  const f=document.createElement("div"); f.className="field";
+  const l=document.createElement("span"); l.className="flabel"; l.textContent=label; f.appendChild(l);
+  const box=document.createElement("div"); f.appendChild(box);
+  if(hint){ const h=document.createElement("p"); h.className="hint"; h.textContent=hint; f.appendChild(h); }
+  return {f, box};
+}
+function chipsField(parent, label, group, list, opts){
+  opts = opts||{};
+  const {f, box} = field(label, opts.hint);
+  const wrap=document.createElement("div"); wrap.className="opts"+(opts.grid?" grid":"");
+  list.forEach(o=> wrap.appendChild(optButton(group, o, opts.render)));
+  box.appendChild(wrap); parent.appendChild(f);
+}
+function swatchField(parent, label, group, list){
+  const {f, box} = field(label);
+  const wrap=document.createElement("div"); wrap.className="opts";
+  list.forEach(o=> wrap.appendChild(optButton(group, o,
+    x=>`<span class="cdot" style="background:${x.hex}"></span>${escapeHtml(x.es)}`)));
+  box.appendChild(wrap); parent.appendChild(f);
+}
+function silField(parent, label, group, list){
+  // mini siluetas: barras de ancho proporcional para cuerpo
+  const {f, box} = field(label);
+  const wrap=document.createElement("div"); wrap.className="opts grid";
+  list.forEach(o=>{
+    const val = o.f!==undefined ? o.f : (1 + (o.add||0)/40);
+    const w = Math.round(16 + val*26);
+    wrap.appendChild(optButton(group, o, x=>
+      `<svg class="silhouette" width="52" height="30" viewBox="0 0 52 30" aria-hidden="true">
+         <ellipse cx="26" cy="5" r="4" fill="currentColor" opacity=".55"/>
+         <path d="M26 10 C ${26-w/2} 12, ${26-w/2.4} 20, ${26-w/2} 29 L ${26+w/2} 29 C ${26+w/2.4} 20, ${26+w/2} 12, 26 10Z" fill="currentColor" opacity=".85"/>
+       </svg><span>${escapeHtml(x.es)}${x.d?`<small>${escapeHtml(x.d)}</small>`:""}</span>`));
+  });
+  box.appendChild(wrap); parent.appendChild(f);
+}
+function panel(num, title){
+  const s=document.createElement("section"); s.className="panel";
+  s.innerHTML=`<h2><span class="num">${num}</span>${escapeHtml(title)}</h2>`;
+  controlsEl.appendChild(s); return s;
+}
+
+function buildControls(){
+  controlsEl.innerHTML="";
+  const male = state.genero==="hombre";
+  /* --- 1 · Base --- */
+  let p = panel("01","Base del personaje");
+  const nf = field("Nombre");
+  const inp=document.createElement("input");
+  inp.className="name-input"; inp.type="text"; inp.maxLength=30; inp.value=state.nombre;
+  inp.setAttribute("aria-label","Nombre del personaje");
+  inp.addEventListener("input",()=>{ state.nombre=inp.value; refresh(false); });
+  inp.id="name-input";
+  nf.box.appendChild(inp); p.appendChild(nf.f);
+
+  const af = field("Edad", "Personajes adultos: de 21 a 55 años.");
+  const row=document.createElement("div"); row.className="range-row";
+  const range=document.createElement("input");
+  range.type="range"; range.min=21; range.max=55; range.step=1; range.value=state.edad; range.id="age-range";
+  range.setAttribute("aria-label","Edad");
+  const val=document.createElement("span"); val.className="range-val"; val.id="age-val"; val.textContent=state.edad+" años";
+  range.addEventListener("input",()=>{ state.edad=+range.value; val.textContent=state.edad+" años"; refresh(false); });
+  row.appendChild(range); row.appendChild(val); af.box.appendChild(row); p.appendChild(af.f);
+
+  const two1=document.createElement("div"); two1.className="two-col"; p.appendChild(two1);
+  const colA=document.createElement("div"), colB=document.createElement("div");
+  two1.appendChild(colA); two1.appendChild(colB);
+  chipsField(colA,"Origen / rasgos","origen",L("origen"));
+  swatchField(colB,"Tono de piel","piel",SKIN);
+
+  /* --- 2 · Rostro --- */
+  p = panel("02","Rostro");
+  const two2=document.createElement("div"); two2.className="two-col"; p.appendChild(two2);
+  const c2a=document.createElement("div"), c2b=document.createElement("div");
+  two2.appendChild(c2a); two2.appendChild(c2b);
+  chipsField(c2a,"Forma del rostro","rostro",OPTS.rostro);
+  chipsField(c2b,"Forma de los ojos","ojosForma",OPTS.ojosForma);
+  swatchField(p,"Color de ojos","ojosColor",EYE_COLORS);
+  const two3=document.createElement("div"); two3.className="two-col"; p.appendChild(two3);
+  const c3a=document.createElement("div"), c3b=document.createElement("div");
+  two3.appendChild(c3a); two3.appendChild(c3b);
+  chipsField(c3a,"Cejas","cejas",OPTS.cejas);
+  chipsField(c3b,"Nariz","nariz",OPTS.nariz);
+  const two4=document.createElement("div"); two4.className="two-col"; p.appendChild(two4);
+  const c4a=document.createElement("div"), c4b=document.createElement("div");
+  two4.appendChild(c4a); two4.appendChild(c4b);
+  chipsField(c4a,"Labios","labios",OPTS.labios);
+  if(male){ chipsField(c4b,"Barba y vello facial","barba",MALE.barba); }
+  else { swatchField(c4b,"Color de labial","labiosColor",LIP_COLORS); }
+
+  /* --- 3 · Cabello --- */
+  p = panel("03","Cabello");
+  swatchField(p,"Color de cabello","peloColor",HAIR_COLORS);
+  const two5=document.createElement("div"); two5.className="two-col"; p.appendChild(two5);
+  const c5a=document.createElement("div"), c5b=document.createElement("div");
+  two5.appendChild(c5a); two5.appendChild(c5b);
+  chipsField(c5a,"Largo","peloLargo",L("peloLargo"),{render:o=>{
+    const bars = male ? {rapado:5,"muy-corto":9,corto:14,medio:22,largo:32}[o.id]||14
+                      : {pixie:8,bob:16,medio:24,largo:33,"muy-largo":40}[o.id]||20;
+    return `<svg width="52" height="42" viewBox="0 0 52 42" aria-hidden="true"><ellipse cx="26" cy="10" rx="8" ry="9" fill="currentColor" opacity=".55"/><path d="M14 6 Q26 -3 38 6 L ${38} ${6+bars} L 14 ${6+bars} Z" fill="currentColor" opacity=".85"/></svg><span>${escapeHtml(o.es)}</span>`;
+  }, grid:true});
+  chipsField(c5b,"Estilo / textura","peloEstilo",L("peloEstilo"));
+  if(!male) chipsField(p,"Flequillo","flequillo",OPTS.flequillo);
+
+  /* --- 4 · Cuerpo --- */
+  p = panel("04","Cuerpo");
+  const intro=document.createElement("p");
+  intro.style.cssText="color:var(--ink-2);font-size:14px;margin:12px 0 0";
+  intro.textContent="Cada opción mueve la silueta del avatar y la frase exacta que entra al prompt. Combínalas parte por parte.";
+  p.appendChild(intro);
+  silField(p,"Complexión general","complexion",L("complexion"));
+  const two6=document.createElement("div"); two6.className="two-col"; p.appendChild(two6);
+  const c6a=document.createElement("div"), c6b=document.createElement("div");
+  two6.appendChild(c6a); two6.appendChild(c6b);
+  chipsField(c6a,"Altura","altura",L("altura"),{render:o=>`${escapeHtml(o.es)}<small>${escapeHtml(o.cm)}</small>`});
+  if(male) silField(c6b,"Hombros","hombros",MALE.hombros); else silField(c6b,"Busto","busto",OPTS.busto);
+  const two7=document.createElement("div"); two7.className="two-col"; p.appendChild(two7);
+  const c7a=document.createElement("div"), c7b=document.createElement("div");
+  two7.appendChild(c7a); two7.appendChild(c7b);
+  silField(c7a,"Cintura","cintura",OPTS.cintura);
+  if(male) silField(c7b,"Pecho","pecho",MALE.pecho); else silField(c7b,"Cadera y glúteos","cadera",OPTS.cadera);
+  const two8=document.createElement("div"); two8.className="two-col"; p.appendChild(two8);
+  const c8a=document.createElement("div"), c8b=document.createElement("div");
+  two8.appendChild(c8a); two8.appendChild(c8b);
+  chipsField(c8a,"Piernas","piernas",OPTS.piernas,{render:o=>{
+    const h={cortas:14,proporcionadas:22,largas:30,"muy-largas":36}[o.id]||22;
+    return `<svg width="52" height="40" viewBox="0 0 52 40" aria-hidden="true"><rect x="10" y="2" width="32" height="7" rx="3" fill="currentColor" opacity=".55"/><path d="M19 9 L21 9 L21 ${9+h} L17 ${9+h} Z M31 9 L33 9 L35 ${9+h} L31 ${9+h} Z" fill="currentColor" opacity=".85"/></svg><span>${escapeHtml(o.es)}</span>`;
+  }, grid:true});
+  silField(c8b,"Muslos","muslos",OPTS.muslos);
+
+  /* --- 5 · Estilo y escena --- */
+  p = panel("05","Estilo, expresión y escena");
+  chipsField(p,"Conjunto base","conjunto",L("conjunto"),{grid:true});
+  swatchField(p,"Color principal del conjunto","conjuntoColor",OUTFIT_COLORS);
+  const two9=document.createElement("div"); two9.className="two-col"; p.appendChild(two9);
+  const c9a=document.createElement("div"), c9b=document.createElement("div");
+  two9.appendChild(c9a); two9.appendChild(c9b);
+  chipsField(c9a,"Expresión","expresion",OPTS.expresion);
+  chipsField(c9b,"Personalidad / vibra","vibra",L("vibra"));
+  chipsField(p,"Escenario base","escenario",OPTS.escenario,{grid:true});
+
+  /* --- 6 · Realismo de piel --- */
+  p = panel("06","Realismo de piel");
+  const df = field("Detalles que hacen que no se vea “de IA”","Toca para activar o quitar. Entran tal cual al prompt y al JSON.");
+  const dwrap=document.createElement("div"); dwrap.className="opts";
+  OPTS.detallesPiel.forEach(o=>{
+    const b=document.createElement("button");
+    b.type="button"; b.className="opt"; b.dataset.detail=o.id;
+    b.setAttribute("aria-pressed", state.detalles.includes(o.id)?"true":"false");
+    b.textContent=(state.detalles.includes(o.id)?"✓ ":"")+o.es;
+    b.addEventListener("click",()=>{
+      const i=state.detalles.indexOf(o.id);
+      if(i>=0) state.detalles.splice(i,1); else state.detalles.push(o.id);
+      refresh();
+    });
+    dwrap.appendChild(b);
+  });
+  df.box.appendChild(dwrap); p.appendChild(df.f);
+
+  /* --- 7 · Resultado --- */
+  p = panel("07","Ficha y prompts");
+  p.classList.add("output");
+  p.insertAdjacentHTML("beforeend", `
+    <div class="out-block">
+      <div class="out-head"><h3>Descripción del personaje <span>— el extracto en texto</span></h3></div>
+      <div class="desc-out" id="desc-out"></div>
+    </div>
+    <div class="out-block">
+      <div class="out-head">
+        <h3>Prompt para Flow / generador <span>— en inglés, listo para pegar</span></h3>
+        <div class="out-actions">
+          <button class="btn small" type="button" id="copy-prompt">Copiar</button>
+          <button class="btn small" type="button" id="dl-prompt">Descargar .txt</button>
+        </div>
+      </div>
+      <textarea class="text-out" id="prompt-out" readonly rows="6" aria-label="Prompt en inglés"></textarea>
+    </div>
+    <div class="out-block">
+      <div class="out-head">
+        <h3>JSON del personaje <span>— la ficha estructurada completa</span></h3>
+        <div class="out-actions">
+          <button class="btn small" type="button" id="copy-json">Copiar</button>
+          <button class="btn small" type="button" id="dl-json">Descargar .json</button>
+        </div>
+      </div>
+      <pre class="code" id="json-out" tabindex="0"></pre>
+    </div>`);
+  $("#copy-prompt").addEventListener("click",()=>copyText(buildPrompt(),"Prompt copiado"));
+  $("#copy-json").addEventListener("click",()=>copyText(JSON.stringify(buildJSON(),null,2),"JSON copiado"));
+  $("#dl-prompt").addEventListener("click",()=>download(buildPrompt(), slugName()+"-prompt.txt","text/plain"));
+  $("#dl-json").addEventListener("click",()=>download(JSON.stringify(buildJSON(),null,2), slugName()+"-personaje.json","application/json"));
+}
+function slugName(){ return (state.nombre||"personaje").trim().toLowerCase().replace(/[^a-z0-9áéíóúñ]+/gi,"-").replace(/^-|-$/g,"")||"personaje"; }
+function copyText(text,msg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>fallbackCopy(text,msg));
+  } else fallbackCopy(text,msg);
+}
+function fallbackCopy(text,msg){
+  const ta=document.createElement("textarea");
+  ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand("copy"); toast(msg); }catch(e){ toast("Selecciona el texto y cópialo manualmente"); }
+  ta.remove();
+}
+function download(text, name, type){
+  const blob=new Blob([text],{type:type+";charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  toast("Archivo descargado");
+}
+
+/* ============================================================
+   Avatar SVG — se redibuja con los parámetros del estado
+   ============================================================ */
+function buildAvatarFemale(){
+  const skin = find(SKIN, state.piel);
+  const hairC = find(HAIR_COLORS, state.peloColor);
+  const face = find(OPTS.rostro, state.rostro);
+  const comp = find(OPTS.complexion, state.complexion);
+  const bust = find(OPTS.busto, state.busto);
+  const waist = find(OPTS.cintura, state.cintura);
+  const hip = find(OPTS.cadera, state.cadera);
+  const legs = find(OPTS.piernas, state.piernas);
+  const thighs = find(OPTS.muslos, state.muslos);
+  const height = find(OPTS.altura, state.altura);
+  const hairLen = find(OPTS.peloLargo, state.peloLargo);
+  const outfit = find(OUTFIT_COLORS, state.conjuntoColor);
+  const lipC = find(LIP_COLORS, state.labiosColor);
+  const eyeC = find(EYE_COLORS, state.ojosColor);
+  const skinDark = shade(skin.hex,-22), skinLight = shade(skin.hex,14);
+
+  const cx=150;
+  const S = 30*comp.f + 6;              // hombros (mitad)
+  const B = 26*comp.f + bust.add;       // busto (mitad)
+  const W = 20*comp.f + waist.add;      // cintura (mitad)
+  const H = 25*comp.f + hip.add;        // cadera (mitad)
+  const legLen = Math.round(118*legs.f*height.s);
+  const thighW = 10.5*comp.f + thighs.add;
+  const hipY = 268, legTop = hipY+6;
+  const totalH = legTop + legLen + 16;
+  const headCY = 66, faceRx = face.rx, faceRy = face.ry;
+  const hairBackBottom = headCY + hairLen.len*0.62;
+  const isDress = state.conjunto==="elegante";
+  const isSport = state.conjunto==="deportivo";
+  const bottomCol = isSport ? outfit.hex : (state.conjunto==="casual" ? "#47648c" : outfit.hex);
+  const topCol = outfit.hex;
+  const fringe = state.flequillo;
+  const freckles = state.detalles.includes("pecas");
+  const dimples = state.detalles.includes("hoyuelos");
+  const smiling = state.expresion==="sonrisa-suave"||state.expresion==="alegre";
+  const laughing = state.expresion==="alegre";
+
+  // pelo trasero
+  let hairBack="";
+  if(state.peloEstilo==="recogido"){
+    hairBack=`<ellipse cx="${cx}" cy="${headCY-16}" rx="17" ry="14" fill="${hairC.hex}"/>`;
+  } else if(state.peloEstilo==="cola"){
+    hairBack=`<path d="M ${cx+faceRx-4} ${headCY-24} q 20 60 12 ${Math.min(hairLen.len,240)} l -15 0 q 4 -120 -6 -160Z" fill="${hairC.hex}"/>`;
+  } else {
+    const hw = faceRx+13;
+    hairBack=`<path d="M ${cx-hw} ${hairBackBottom}
+      L ${cx-hw} ${headCY-6} Q ${cx-hw} ${headCY-faceRy-14} ${cx} ${headCY-faceRy-14}
+      Q ${cx+hw} ${headCY-faceRy-14} ${cx+hw} ${headCY-6}
+      L ${cx+hw} ${hairBackBottom}
+      Q ${cx+hw*0.5} ${hairBackBottom+10} ${cx} ${hairBackBottom+4}
+      Q ${cx-hw*0.5} ${hairBackBottom+10} ${cx-hw} ${hairBackBottom} Z" fill="${hairC.hex}"/>`;
+    if(state.peloEstilo==="rizado"){
+      hairBack+=`<circle cx="${cx-faceRx-10}" cy="${headCY+16}" r="11" fill="${hairC.hex}"/><circle cx="${cx+faceRx+10}" cy="${headCY+16}" r="11" fill="${hairC.hex}"/><circle cx="${cx-faceRx-8}" cy="${headCY+44}" r="10" fill="${hairC.hex}"/><circle cx="${cx+faceRx+8}" cy="${headCY+44}" r="10" fill="${hairC.hex}"/>`;
+    }
+    if(state.peloEstilo==="trenzas"){
+      hairBack+=`<path d="M ${cx-faceRx-6} ${headCY+20} q -6 90 2 ${Math.min(hairLen.len,260)}" stroke="${shade(hairC.hex,-14)}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M ${cx+faceRx+6} ${headCY+20} q 6 90 -2 ${Math.min(hairLen.len,260)}" stroke="${shade(hairC.hex,-14)}" stroke-width="9" fill="none" stroke-linecap="round"/>`;
+    }
+  }
+  // piernas
+  const legGap = Math.max(4, H*0.28);
+  const legL = `<path d="M ${cx-legGap-thighW} ${legTop} h ${thighW*2} l -${thighW*0.35} ${legLen} h -${thighW*1.3} Z" fill="${skin.hex}"/>`;
+  const legR = `<path d="M ${cx+legGap-thighW} ${legTop} h ${thighW*2} l ${thighW*0.35} ${legLen} h -${thighW*1.3} Z" fill="${skin.hex}"/>`;
+  const shoeY = legTop+legLen;
+  const shoes = `<ellipse cx="${cx-legGap-thighW*0.55}" cy="${shoeY+7}" rx="${thighW*0.95}" ry="5" fill="#2b2b2b"/><ellipse cx="${cx+legGap+thighW*0.55}" cy="${shoeY+7}" rx="${thighW*0.95}" ry="5" fill="#2b2b2b"/>`;
+  // bottom según conjunto (sobre las piernas)
+  let bottom="";
+  const bottomTop = hipY-16;
+  if(isDress){
+    bottom=`<path d="M ${cx-W-3} 208 L ${cx+H+10} ${hipY+34} Q ${cx} ${hipY+46} ${cx-H-10} ${hipY+34} L ${cx-W+3} 208 Z" fill="${topCol}"/>`;
+  } else if(state.conjunto==="miami"){
+    bottom=`<path d="M ${cx-H-2} ${bottomTop} h ${(H+2)*2} l -3 44 q -${H} 9 -${(H-3)*2} 0 Z" fill="${bottomCol}"/>`;
+  } else if(state.conjunto==="playa"){
+    bottom=`<path d="M ${cx-H-2} ${bottomTop} h ${(H+2)*2} l -2 34 q -${H} 8 -${(H-2)*2} 0 Z" fill="${bottomCol}"/>`;
+  } else if(isSport){
+    bottom=`<path d="M ${cx-H-1} ${bottomTop} h ${(H+1)*2} l ${thighW*0.3} ${legLen*0.92} h -${thighW*1.15} l -${thighW*0.35} -${legLen*0.5} l -${thighW*0.35} ${legLen*0.5} h -${thighW*1.15} Z" fill="${bottomCol}" opacity=".96"/>`;
+  } else { // casual jean
+    bottom=`<path d="M ${cx-H-1} ${bottomTop} h ${(H+1)*2} l ${thighW*0.32} ${legLen*0.97} h -${thighW*1.2} l -${thighW*0.3} -${legLen*0.55} l -${thighW*0.3} ${legLen*0.55} h -${thighW*1.2} Z" fill="${bottomCol}"/>`;
+  }
+  // torso (piel) + top
+  const torsoSkin=`<path d="M ${cx-S} 138 Q ${cx-B} 168 ${cx-B+2} 182 Q ${cx-W} 208 ${cx-W} 232 L ${cx-W} 258 L ${cx+W} 258 L ${cx+W} 232 Q ${cx+W} 208 ${cx+B-2} 182 Q ${cx+B} 168 ${cx+S} 138 Q ${cx} 128 ${cx-S} 138 Z" fill="${skin.hex}"/>`;
+  let top="";
+  if(isDress){
+    top=`<path d="M ${cx-S} 138 Q ${cx-B} 168 ${cx-B+2} 184 Q ${cx-W} 208 ${cx-W-3} 214 L ${cx+W+3} 214 Q ${cx+W} 208 ${cx+B-2} 184 Q ${cx+B} 168 ${cx+S} 138 Q ${cx} 128 ${cx-S} 138 Z" fill="${topCol}"/>`;
+  } else if(state.conjunto==="miami"||state.conjunto==="deportivo"||state.conjunto==="playa"){
+    top=`<path d="M ${cx-S+3} 140 Q ${cx-B} 168 ${cx-B+2} 184 Q ${cx-W-1} 204 ${cx-W-1} 216 L ${cx+W+1} 216 Q ${cx+W+1} 204 ${cx+B-2} 184 Q ${cx+B} 168 ${cx+S-3} 140 Q ${cx} 150 ${cx-S+3} 140 Z" fill="${topCol}"/>
+        <path d="M ${cx-W-1} 216 L ${cx+W+1} 216 L ${cx+W} 240 L ${cx-W} 240 Z" fill="${skin.hex}"/>`;
+  } else {
+    top=`<path d="M ${cx-S-2} 136 L ${cx+S+2} 136 L ${cx+S-4} 196 Q ${cx} 206 ${cx-S+4} 196 Z" fill="${topCol}"/>
+        <path d="M ${cx-W} 200 L ${cx+W} 200 L ${cx+W} 240 L ${cx-W} 240 Z" fill="${skin.hex}" opacity="0"/>`;
+  }
+  // brazos
+  const armW = 8.5*comp.f+2;
+  const arms=`<path d="M ${cx-S-2} 140 q -${armW+5} 60 -${armW-1} 118" stroke="${skin.hex}" stroke-width="${armW*2}" fill="none" stroke-linecap="round"/>
+              <path d="M ${cx+S+2} 140 q ${armW+5} 60 ${armW-1} 118" stroke="${skin.hex}" stroke-width="${armW*2}" fill="none" stroke-linecap="round"/>`;
+  // cuello y rostro
+  const neck=`<rect x="${cx-9}" y="${headCY+faceRy-12}" width="18" height="30" rx="7" fill="${skinDark}"/>`;
+  const faceShape=`<ellipse cx="${cx}" cy="${headCY}" rx="${faceRx}" ry="${faceRy}" fill="${skin.hex}"/>`;
+  const ears=`<circle cx="${cx-faceRx}" cy="${headCY+4}" r="6" fill="${skin.hex}"/><circle cx="${cx+faceRx}" cy="${headCY+4}" r="6" fill="${skin.hex}"/>`;
+  // rasgos
+  const eyeY=headCY-2, eyeDx=faceRx*0.42;
+  const eyes=`<ellipse cx="${cx-eyeDx}" cy="${eyeY}" rx="5.4" ry="${state.ojosForma==="redondos"?5.4:3.8}" fill="${eyeC.hex}"/>
+              <ellipse cx="${cx+eyeDx}" cy="${eyeY}" rx="5.4" ry="${state.ojosForma==="redondos"?5.4:3.8}" fill="${eyeC.hex}"/>
+              <circle cx="${cx-eyeDx+1.6}" cy="${eyeY-1.4}" r="1.5" fill="#fff" opacity=".85"/>
+              <circle cx="${cx+eyeDx+1.6}" cy="${eyeY-1.4}" r="1.5" fill="#fff" opacity=".85"/>
+              <path d="M ${cx-eyeDx-6} ${eyeY-4} q 6 -3.4 12 0" stroke="#2b2320" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+              <path d="M ${cx+eyeDx-6} ${eyeY-4} q 6 -3.4 12 0" stroke="#2b2320" stroke-width="1.7" fill="none" stroke-linecap="round"/>`;
+  const browThick = state.cejas==="arqueadas"||state.cejas==="suaves" ? 3.4 : 2.2;
+  const browArc = state.cejas==="rectas" ? 1 : (state.cejas==="arqueadas"?5:3);
+  const brows=`<path d="M ${cx-eyeDx-7} ${eyeY-13} q 7 -${browArc} 14 0" stroke="${shade(hairC.hex,6)}" stroke-width="${browThick}" fill="none" stroke-linecap="round"/>
+               <path d="M ${cx+eyeDx-7} ${eyeY-13} q 7 -${browArc} 14 0" stroke="${shade(hairC.hex,6)}" stroke-width="${browThick}" fill="none" stroke-linecap="round"/>`;
+  const noseW = state.nariz==="ancha"?5:3.4;
+  const nose=`<path d="M ${cx} ${eyeY+7} q 1.6 8 -${noseW*0.4} 11 q ${noseW} 2.4 ${noseW*2} 0" stroke="${skinDark}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  const lipW = state.labios==="carnosos"?13:(state.labios==="finos"?9:11);
+  const lipH = state.labios==="carnosos"?5.6:(state.labios==="finos"?3:4.4);
+  const mouthY = headCY+faceRy*0.52;
+  let mouth;
+  if(laughing){
+    mouth=`<path d="M ${cx-lipW} ${mouthY} q ${lipW} ${lipH+7} ${lipW*2} 0 q -${lipW} ${lipH+2} -${lipW*2} 0Z" fill="${lipC.hex}"/><path d="M ${cx-lipW+2} ${mouthY+1.4} q ${lipW-2} 3.4 ${lipW*2-4} 0 l -1.4 3 q -${lipW-1} 1.6 -${lipW*2-2} 0Z" fill="#fff" opacity=".9"/>`;
+  } else if(smiling){
+    mouth=`<path d="M ${cx-lipW} ${mouthY} q ${lipW} ${lipH+4} ${lipW*2} 0 q -${lipW} ${lipH} -${lipW*2} 0Z" fill="${lipC.hex}"/>`;
+  } else {
+    mouth=`<path d="M ${cx-lipW} ${mouthY+2} q ${lipW} -${lipH*0.7} ${lipW*2} 0 q -${lipW} ${lipH+1.5} -${lipW*2} 0Z" fill="${lipC.hex}"/>`;
+  }
+  const blush=`<ellipse cx="${cx-faceRx*0.58}" cy="${mouthY-9}" rx="7" ry="4" fill="#e8907c" opacity=".35"/><ellipse cx="${cx+faceRx*0.58}" cy="${mouthY-9}" rx="7" ry="4" fill="#e8907c" opacity=".35"/>`;
+  let freck="";
+  if(freckles){
+    freck=`<g fill="${skinDark}" opacity=".65"><circle cx="${cx-9}" cy="${eyeY+12}" r="1.1"/><circle cx="${cx-4}" cy="${eyeY+14}" r="1"/><circle cx="${cx+5}" cy="${eyeY+14}" r="1"/><circle cx="${cx+10}" cy="${eyeY+12}" r="1.1"/><circle cx="${cx}" cy="${eyeY+13}" r=".9"/><circle cx="${cx-14}" cy="${eyeY+10}" r=".9"/><circle cx="${cx+15}" cy="${eyeY+10}" r=".9"/></g>`;
+  }
+  if(state.detalles.includes("lunar")){
+    freck+=`<circle cx="${cx+lipW+3}" cy="${mouthY-2}" r="1.5" fill="#4a2e1c"/>`;
+  }
+  let dimp="";
+  if(dimples && smiling){
+    dimp=`<path d="M ${cx-lipW-4} ${mouthY-1} q 2 3 0 6" stroke="${skinDark}" stroke-width="1.4" fill="none"/><path d="M ${cx+lipW+4} ${mouthY-1} q -2 3 0 6" stroke="${skinDark}" stroke-width="1.4" fill="none"/>`;
+  }
+  // pelo frontal / flequillo
+  let hairFront="";
+  if(state.peloEstilo==="recogido"||state.peloEstilo==="cola"){
+    hairFront=`<path d="M ${cx-faceRx-2} ${headCY-8} Q ${cx-faceRx-3} ${headCY-faceRy-13} ${cx} ${headCY-faceRy-13} Q ${cx+faceRx+3} ${headCY-faceRy-13} ${cx+faceRx+2} ${headCY-8} Q ${cx} ${headCY-faceRy+6} ${cx-faceRx-2} ${headCY-8}Z" fill="${hairC.hex}"/>`;
+  } else {
+    hairFront=`<path d="M ${cx-faceRx-3} ${headCY-4} Q ${cx-faceRx-4} ${headCY-faceRy-14} ${cx} ${headCY-faceRy-14} Q ${cx+faceRx+4} ${headCY-faceRy-14} ${cx+faceRx+3} ${headCY-4} Q ${cx+faceRx*0.45} ${headCY-faceRy+9} ${cx} ${headCY-faceRy+7} Q ${cx-faceRx*0.45} ${headCY-faceRy+9} ${cx-faceRx-3} ${headCY-4}Z" fill="${hairC.hex}"/>`;
+    if(state.peloEstilo!=="rizado" && state.peloLargo!=="pixie"){
+      hairFront+=`<path d="M ${cx-faceRx-3} ${headCY-4} q -3 ${hairLen.len*0.4} 2 ${hairLen.len*0.55} l 8 0 q -4 -${hairLen.len*0.4} -1 -${hairLen.len*0.55}Z" fill="${hairC.hex}"/><path d="M ${cx+faceRx+3} ${headCY-4} q 3 ${hairLen.len*0.4} -2 ${hairLen.len*0.55} l -8 0 q 4 -${hairLen.len*0.4} 1 -${hairLen.len*0.55}Z" fill="${hairC.hex}"/>`;
+    }
+  }
+  if(fringe==="recto"){
+    hairFront+=`<path d="M ${cx-faceRx} ${headCY-faceRy*0.42} Q ${cx} ${headCY-faceRy*0.2} ${cx+faceRx} ${headCY-faceRy*0.42} L ${cx+faceRx} ${headCY-faceRy-4} Q ${cx} ${headCY-faceRy-12} ${cx-faceRx} ${headCY-faceRy-4}Z" fill="${hairC.hex}"/>`;
+  } else if(fringe==="cortina"){
+    hairFront+=`<path d="M ${cx-faceRx} ${headCY-6} Q ${cx-faceRx} ${headCY-faceRy-8} ${cx-3} ${headCY-faceRy-6} Q ${cx-faceRx*0.5} ${headCY-faceRy*0.35} ${cx-faceRx} ${headCY+6}Z" fill="${hairC.hex}"/><path d="M ${cx+faceRx} ${headCY-6} Q ${cx+faceRx} ${headCY-faceRy-8} ${cx+3} ${headCY-faceRy-6} Q ${cx+faceRx*0.5} ${headCY-faceRy*0.35} ${cx+faceRx} ${headCY+6}Z" fill="${hairC.hex}"/>`;
+  } else if(fringe==="lateral"){
+    hairFront+=`<path d="M ${cx-faceRx-1} ${headCY-faceRy*0.3} Q ${cx+faceRx*0.6} ${headCY-faceRy-10} ${cx+faceRx+1} ${headCY-faceRy*0.55} Q ${cx} ${headCY-faceRy*0.5} ${cx-faceRx-1} ${headCY-faceRy*0.05}Z" fill="${hairC.hex}"/>`;
+  }
+
+  const vb = viewMode==="face" ? `${cx-72} 0 144 168` : `0 0 300 ${totalH+8}`;
+  return `<svg viewBox="${vb}" role="img" aria-label="Avatar ilustrado de ${escapeHtml(state.nombre||"tu personaje")}">
+    ${hairBack}
+    ${legL}${legR}${shoes}
+    ${bottom}
+    ${torsoSkin}
+    ${arms}
+    ${top}
+    ${neck}${ears}${faceShape}
+    ${blush}${eyes}${brows}${nose}${mouth}${dimp}${freck}
+    ${hairFront}
+  </svg>`;
+}
+
+/* ---------- avatar masculino ---------- */
+function buildAvatarMale(){
+  const skin=find(SKIN,state.piel), hairC=find(HAIR_COLORS,state.peloColor);
+  const face=find(OPTS.rostro,state.rostro), comp=find(MALE.complexion,state.complexion);
+  const chest=find(MALE.pecho,state.pecho), waist=find(OPTS.cintura,state.cintura);
+  const sh=find(MALE.hombros,state.hombros), legs=find(OPTS.piernas,state.piernas), thighs=find(OPTS.muslos,state.muslos);
+  const height=find(MALE.altura,state.altura), outfit=find(OUTFIT_COLORS,state.conjuntoColor);
+  const eyeC=find(EYE_COLORS,state.ojosColor);
+  const skinDark=shade(skin.hex,-22);
+  const cx=150;
+  const S=32*comp.f+sh.add, B=28*comp.f+chest.add, W=21*comp.f+waist.add, H=23*comp.f+2;
+  const legLen=Math.round(118*legs.f*height.s), thighW=11*comp.f+thighs.add;
+  const hipY=268, legTop=hipY+6, totalH=legTop+legLen+16;
+  const headCY=66, faceRx=face.rx, faceRy=face.ry;
+  const isSport=state.conjunto==="deportivo", isBeach=state.conjunto==="playa";
+  const topCol=outfit.hex;
+  const bottomCol = state.conjunto==="casual" ? "#47648c" : (isSport||isBeach ? outfit.hex : (state.conjunto==="ceo" ? "#26282c" : "#1f2124"));
+  const smiling = state.expresion==="sonrisa-suave"||state.expresion==="alegre";
+  const laughing = state.expresion==="alegre";
+
+  // pelo trasero (solo pelo largo)
+  let hairBack="";
+  if(state.peloLargo==="largo"){
+    const hw=faceRx+10;
+    hairBack=`<path d="M ${cx-hw} 190 L ${cx-hw} ${headCY-4} Q ${cx-hw} ${headCY-faceRy-13} ${cx} ${headCY-faceRy-13} Q ${cx+hw} ${headCY-faceRy-13} ${cx+hw} ${headCY-4} L ${cx+hw} 190 Q ${cx} 200 ${cx-hw} 190Z" fill="${hairC.hex}"/>`;
+  }
+  // piernas y calzado
+  const legGap=Math.max(4,H*0.26);
+  const legL=`<path d="M ${cx-legGap-thighW} ${legTop} h ${thighW*2} l -${thighW*0.35} ${legLen} h -${thighW*1.3} Z" fill="${skin.hex}"/>`;
+  const legR=`<path d="M ${cx+legGap-thighW} ${legTop} h ${thighW*2} l ${thighW*0.35} ${legLen} h -${thighW*1.3} Z" fill="${skin.hex}"/>`;
+  const shoeY=legTop+legLen;
+  const shoes=`<ellipse cx="${cx-legGap-thighW*0.55}" cy="${shoeY+7}" rx="${thighW*0.95}" ry="5" fill="#2b2b2b"/><ellipse cx="${cx+legGap+thighW*0.55}" cy="${shoeY+7}" rx="${thighW*0.95}" ry="5" fill="#2b2b2b"/>`;
+  // parte inferior
+  let bottom="";
+  const bottomTop=hipY-16;
+  if(isSport||isBeach){
+    bottom=`<path d="M ${cx-H-2} ${bottomTop} h ${(H+2)*2} l -2 46 q -${H} 9 -${(H-2)*2} 0 Z" fill="${bottomCol}"/>`;
+  } else {
+    bottom=`<path d="M ${cx-H-1} ${bottomTop} h ${(H+1)*2} l ${thighW*0.32} ${legLen*0.97} h -${thighW*1.2} l -${thighW*0.3} -${legLen*0.55} l -${thighW*0.3} ${legLen*0.55} h -${thighW*1.2} Z" fill="${bottomCol}"/>`;
+  }
+  // torso: camisa / traje / tank
+  let torso=`<path d="M ${cx-S} 138 Q ${cx-B} 166 ${cx-B+2} 184 Q ${cx-W} 210 ${cx-W} 234 L ${cx-W} 258 L ${cx+W} 258 L ${cx+W} 234 Q ${cx+W} 210 ${cx+B-2} 184 Q ${cx+B} 166 ${cx+S} 138 Q ${cx} 128 ${cx-S} 138 Z" fill="${topCol}"/>`;
+  if(state.conjunto==="ceo"||state.conjunto==="elegante"){
+    torso+=`<path d="M ${cx-11} 136 L ${cx+11} 136 L ${cx} 198 Z" fill="#e9e6df"/><path d="M ${cx-11} 136 L ${cx} 198 L ${cx-20} 150 Z" fill="${shade(topCol,-16)}" opacity=".55"/><path d="M ${cx+11} 136 L ${cx} 198 L ${cx+20} 150 Z" fill="${shade(topCol,-16)}" opacity=".55"/>`;
+  }
+  if(isSport){
+    torso=`<path d="M ${cx-S+8} 140 Q ${cx-B} 166 ${cx-B+2} 184 Q ${cx-W} 210 ${cx-W} 234 L ${cx-W} 258 L ${cx+W} 258 L ${cx+W} 234 Q ${cx+W} 210 ${cx+B-2} 184 Q ${cx+B} 166 ${cx+S-8} 140 Q ${cx} 152 ${cx-S+8} 140 Z" fill="${topCol}"/>`;
+  }
+  // brazos: manga + antebrazo de piel
+  const armW=8.5*comp.f+2+chest.add*0.22;
+  const arms=`<path d="M ${cx-S-2} 142 q -${armW+4} 34 -${armW} 62" stroke="${isSport?skin.hex:topCol}" stroke-width="${armW*2}" fill="none" stroke-linecap="round"/>
+              <path d="M ${cx-S-2} 198 q -2 34 2 58" stroke="${skin.hex}" stroke-width="${armW*1.7}" fill="none" stroke-linecap="round"/>
+              <path d="M ${cx+S+2} 142 q ${armW+4} 34 ${armW} 62" stroke="${isSport?skin.hex:topCol}" stroke-width="${armW*2}" fill="none" stroke-linecap="round"/>
+              <path d="M ${cx+S+2} 198 q 2 34 -2 58" stroke="${skin.hex}" stroke-width="${armW*1.7}" fill="none" stroke-linecap="round"/>`;
+  // cuello y rostro
+  const neck=`<rect x="${cx-10}" y="${headCY+faceRy-12}" width="20" height="30" rx="7" fill="${skinDark}"/>`;
+  const ears=`<circle cx="${cx-faceRx}" cy="${headCY+4}" r="6" fill="${skin.hex}"/><circle cx="${cx+faceRx}" cy="${headCY+4}" r="6" fill="${skin.hex}"/>`;
+  const faceShape=`<ellipse cx="${cx}" cy="${headCY}" rx="${faceRx}" ry="${faceRy}" fill="${skin.hex}"/>`;
+  // mandíbula marcada en rostros cuadrados
+  const jaw = state.rostro==="cuadrado" ? `<path d="M ${cx-faceRx*0.72} ${headCY+faceRy*0.45} Q ${cx} ${headCY+faceRy*1.02} ${cx+faceRx*0.72} ${headCY+faceRy*0.45} Q ${cx} ${headCY+faceRy*0.78} ${cx-faceRx*0.72} ${headCY+faceRy*0.45}Z" fill="${skinDark}" opacity=".35"/>` : "";
+  const eyeY=headCY-2, eyeDx=faceRx*0.42;
+  const eyes=`<ellipse cx="${cx-eyeDx}" cy="${eyeY}" rx="5.4" ry="${state.ojosForma==="redondos"?5.4:3.8}" fill="${eyeC.hex}"/>
+              <ellipse cx="${cx+eyeDx}" cy="${eyeY}" rx="5.4" ry="${state.ojosForma==="redondos"?5.4:3.8}" fill="${eyeC.hex}"/>
+              <circle cx="${cx-eyeDx+1.6}" cy="${eyeY-1.4}" r="1.5" fill="#fff" opacity=".85"/>
+              <circle cx="${cx+eyeDx+1.6}" cy="${eyeY-1.4}" r="1.5" fill="#fff" opacity=".85"/>
+              <path d="M ${cx-eyeDx-6} ${eyeY-4} q 6 -3.4 12 0" stroke="#2b2320" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+              <path d="M ${cx+eyeDx-6} ${eyeY-4} q 6 -3.4 12 0" stroke="#2b2320" stroke-width="1.7" fill="none" stroke-linecap="round"/>`;
+  const browThick = state.cejas==="finas" ? 2.4 : 3.8;
+  const browArc = state.cejas==="rectas" ? 1 : (state.cejas==="arqueadas"?5:3);
+  const brows=`<path d="M ${cx-eyeDx-7} ${eyeY-13} q 7 -${browArc} 14 0" stroke="${shade(hairC.hex,6)}" stroke-width="${browThick}" fill="none" stroke-linecap="round"/>
+               <path d="M ${cx+eyeDx-7} ${eyeY-13} q 7 -${browArc} 14 0" stroke="${shade(hairC.hex,6)}" stroke-width="${browThick}" fill="none" stroke-linecap="round"/>`;
+  const noseW = state.nariz==="ancha"?5:3.6;
+  const nose=`<path d="M ${cx} ${eyeY+7} q 1.6 8 -${noseW*0.4} 11 q ${noseW} 2.4 ${noseW*2} 0" stroke="${skinDark}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  // barba y bigote: la barba es una pieza sólida de mandíbula, no una banda.
+  // El borde exterior sigue el óvalo del rostro hasta debajo de la barbilla
+  // y el borde superior baja por las mejillas en línea casi recta hasta las
+  // comisuras, pasando POR DEBAJO del labio inferior: la boca queda entera
+  // sobre piel. Nada de una sola curva de lado a lado ni ventana ovalada
+  // recortada — eso era lo que se leía como sonrisa en sombra/corta/completa.
+  const mouthY=headCY+faceRy*0.52, bk=hairC.hex;
+  const beardPath=(bottomExtra, cheekY, underLip)=>{
+    const outerBottom=headCY+faceRy+bottomExtra;
+    const lx=cx-faceRx+1, rx=cx+faceRx-1;
+    const jx=faceRx*0.52; // donde la línea de la mejilla llega a la comisura
+    return `M ${lx} ${cheekY} `+
+      `Q ${lx-1} ${headCY+faceRy*0.88} ${cx-jx} ${outerBottom-1} `+
+      `Q ${cx} ${outerBottom+5} ${cx+jx} ${outerBottom-1} `+
+      `Q ${rx+1} ${headCY+faceRy*0.88} ${rx} ${cheekY} `+
+      `L ${cx+jx} ${mouthY-1} L ${cx+15} ${mouthY+2} `+
+      `Q ${cx} ${mouthY+underLip} ${cx-15} ${mouthY+2} `+
+      `L ${cx-jx} ${mouthY-1} Z`;
+  };
+  // el bigote va pegado al labio superior: borde superior casi plano con la
+  // muesca del filtrum al centro y las puntas CAÍDAS (más bajas que el centro);
+  // si las puntas suben, se lee como bigote de manillar o como sonrisa.
+  const mustache=op=>
+    `<path d="M ${cx-15} ${mouthY+1} Q ${cx-8} ${mouthY-5.6} ${cx-2} ${mouthY-4.4} Q ${cx} ${mouthY-3} ${cx+2} ${mouthY-4.4} Q ${cx+8} ${mouthY-5.6} ${cx+15} ${mouthY+1} Q ${cx+8} ${mouthY+2.8} ${cx} ${mouthY+1.9} Q ${cx-8} ${mouthY+2.8} ${cx-15} ${mouthY+1}Z" fill="${bk}" opacity="${op}"/>`;
+  let beard="", beardExtra="";
+  if(state.barba==="sombra"){
+    beard=`<path d="${beardPath(2, headCY+14, 15)}" fill="${bk}" opacity=".28"/>`;
+    beardExtra=mustache(.3);
+  } else if(state.barba==="corta"){
+    beard=`<path d="${beardPath(4, headCY+9, 16)}" fill="${bk}" opacity=".92"/>`;
+    beardExtra=mustache(.95);
+  } else if(state.barba==="completa"){
+    beard=`<path d="${beardPath(11, headCY+5, 18)}" fill="${bk}"/>`;
+    beardExtra=mustache(1);
+  } else if(state.barba==="bigote"){
+    beardExtra=mustache(1);
+  } else if(state.barba==="candado"){
+    beard=`<path d="M ${cx-10} ${mouthY+5} Q ${cx} ${mouthY+25} ${cx+10} ${mouthY+5} Q ${cx} ${mouthY+11.5} ${cx-10} ${mouthY+5}Z" fill="${bk}"/><path d="M ${cx-12.5} ${mouthY-0.5} q 1.2 5.5 3.8 8.5 M ${cx+12.5} ${mouthY-0.5} q -1.2 5.5 -3.8 8.5" stroke="${bk}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+    beardExtra=mustache(1);
+  }
+  // boca natural: línea de labios sutil, sin la media luna clara que parecía sonrisa
+  let mouth;
+  if(laughing){
+    mouth=`<path d="M ${cx-9} ${mouthY+0.5} q 9 9 18 0 q -9 4.4 -18 0Z" fill="#8a4f3d"/><path d="M ${cx-7} ${mouthY+1.6} q 7 2.6 14 0 l -1 2.4 q -6 1.2 -12 0Z" fill="#fff" opacity=".9"/>`;
+  } else if(smiling){
+    mouth=`<path d="M ${cx-9} ${mouthY+0.5} q 9 5.5 18 0" stroke="#8a4f3d" stroke-width="2.1" fill="none" stroke-linecap="round"/><path d="M ${cx-5} ${mouthY+4.8} q 5 2.4 10 0 q -5 1.7 -10 0Z" fill="#b57a63"/>`;
+  } else {
+    mouth=`<path d="M ${cx-8} ${mouthY+1.8} q 8 -1.8 16 0" stroke="#8a4f3d" stroke-width="2.1" fill="none" stroke-linecap="round"/><path d="M ${cx-5} ${mouthY+3.2} q 5 2.2 10 0 q -5 1.5 -10 0Z" fill="#b57a63"/>`;
+  }
+  let freck="";
+  if(state.detalles.includes("pecas")){
+    freck=`<g fill="${skinDark}" opacity=".6"><circle cx="${cx-9}" cy="${eyeY+12}" r="1.1"/><circle cx="${cx-4}" cy="${eyeY+14}" r="1"/><circle cx="${cx+5}" cy="${eyeY+14}" r="1"/><circle cx="${cx+10}" cy="${eyeY+12}" r="1.1"/></g>`;
+  }
+  if(state.detalles.includes("lunar")){
+    freck+=`<circle cx="${cx+11}" cy="${mouthY+6}" r="1.5" fill="#4a2e1c"/>`;
+  }
+  // pelo frontal: casquete según largo y estilo
+  const drop = {rapado:1,"muy-corto":4,corto:8,medio:12,largo:13}[state.peloLargo]||8;
+  let hairFront=`<path d="M ${cx-faceRx-2} ${headCY-6} Q ${cx-faceRx-3} ${headCY-faceRy-13} ${cx} ${headCY-faceRy-13} Q ${cx+faceRx+3} ${headCY-faceRy-13} ${cx+faceRx+2} ${headCY-6} Q ${cx} ${headCY-faceRy+drop+6} ${cx-faceRx-2} ${headCY-6}Z" fill="${hairC.hex}"/>`;
+  if(state.peloEstilo==="fade"||state.peloEstilo==="linea"){
+    hairFront+=`<path d="M ${cx-faceRx-2} ${headCY-6} L ${cx-faceRx+3} ${headCY-6} L ${cx-faceRx+3} ${headCY+8} Q ${cx-faceRx-2} ${headCY+2} ${cx-faceRx-2} ${headCY-6}Z" fill="${hairC.hex}" opacity=".45"/><path d="M ${cx+faceRx+2} ${headCY-6} L ${cx+faceRx-3} ${headCY-6} L ${cx+faceRx-3} ${headCY+8} Q ${cx+faceRx+2} ${headCY+2} ${cx+faceRx+2} ${headCY-6}Z" fill="${hairC.hex}" opacity=".45"/>`;
+  }
+  if(state.peloEstilo==="rizado-corto"){
+    hairFront+=`<circle cx="${cx-14}" cy="${headCY-faceRy+2}" r="7" fill="${hairC.hex}"/><circle cx="${cx}" cy="${headCY-faceRy-2}" r="8" fill="${hairC.hex}"/><circle cx="${cx+14}" cy="${headCY-faceRy+2}" r="7" fill="${hairC.hex}"/>`;
+  }
+  if(state.peloEstilo==="texturizado"){
+    hairFront+=`<path d="M ${cx-16} ${headCY-faceRy+4} l 5 -8 l 4 7 l 6 -9 l 4 8 l 6 -7 l 3 9" stroke="${hairC.hex}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  }
+  const vb = viewMode==="face" ? `${cx-72} 0 144 168` : `0 0 300 ${totalH+8}`;
+  return `<svg viewBox="${vb}" role="img" aria-label="Avatar ilustrado de ${escapeHtml(state.nombre||"tu personaje")}">
+    ${hairBack}
+    ${legL}${legR}${shoes}
+    ${bottom}
+    ${arms}
+    ${torso}
+    ${neck}${ears}${faceShape}${jaw}
+    ${beard}${eyes}${brows}${nose}${mouth}${beardExtra}${freck}
+    ${hairFront}
+  </svg>`;
+}
+function buildAvatar(){
+  return state.genero==="hombre" ? buildAvatarMale() : buildAvatarFemale();
+}
+
+/* ============================================================
+   Textos de salida
+   ============================================================ */
+function selectedDetails(){ return state.detalles.map(id=>find(OPTS.detallesPiel,id)); }
+function buildDesc(){
+  const male = state.genero==="hombre";
+  const o=find(L("origen"),state.origen), piel=find(SKIN,state.piel);
+  const comp=find(L("complexion"),state.complexion);
+  const pelo=find(HAIR_COLORS,state.peloColor), largo=find(L("peloLargo"),state.peloLargo), est=find(L("peloEstilo"),state.peloEstilo);
+  const nombre=(state.nombre||"Sin nombre").trim();
+  let d=`${nombre}, ${state.edad} años, ${o.es.toLowerCase()} de piel ${piel.es.toLowerCase()}. `+
+    `Rostro ${find(OPTS.rostro,state.rostro).es.toLowerCase()}, ojos ${find(EYE_COLORS,state.ojosColor).es.toLowerCase()} ${find(OPTS.ojosForma,state.ojosForma).es.toLowerCase()}, labios ${find(OPTS.labios,state.labios).es.toLowerCase()}. `;
+  if(male){
+    d+=`Barba: ${find(MALE.barba,state.barba).es.toLowerCase()}. `;
+    d+=`Pelo ${pelo.es.toLowerCase()}, ${largo.es.toLowerCase()}, ${est.es.toLowerCase()}. `+
+      `Cuerpo ${comp.es.toLowerCase()}: hombros ${find(MALE.hombros,state.hombros).es.toLowerCase()}, pecho ${find(MALE.pecho,state.pecho).es.toLowerCase()}, cintura ${find(OPTS.cintura,state.cintura).es.toLowerCase()}, piernas ${find(OPTS.piernas,state.piernas).es.toLowerCase()} y muslos ${find(OPTS.muslos,state.muslos).es.toLowerCase()}. `;
+  } else {
+    d+=`Pelo ${pelo.es.toLowerCase()}, ${largo.es.toLowerCase()}, ${est.es.toLowerCase()}. `+
+      `Cuerpo ${comp.es.toLowerCase()}: busto ${find(OPTS.busto,state.busto).es.toLowerCase()}, cintura ${find(OPTS.cintura,state.cintura).es.toLowerCase()}, cadera ${find(OPTS.cadera,state.cadera).es.toLowerCase()}, piernas ${find(OPTS.piernas,state.piernas).es.toLowerCase()} y muslos ${find(OPTS.muslos,state.muslos).es.toLowerCase()}. `;
+  }
+  d+=`Vibra ${find(L("vibra"),state.vibra).es.toLowerCase()}, casi siempre en ${find(OPTS.escenario,state.escenario).es.toLowerCase()}.`;
+  return d;
+}
+function buildPrompt(){
+  const male = state.genero==="hombre";
+  const o=find(L("origen"),state.origen), piel=find(SKIN,state.piel);
+  const face=find(OPTS.rostro,state.rostro);
+  const pelo=find(HAIR_COLORS,state.peloColor), largo=find(L("peloLargo"),state.peloLargo), est=find(L("peloEstilo"),state.peloEstilo);
+  const fle=find(OPTS.flequillo,state.flequillo);
+  const comp=find(L("complexion"),state.complexion), alt=find(L("altura"),state.altura);
+  const conj=find(L("conjunto"),state.conjunto), conjC=find(OUTFIT_COLORS,state.conjuntoColor);
+  const dets=selectedDetails().map(d=>d.en);
+  const nombre=(state.nombre||"the character").trim();
+  let p;
+  if(male){
+    p=`Photorealistic character reference of ${nombre}, a ${state.edad}-year-old ${o.en} man with ${piel.en} skin. `;
+    p+=`${face.en} face, ${find(OPTS.ojosForma,state.ojosForma).en} ${find(EYE_COLORS,state.ojosColor).en} eyes, ${find(OPTS.cejas,state.cejas).en} eyebrows, ${find(OPTS.nariz,state.nariz).en} nose, ${find(OPTS.labios,state.labios).en} lips. ${find(MALE.barba,state.barba).en}. `;
+    p+=`${largo.en} ${est.en} hair in ${pelo.en}. `;
+    p+=`${comp.en} build, ${alt.en}, ${find(MALE.hombros,state.hombros).en}, ${find(MALE.pecho,state.pecho).en}, ${find(OPTS.cintura,state.cintura).en} waist, ${find(OPTS.piernas,state.piernas).en} legs with ${find(OPTS.muslos,state.muslos).en} thighs. `;
+  } else {
+    p=`Photorealistic character reference of ${nombre}, a ${state.edad}-year-old ${o.en} woman with ${piel.en} skin. `;
+    p+=`${face.en} face, ${find(OPTS.ojosForma,state.ojosForma).en} ${find(EYE_COLORS,state.ojosColor).en} eyes, ${find(OPTS.cejas,state.cejas).en} eyebrows, ${find(OPTS.nariz,state.nariz).en} nose, ${find(OPTS.labios,state.labios).en} lips in a ${find(LIP_COLORS,state.labiosColor).en} shade. `;
+    p+=`${largo.en} ${est.en} hair in ${pelo.en}${fle.en?", with "+fle.en:""}. `;
+    p+=`${comp.en} build, ${alt.en}, ${find(OPTS.busto,state.busto).en} bust, ${find(OPTS.cintura,state.cintura).en} waist, ${find(OPTS.cadera,state.cadera).en}, ${find(OPTS.piernas,state.piernas).en} legs with ${find(OPTS.muslos,state.muslos).en} thighs. `;
+  }
+  if(dets.length) p+=`Skin detail: ${dets.join(", ")}. `;
+  p+=`Wearing ${conj.en} in ${conjC.en}. ${find(OPTS.expresion,state.expresion).en}, ${find(L("vibra"),state.vibra).en} energy. Setting: ${find(OPTS.escenario,state.escenario).en}. `;
+  p+=`Lifelike skin texture with visible pores and natural imperfections, realistic body proportions, shot on iPhone, natural light, ultra detailed — same character, consistent face and body in every image.`;
+  return p;
+}
+function buildJSON(){
+  const male = state.genero==="hombre";
+  const g=(list,id)=>{ const o=find(list,id); return {id:o.id, es:o.es, en:o.en}; };
+  const gc=(list,id)=>{ const o=find(list,id); return {id:o.id, es:o.es, en:o.en, hex:o.hex}; };
+  const faceJ = {
+    shape: g(OPTS.rostro, state.rostro),
+    eyes_shape: g(OPTS.ojosForma, state.ojosForma),
+    eyes_color: gc(EYE_COLORS, state.ojosColor),
+    eyebrows: g(OPTS.cejas, state.cejas),
+    nose: g(OPTS.nariz, state.nariz),
+    lips: g(OPTS.labios, state.labios),
+    expression: g(OPTS.expresion, state.expresion)
+  };
+  if(male) faceJ.beard = g(MALE.barba, state.barba); else faceJ.lip_color = gc(LIP_COLORS, state.labiosColor);
+  const hairJ = {
+    color: gc(HAIR_COLORS, state.peloColor),
+    length: g(L("peloLargo"), state.peloLargo),
+    style: g(L("peloEstilo"), state.peloEstilo)
+  };
+  if(!male) hairJ.bangs = g(OPTS.flequillo, state.flequillo);
+  const bodyJ = male ? {
+    build: g(MALE.complexion, state.complexion),
+    height: g(MALE.altura, state.altura),
+    shoulders: g(MALE.hombros, state.hombros),
+    chest: g(MALE.pecho, state.pecho),
+    waist: g(OPTS.cintura, state.cintura),
+    legs: g(OPTS.piernas, state.piernas),
+    thighs: g(OPTS.muslos, state.muslos)
+  } : {
+    build: g(OPTS.complexion, state.complexion),
+    height: g(OPTS.altura, state.altura),
+    bust: g(OPTS.busto, state.busto),
+    waist: g(OPTS.cintura, state.cintura),
+    hips: g(OPTS.cadera, state.cadera),
+    legs: g(OPTS.piernas, state.piernas),
+    thighs: g(OPTS.muslos, state.muslos)
+  };
+  return {
+    character: {
+      name: (state.nombre||"").trim(),
+      gender: male ? {id:"hombre", es:"Hombre", en:"man"} : {id:"mujer", es:"Mujer", en:"woman"},
+      age: state.edad,
+      origin: g(L("origen"), state.origen),
+      skin_tone: gc(SKIN, state.piel),
+      vibe: g(L("vibra"), state.vibra),
+      base_setting: g(OPTS.escenario, state.escenario)
+    },
+    face: faceJ,
+    hair: hairJ,
+    body: bodyJ,
+    outfit: {
+      set: g(L("conjunto"), state.conjunto),
+      main_color: gc(OUTFIT_COLORS, state.conjuntoColor)
+    },
+    skin_realism: selectedDetails().map(d=>({id:d.id, es:d.es, en:d.en})),
+    palette: buildPalette().map(c=>({name:c.name, hex:c.hex})),
+    prompt_extract: buildPrompt()
+  };
+}
+function buildPalette(){
+  const male = state.genero==="hombre";
+  const piel=find(SKIN,state.piel), pelo=find(HAIR_COLORS,state.peloColor);
+  const ojos=find(EYE_COLORS,state.ojosColor), lab=find(LIP_COLORS,state.labiosColor);
+  const conj=find(OUTFIT_COLORS,state.conjuntoColor);
+  const mid = male
+    ? {name:"Barba · "+find(MALE.barba,state.barba).es, hex:pelo.hex}
+    : {name:"Labios · "+lab.es, hex:lab.hex};
+  return [
+    {name:"Piel · "+piel.es, hex:piel.hex},
+    {name:"Piel sombra", hex:shade(piel.hex,-26)},
+    {name:"Pelo · "+pelo.es, hex:pelo.hex},
+    {name:"Ojos · "+ojos.es, hex:ojos.hex},
+    mid,
+    {name:"Conjunto · "+conj.es, hex:conj.hex},
+    {name:"Acento coral", hex:"#e8492f"},
+    {name:"Acento turquesa", hex:"#0d7a74"}
+  ];
+}
+
+/* ============================================================
+   Refresh general
+   ============================================================ */
+function refresh(syncControls=true){
+  const male = state.genero==="hombre";
+  // avatar
+  const stage=$("#stage");
+  stage.innerHTML=buildAvatar();
+  stage.classList.toggle("face", viewMode==="face");
+  // cabecera preview
+  $("#pv-name").textContent=(state.nombre||"Tu personaje").trim()||"Tu personaje";
+  $("#pv-who").textContent=`${state.edad} años · ${find(L("origen"),state.origen).es} · ${find(L("complexion"),state.complexion).es}`;
+  // paleta
+  $("#palette").innerHTML=buildPalette().map(c=>
+    `<div class="swatch"><i style="background:${c.hex}"></i><b>${escapeHtml(c.name)}</b><s>${c.hex.toUpperCase()}</s></div>`).join("");
+  // resumen
+  const chips=[
+    find(SKIN,state.piel).es+" de piel",
+    "Rostro "+find(OPTS.rostro,state.rostro).es.toLowerCase(),
+    "Pelo "+find(HAIR_COLORS,state.peloColor).es.toLowerCase(),
+    find(L("complexion"),state.complexion).es,
+    ...(male
+      ? ["Barba: "+find(MALE.barba,state.barba).es.toLowerCase(),
+         "Hombros "+find(MALE.hombros,state.hombros).es.toLowerCase(),
+         "Pecho "+find(MALE.pecho,state.pecho).es.toLowerCase()]
+      : ["Busto "+find(OPTS.busto,state.busto).es.toLowerCase(),
+         "Cadera "+find(OPTS.cadera,state.cadera).es.toLowerCase()]),
+    "Piernas "+find(OPTS.piernas,state.piernas).es.toLowerCase(),
+    find(L("vibra"),state.vibra).es
+  ];
+  $("#summary").innerHTML=chips.map(c=>`<li>${escapeHtml(c)}</li>`).join("");
+  // salidas
+  $("#desc-out").textContent=buildDesc();
+  $("#prompt-out").value=buildPrompt();
+  $("#json-out").textContent=JSON.stringify(buildJSON(),null,2);
+  // estados de botones
+  if(syncControls){
+    document.querySelectorAll(".opt[data-group]").forEach(b=>{
+      b.setAttribute("aria-pressed", state[b.dataset.group]===b.dataset.id ? "true":"false");
+    });
+    document.querySelectorAll(".opt[data-detail]").forEach(b=>{
+      const on=state.detalles.includes(b.dataset.detail);
+      b.setAttribute("aria-pressed", on?"true":"false");
+      const o=find(OPTS.detallesPiel,b.dataset.detail);
+      b.textContent=(on?"✓ ":"")+o.es;
+    });
+    const ni=$("#name-input"); if(ni && ni.value!==state.nombre) ni.value=state.nombre;
+    const ar=$("#age-range"); if(ar && +ar.value!==state.edad){ ar.value=state.edad; $("#age-val").textContent=state.edad+" años"; }
+  }
+}
+
+/* ---------- género, presets, aleatorio, reiniciar, vista ---------- */
+const presetsEl=$("#presets");
+function buildPresets(){
+  presetsEl.innerHTML="<span>Empezar desde</span>";
+  const list = state.genero==="hombre" ? PRESETS_M : PRESETS_F;
+  list.forEach(pr=>{
+    const b=document.createElement("button");
+    b.type="button"; b.className="preset"; b.textContent=pr.name;
+    b.addEventListener("click",()=>{
+      state=JSON.parse(JSON.stringify(pr.data));
+      savedByGender[state.genero]=JSON.parse(JSON.stringify(state));
+      refresh(); toast("Preset aplicado: "+pr.name);
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+    presetsEl.appendChild(b);
+  });
+}
+function setGender(g){
+  if(state.genero===g) return;
+  savedByGender[state.genero]=JSON.parse(JSON.stringify(state));
+  state=JSON.parse(JSON.stringify(savedByGender[g]));
+  $("#gender-f").setAttribute("aria-pressed", g==="mujer"?"true":"false");
+  $("#gender-m").setAttribute("aria-pressed", g==="hombre"?"true":"false");
+  buildControls();
+  buildPresets();
+  refresh();
+  toast(g==="hombre" ? "Modo hombre: pelo, barba, cuerpo y ropa en masculino" : "Modo mujer");
+}
+$("#gender-f").addEventListener("click",()=>setGender("mujer"));
+$("#gender-m").addEventListener("click",()=>setGender("hombre"));
+function randomFrom(list){ return list[Math.floor(Math.random()*list.length)].id; }
+$("#btn-random").addEventListener("click",()=>{
+  const keepName=state.nombre, keepGender=state.genero;
+  const male = keepGender==="hombre";
+  state={
+    genero:keepGender,
+    nombre:keepName, edad:21+Math.floor(Math.random()*20),
+    origen:randomFrom(L("origen")), piel:randomFrom(SKIN),
+    rostro:randomFrom(OPTS.rostro), ojosForma:randomFrom(OPTS.ojosForma), ojosColor:randomFrom(EYE_COLORS),
+    cejas:randomFrom(OPTS.cejas), nariz:randomFrom(OPTS.nariz), labios:randomFrom(OPTS.labios), labiosColor:randomFrom(LIP_COLORS),
+    peloColor:randomFrom(HAIR_COLORS), peloLargo:randomFrom(L("peloLargo")), peloEstilo:randomFrom(L("peloEstilo")), flequillo: male ? "sin" : randomFrom(OPTS.flequillo),
+    barba: male ? randomFrom(MALE.barba) : "sin",
+    complexion:randomFrom(L("complexion")), altura:randomFrom(L("altura")), busto:randomFrom(OPTS.busto),
+    cintura:randomFrom(OPTS.cintura), cadera:randomFrom(OPTS.cadera), piernas:randomFrom(OPTS.piernas), muslos:randomFrom(OPTS.muslos),
+    hombros: male ? randomFrom(MALE.hombros) : "medios", pecho: male ? randomFrom(MALE.pecho) : "medio",
+    conjunto:randomFrom(L("conjunto")), conjuntoColor:randomFrom(OUTFIT_COLORS),
+    expresion:randomFrom(OPTS.expresion), vibra:randomFrom(L("vibra")), escenario:randomFrom(OPTS.escenario),
+    detalles:OPTS.detallesPiel.filter(()=>Math.random()>0.55).map(d=>d.id)
+  };
+  if(!state.detalles.length) state.detalles=["poros"];
+  refresh(); toast("Personaje aleatorio generado");
+});
+$("#btn-reset").addEventListener("click",()=>{
+  state=JSON.parse(JSON.stringify(state.genero==="hombre" ? DEFAULTS_M : DEFAULTS_F));
+  savedByGender[state.genero]=JSON.parse(JSON.stringify(state));
+  buildControls(); refresh(); toast("Volviste al personaje base");
+});
+$("#view-full").addEventListener("click",()=>{
+  viewMode="full";
+  $("#view-full").setAttribute("aria-pressed","true");
+  $("#view-face").setAttribute("aria-pressed","false");
+  refresh(false);
+});
+$("#view-face").addEventListener("click",()=>{
+  viewMode="face";
+  $("#view-face").setAttribute("aria-pressed","true");
+  $("#view-full").setAttribute("aria-pressed","false");
+  refresh(false);
+});
+
+buildControls();
+buildPresets();
+refresh();
+</script>
+</body>
+</html>
